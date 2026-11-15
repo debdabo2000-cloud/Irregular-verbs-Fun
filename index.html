@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高中英文不規則動詞闖關特訓與測驗系統</title>
+    <style>
+        :root {
+            --bg-color: #FBF8F5;
+            --card-bg: #FFFFFF;
+            --primary: #A89078;
+            --primary-dark: #8C735D;
+            --accent: #D8C2B0;
+            --text-main: #5C4A42;
+            --text-light: #8E7A6E;
+            --success: #6B8E23;
+            --error: #CD5C5C;
+            --border-radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(92, 74, 66, 0.08);
+            padding: 24px;
+            margin-top: 20px;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            text-align: center;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* 歡迎畫面 */
+        .welcome-box {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .welcome-box p {
+            margin-bottom: 20px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* 遊戲介面 */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            background: var(--bg-color);
+            padding: 10px 16px;
+            border-radius: 10px;
+        }
+
+        .card-prompt {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .card-prompt .base-word {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .card-prompt .chinese {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1.1rem;
+            border: 2px solid var(--accent);
+            border-radius: 10px;
+            outline: none;
+            background: var(--bg-color);
+            color: var(--text-main);
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .feedback {
+            text-align: center;
+            font-weight: bold;
+            min-height: 24px;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+        }
+
+        .feedback.correct { color: var(--success); }
+        .feedback.error { color: var(--error); }
+
+        /* 結算畫面 */
+        .result-box {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .result-stats {
+            background: var(--bg-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .screenshot-hint {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 歡迎畫面 -->
+        <div id="start-screen" class="screen active">
+            <h1>高中英文不規則動詞闖關特訓</h1>
+            <div class="subtitle">DL English 專屬測驗系統</div>
+            <div class="welcome-box">
+                <p>準備好接受挑戰了嗎？系統將隨機抽考國高中核心不規則動詞。<br>完成後請將成績單截圖傳給老師！</p>
+                <button class="btn" onclick="startGame()">開始挑戰</button>
+            </div>
+        </div>
+
+        <!-- 遊戲測驗畫面 -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <span id="progress-text">進度：1 / 10</span>
+                <span id="timer-text">⏱️ 0 秒</span>
+            </div>
+
+            <div class="card-prompt">
+                <div class="base-word" id="base-word">eat</div>
+                <div class="chinese" id="chinese-meaning">吃</div>
+            </div>
+
+            <div class="input-group">
+                <label for="past-input">請輸入「過去式 (Past)」：</label>
+                <input type="text" id="past-input" placeholder="例如: ate" autocomplete="off" autocapitalize="none">
+            </div>
+
+            <div class="input-group">
+                <label for="pp-input">請輸入「過去分詞 (Past Participle)」：</label>
+                <input type="text" id="pp-input" placeholder="例如: eaten" autocomplete="off" autocapitalize="none">
+            </div>
+
+            <div class="feedback" id="feedback-msg"></div>
+
+            <button class="btn" id="submit-btn" onclick="checkAnswer()">送出答案</button>
+        </div>
+
+        <!-- 結算畫面 (截圖區) -->
+        <div id="result-screen" class="screen">
+            <h1>🎉 挑戰完成！</h1>
+            <div class="subtitle">太棒了，你已完成不規則動詞特訓！</div>
+            
+            <div class="result-stats">
+                <div class="stat-item">
+                    <span>總花費時間：</span>
+                    <span class="stat-value" id="res-time">0 秒</span>
+                </div>
+                <div class="stat-item">
+                    <span>答對題數：</span>
+                    <span class="stat-value" id="res-score">10 / 10</span>
+                </div>
+                <div class="stat-item">
+                    <span>正確率：</span>
+                    <span class="stat-value" id="res-accuracy">100%</span>
+                </div>
+            </div>
+
+            <button class="btn" onclick="restartGame()">再玩一次</button>
+            <div class="screenshot-hint">📸 請將此畫面截圖並傳給老師登記成績！</div>
+        </div>
+    </div>
+
+    <script>
+        const verbsData = [
+            { base: "be", past: "was / were", pp: "been", cn: "是" },
+            { base: "begin", past: "began", pp: "begun", cn: "開始" },
+            { base: "break", past: "broke", pp: "broken", cn: "打破" },
+            { base: "bring", past: "brought", pp: "brought", cn: "帶來" },
+            { base: "buy", past: "bought", pp: "bought", cn: "買" },
+            { base: "catch", past: "caught", pp: "caught", cn: "抓住" },
+            { base: "come", past: "came", pp: "come", cn: "來" },
+            { base: "do", past: "did", pp: "done", cn: "做" },
+            { base: "draw", past: "drew", pp: "drawn", cn: "畫" },
+            { base: "drink", past: "drank", pp: "drunk", cn: "喝" },
+            { base: "drive", past: "drove", pp: "driven", cn: "開車" },
+            { base: "eat", past: "ate", pp: "eaten", cn: "吃" },
+            { base: "fall", past: "fell", pp: "fallen", cn: "落下" },
+            { base: "find", past: "found", pp: "found", cn: "找到" },
+            { base: "fly", past: "flew", pp: "flown", cn: "飛" },
+            { base: "forget", past: "forgot", pp: "forgotten", cn: "忘記" },
+            { base: "get", past: "got", pp: "got / gotten", cn: "得到" },
+            { base: "give", past: "gave", pp: "given", cn: "給" },
+            { base: "go", past: "went", pp: "gone", cn: "去" },
+            { base: "grow", past: "grew", pp: "grown", cn: "成長" },
+            { base: "have", past: "had", pp: "had", cn: "有" },
+            { base: "hear", past: "heard", pp: "heard", cn: "聽見" },
+            { base: "hit", past: "hit", pp: "hit", cn: "打" },
+            { base: "hold", past: "held", pp: "held", cn: "舉辦/握住" },
+            { base: "keep", past: "kept", pp: "kept", cn: "保持" },
+            { base: "know", past: "knew", pp: "known", cn: "知道" },
+            { base: "leave", past: "left", pp: "left", cn: "離開" },
+            { base: "let", past: "let", pp: "let", cn: "讓" },
+            { base: "lose", past: "lost", pp: "lost", cn: "失去" },
+            { base: "make", past: "made", pp: "made", cn: "製作" },
+            { base: "meet", past: "met", pp: "met", cn: "見面" },
+            { base: "put", past: "put", pp: "put", cn: "放" },
+            { base: "read", past: "read", pp: "read", cn: "讀" },
+            { base: "ride", past: "rode", pp: "ridden", cn: "騎" },
+            { base: "ring", past: "rang", pp: "rung", cn: "鈴響" },
+            { base: "run", past: "ran", pp: "run", cn: "跑" },
+            { base: "say", past: "said", pp: "said", cn: "說" },
+            { base: "see", past: "saw", pp: "seen", cn: "看見" },
+            { base: "sell", past: "sold", pp: "sold", cn: "賣" },
+            { base: "send", past: "sent", pp: "sent", cn: "寄送" },
+            { base: "show", past: "showed", pp: "shown", cn: "展示" },
+            { base: "sing", past: "sang", pp: "sung", cn: "唱歌" },
+            { base: "sit", past: "sat", pp: "sat", cn: "坐" },
+            { base: "sleep", past: "slept", pp: "slept", cn: "睡覺" },
+            { base: "speak", past: "spoke", pp: "spoken", cn: "說話" },
+            { base: "spend", past: "spent", pp: "spent", cn: "花費" },
+            { base: "stand", past: "stood", pp: "stood", cn: "站" },
+            { base: "swim", past: "swam", pp: "swum", cn: "游泳" },
+            { base: "take", past: "took", pp: "taken", cn: "拿取" },
+            { base: "teach", past: "taught", pp: "taught", cn: "教" },
+            { base: "tell", past: "told", pp: "told", cn: "告訴" },
+            { base: "think", past: "thought", pp: "thought", cn: "想" },
+            { base: "throw", past: "threw", pp: "thrown", cn: "投擲" },
+            { base: "understand", past: "understood", pp: "understood", cn: "理解" },
+            { base: "wake", past: "woke", pp: "woken", cn: "醒來" },
+            { base: "wear", past: "wore", pp: "worn", cn: "穿戴" },
+            { base: "win", past: "won", pp: "won", cn: "贏" },
+            { base: "write", past: "wrote", pp: "written", cn: "寫" }
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let startTime = 0;
+        let timerInterval = null;
+        let elapsedSeconds = 0;
+        let isAnswering = false;
+
+        function startGame() {
+            currentQuestions = [...verbsData].sort(() => 0.5 - Math.random()).slice(0, 10);
+            currentIndex = 0;
+            score = 0;
+            elapsedSeconds = 0;
+            
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+
+            startTimer();
+            loadQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById('timer-text').innerText = `⏱️ ${elapsedSeconds} 秒`;
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            isAnswering = false;
+            const q = currentQuestions[currentIndex];
+            document.getElementById('progress-text').innerText = `進度：${currentIndex + 1} / 10`;
+            document.getElementById('base-word').innerText = q.base;
+            document.getElementById('chinese-meaning').innerText = q.cn;
+            
+            const pastInput = document.getElementById('past-input');
+            const ppInput = document.getElementById('pp-input');
+            pastInput.value = '';
+            ppInput.value = '';
+            pastInput.disabled = false;
+            ppInput.disabled = false;
+            pastInput.focus();
+
+            document.getElementById('feedback-msg').innerText = '';
+            document.getElementById('feedback-msg').className = 'feedback';
+            document.getElementById('submit-btn').innerText = '送出答案';
+        }
+
+        function checkAnswer() {
+            if (isAnswering) {
+                currentIndex++;
+                if (currentIndex < currentQuestions.length) {
+                    loadQuestion();
+                } else {
+                    endGame();
+                }
+                return;
+            }
+
+            const q = currentQuestions[currentIndex];
+            const userPast = document.getElementById('past-input').value.trim().toLowerCase();
+            const userPp = document.getElementById('pp-input').value.trim().toLowerCase();
+
+            if (!userPast || !userPp) {
+                alert('請完整填寫過去式與過去分詞！');
+                return;
+            }
+
+            // 支援多種正確寫法比對
+            const correctPastOptions = q.past.toLowerCase().split('/').map(s => s.trim());
+            const correctPpOptions = q.pp.toLowerCase().split('/').map(s => s.trim());
+
+            const isPastCorrect = correctPastOptions.includes(userPast);
+            const isPpCorrect = correctPpOptions.includes(userPp);
+
+            const msgEl = document.getElementById('feedback-msg');
+            const pastInput = document.getElementById('past-input');
+            const ppInput = document.getElementById('pp-input');
+
+            pastInput.disabled = true;
+            ppInput.disabled = true;
+
+            if (isPastCorrect && isPpCorrect) {
+                score++;
+                msgEl.innerText = '✨ 答對了！太棒了！';
+                msgEl.className = 'feedback correct';
+            } else {
+                msgEl.innerText = `❌ 正確答案是：過去式 [ ${q.past} ]，過去分詞 [ ${q.pp} ]`;
+                msgEl.className = 'feedback error';
+            }
+
+            isAnswering = true;
+            document.getElementById('submit-btn').innerText = (currentIndex < currentQuestions.length - 1) ? '下一題 ➔' : '看結算成績 ➔';
+        }
+
+        function endGame() {
+            clearInterval(timerInterval);
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+
+            document.getElementById('res-time').innerText = `${elapsedSeconds} 秒`;
+            document.getElementById('res-score').innerText = `${score} / 10`;
+            document.getElementById('res-accuracy').innerText = `${Math.round((score / 10) * 100)}%`;
+        }
+
+        function restartGame() {
+            startGame();
+        }
+
+        // 支援 Enter 鍵送出
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const gameActive = document.getElementById('game-screen').classList.contains('active');
+                if (gameActive) {
+                    checkAnswer();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
