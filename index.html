@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高中英文不規則動詞闖關特訓與測驗系統</title>
+    <title>高中英文單字與動詞特訓測驗系統</title>
     <style>
         :root {
             --bg-color: #FBF8F5;
@@ -46,17 +46,17 @@
         }
 
         h1 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             text-align: center;
             color: var(--text-main);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .subtitle {
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-light);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .screen {
@@ -67,16 +67,41 @@
             display: block;
         }
 
-        /* 歡迎畫面 */
+        /* 歡迎與選擇畫面 */
         .welcome-box {
             text-align: center;
-            padding: 20px 0;
+            padding: 10px 0;
         }
 
         .welcome-box p {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             color: var(--text-light);
-            line-height: 1.6;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .category-select {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .category-select label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .category-select select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 2px solid var(--accent);
+            border-radius: 10px;
+            background: var(--bg-color);
+            color: var(--text-main);
+            outline: none;
         }
 
         .btn {
@@ -101,8 +126,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            font-size: 0.95rem;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
             color: var(--text-light);
             background: var(--bg-color);
             padding: 10px 16px;
@@ -111,14 +136,15 @@
 
         .card-prompt {
             text-align: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .card-prompt .base-word {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: bold;
             color: var(--text-main);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
+            word-break: break-all;
         }
 
         .card-prompt .chinese {
@@ -127,20 +153,20 @@
         }
 
         .input-group {
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .input-group label {
             display: block;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-light);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .input-group input {
             width: 100%;
-            padding: 12px 16px;
-            font-size: 1.1rem;
+            padding: 10px 14px;
+            font-size: 1.05rem;
             border: 2px solid var(--accent);
             border-radius: 10px;
             outline: none;
@@ -157,8 +183,8 @@
             text-align: center;
             font-weight: bold;
             min-height: 24px;
-            margin-bottom: 16px;
-            font-size: 0.95rem;
+            margin-bottom: 14px;
+            font-size: 0.9rem;
         }
 
         .feedback.correct { color: var(--success); }
@@ -173,16 +199,16 @@
         .result-stats {
             background: var(--bg-color);
             border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
+            padding: 16px;
+            margin: 16px 0;
             text-align: left;
         }
 
         .stat-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 1rem;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
         }
 
         .stat-item:last-child {
@@ -197,7 +223,7 @@
         .screenshot-hint {
             font-size: 0.85rem;
             color: var(--text-light);
-            margin-top: 16px;
+            margin-top: 14px;
         }
     </style>
 </head>
@@ -206,10 +232,18 @@
     <div class="container">
         <!-- 歡迎畫面 -->
         <div id="start-screen" class="screen active">
-            <h1>高中英文不規則動詞闖關特訓</h1>
-            <div class="subtitle">DL English 專屬測驗系統</div>
+            <h1>高中英文單字與動詞特訓系統</h1>
+            <div class="subtitle">DL English 多元學習平台</div>
             <div class="welcome-box">
-                <p>準備好接受挑戰了嗎？系統將隨機抽考國高中核心不規則動詞。<br>完成後請將成績單截圖傳給老師！</p>
+                <div class="category-select">
+                    <label for="category-select">請選擇練習單元：</label>
+                    <select id="category-select">
+                        <option value="irregular">不規則動詞三態特訓</option>
+                        <option value="vocab7000">高中 7000 核心單字精選</option>
+                        <option value="collocations">高級搭配詞與慣用語</option>
+                    </select>
+                </div>
+                <p>系統將隨機抽考 10 道題目。完成後請將成績單截圖傳給老師！</p>
                 <button class="btn" onclick="startGame()">開始挑戰</button>
             </div>
         </div>
@@ -226,14 +260,21 @@
                 <div class="chinese" id="chinese-meaning">吃</div>
             </div>
 
-            <div class="input-group">
-                <label for="past-input">請輸入「過去式 (Past)」：</label>
-                <input type="text" id="past-input" placeholder="例如: ate" autocomplete="off" autocapitalize="none">
+            <div id="single-input-area" class="input-group" style="display:none;">
+                <label for="single-input" id="single-label">請輸入中文意思或英文拼寫：</label>
+                <input type="text" id="single-input" placeholder="請輸入答案" autocomplete="off" autocapitalize="none">
             </div>
 
-            <div class="input-group">
-                <label for="pp-input">請輸入「過去分詞 (Past Participle)」：</label>
-                <input type="text" id="pp-input" placeholder="例如: eaten" autocomplete="off" autocapitalize="none">
+            <div id="double-input-area">
+                <div class="input-group">
+                    <label for="past-input">請輸入「過去式 (Past)」：</label>
+                    <input type="text" id="past-input" placeholder="例如: ate" autocomplete="off" autocapitalize="none">
+                </div>
+
+                <div class="input-group">
+                    <label for="pp-input">請輸入「過去分詞 (Past Participle)」：</label>
+                    <input type="text" id="pp-input" placeholder="例如: eaten" autocomplete="off" autocapitalize="none">
+                </div>
             </div>
 
             <div class="feedback" id="feedback-msg"></div>
@@ -244,9 +285,13 @@
         <!-- 結算畫面 (截圖區) -->
         <div id="result-screen" class="screen">
             <h1>🎉 挑戰完成！</h1>
-            <div class="subtitle">太棒了，你已完成不規則動詞特訓！</div>
+            <div class="subtitle" id="result-category-title">單元特訓結束</div>
             
             <div class="result-stats">
+                <div class="stat-item">
+                    <span>測驗單元：</span>
+                    <span class="stat-value" id="res-category">不規則動詞三態</span>
+                </div>
                 <div class="stat-item">
                     <span>總花費時間：</span>
                     <span class="stat-value" id="res-time">0 秒</span>
@@ -261,73 +306,79 @@
                 </div>
             </div>
 
-            <button class="btn" onclick="restartGame()">再玩一次</button>
+            <button class="btn" onclick="backToHome()">返回首頁</button>
             <div class="screenshot-hint">📸 請將此畫面截圖並傳給老師登記成績！</div>
         </div>
     </div>
 
     <script>
-        const verbsData = [
-            { base: "be", past: "was / were", pp: "been", cn: "是" },
-            { base: "begin", past: "began", pp: "begun", cn: "開始" },
-            { base: "break", past: "broke", pp: "broken", cn: "打破" },
-            { base: "bring", past: "brought", pp: "brought", cn: "帶來" },
-            { base: "buy", past: "bought", pp: "bought", cn: "買" },
-            { base: "catch", past: "caught", pp: "caught", cn: "抓住" },
-            { base: "come", past: "came", pp: "come", cn: "來" },
-            { base: "do", past: "did", pp: "done", cn: "做" },
-            { base: "draw", past: "drew", pp: "drawn", cn: "畫" },
-            { base: "drink", past: "drank", pp: "drunk", cn: "喝" },
-            { base: "drive", past: "drove", pp: "driven", cn: "開車" },
-            { base: "eat", past: "ate", pp: "eaten", cn: "吃" },
-            { base: "fall", past: "fell", pp: "fallen", cn: "落下" },
-            { base: "find", past: "found", pp: "found", cn: "找到" },
-            { base: "fly", past: "flew", pp: "flown", cn: "飛" },
-            { base: "forget", past: "forgot", pp: "forgotten", cn: "忘記" },
-            { base: "get", past: "got", pp: "got / gotten", cn: "得到" },
-            { base: "give", past: "gave", pp: "given", cn: "給" },
-            { base: "go", past: "went", pp: "gone", cn: "去" },
-            { base: "grow", past: "grew", pp: "grown", cn: "成長" },
-            { base: "have", past: "had", pp: "had", cn: "有" },
-            { base: "hear", past: "heard", pp: "heard", cn: "聽見" },
-            { base: "hit", past: "hit", pp: "hit", cn: "打" },
-            { base: "hold", past: "held", pp: "held", cn: "舉辦/握住" },
-            { base: "keep", past: "kept", pp: "kept", cn: "保持" },
-            { base: "know", past: "knew", pp: "known", cn: "知道" },
-            { base: "leave", past: "left", pp: "left", cn: "離開" },
-            { base: "let", past: "let", pp: "let", cn: "讓" },
-            { base: "lose", past: "lost", pp: "lost", cn: "失去" },
-            { base: "make", past: "made", pp: "made", cn: "製作" },
-            { base: "meet", past: "met", pp: "met", cn: "見面" },
-            { base: "put", past: "put", pp: "put", cn: "放" },
-            { base: "read", past: "read", pp: "read", cn: "讀" },
-            { base: "ride", past: "rode", pp: "ridden", cn: "騎" },
-            { base: "ring", past: "rang", pp: "rung", cn: "鈴響" },
-            { base: "run", past: "ran", pp: "run", cn: "跑" },
-            { base: "say", past: "said", pp: "said", cn: "說" },
-            { base: "see", past: "saw", pp: "seen", cn: "看見" },
-            { base: "sell", past: "sold", pp: "sold", cn: "賣" },
-            { base: "send", past: "sent", pp: "sent", cn: "寄送" },
-            { base: "show", past: "showed", pp: "shown", cn: "展示" },
-            { base: "sing", past: "sang", pp: "sung", cn: "唱歌" },
-            { base: "sit", past: "sat", pp: "sat", cn: "坐" },
-            { base: "sleep", past: "slept", pp: "slept", cn: "睡覺" },
-            { base: "speak", past: "spoke", pp: "spoken", cn: "說話" },
-            { base: "spend", past: "spent", pp: "spent", cn: "花費" },
-            { base: "stand", past: "stood", pp: "stood", cn: "站" },
-            { base: "swim", past: "swam", pp: "swum", cn: "游泳" },
-            { base: "take", past: "took", pp: "taken", cn: "拿取" },
-            { base: "teach", past: "taught", pp: "taught", cn: "教" },
-            { base: "tell", past: "told", pp: "told", cn: "告訴" },
-            { base: "think", past: "thought", pp: "thought", cn: "想" },
-            { base: "throw", past: "threw", pp: "thrown", cn: "投擲" },
-            { base: "understand", past: "understood", pp: "understood", cn: "理解" },
-            { base: "wake", past: "woke", pp: "woken", cn: "醒來" },
-            { base: "wear", past: "wore", pp: "worn", cn: "穿戴" },
-            { base: "win", past: "won", pp: "won", cn: "贏" },
-            { base: "write", past: "wrote", pp: "written", cn: "寫" }
-        ];
+        // 資料庫：包含不規則動詞、高中 7000 單、搭配詞
+        const db = {
+            irregular: [
+                { base: "be", past: "was / were", pp: "been", cn: "是", type: "double" },
+                { base: "begin", past: "began", pp: "begun", cn: "開始", type: "double" },
+                { base: "break", past: "broke", pp: "broken", cn: "打破", type: "double" },
+                { base: "bring", past: "brought", pp: "brought", cn: "帶來", type: "double" },
+                { base: "buy", past: "bought", pp: "bought", cn: "買", type: "double" },
+                { base: "catch", past: "caught", pp: "caught", cn: "抓住", type: "double" },
+                { base: "come", past: "came", pp: "come", cn: "來", type: "double" },
+                { base: "do", past: "did", pp: "done", cn: "做", type: "double" },
+                { base: "eat", past: "ate", pp: "eaten", cn: "吃", type: "double" },
+                { base: "find", past: "found", pp: "found", cn: "找到", type: "double" },
+                { base: "fly", past: "flew", pp: "flown", cn: "飛", type: "double" },
+                { base: "forget", past: "forgot", pp: "forgotten", cn: "忘記", type: "double" },
+                { base: "give", past: "gave", pp: "given", cn: "給", type: "double" },
+                { base: "go", past: "went", pp: "gone", cn: "去", type: "double" },
+                { base: "have", past: "had", pp: "had", cn: "有", type: "double" },
+                { base: "hear", past: "heard", pp: "heard", cn: "聽見", type: "double" },
+                { base: "know", past: "knew", pp: "known", cn: "知道", type: "double" },
+                { base: "leave", past: "left", pp: "left", cn: "離開", type: "double" },
+                { base: "make", past: "made", pp: "made", cn: "製作", type: "double" },
+                { base: "put", past: "put", pp: "put", cn: "放", type: "double" },
+                { base: "run", past: "ran", pp: "run", cn: "跑", type: "double" },
+                { base: "see", past: "saw", pp: "seen", cn: "看見", type: "double" },
+                { base: "sit", past: "sat", pp: "sat", cn: "坐", type: "double" },
+                { base: "speak", past: "spoke", pp: "spoken", cn: "說話", type: "double" },
+                { base: "take", past: "took", pp: "taken", cn: "拿取", type: "double" },
+                { base: "write", past: "wrote", pp: "written", cn: "寫", type: "double" }
+            ],
+            vocab7000: [
+                { word: "abandon", cn: "放棄；拋棄", type: "single" },
+                { word: "abolish", cn: "廢除（法律、習俗等）", type: "single" },
+                { word: "abrupt", cn: "突然的；粗魯的", type: "single" },
+                { word: "absent", cn: "缺席的；心不在焉的", type: "single" },
+                { word: "absolute", cn: "絕對的；完全的", type: "single" },
+                { word: "absorb", cn: "吸收；理解；吸引", type: "single" },
+                { word: "abstract", cn: "抽象的", type: "single" },
+                { word: "absurd", cn: "荒謬的；不合理的", type: "single" },
+                { word: "abundance", cn: "豐富；充裕", type: "single" },
+                { word: "academy", cn: "學院；高等專科學校", type: "single" },
+                { word: "accelerate", cn: "加速；促進", type: "single" },
+                { word: "accessible", cn: "易接近的；可取得的", type: "single" },
+                { word: "accommodate", cn: "容納；為...提供住宿", type: "single" },
+                { word: "accompany", cn: "陪伴；伴隨", type: "single" },
+                { word: "accomplish", cn: "完成；實現", type: "single" },
+                { word: "accumulate", cn: "累積；積聚", type: "single" },
+                { word: "accustomed", cn: "習慣於...", type: "single" },
+                { word: "accurate", cn: "準確的；精確的", type: "single" }
+            ],
+            collocations: [
+                { phrase: "keep sb company", cn: "陪伴某人", type: "single" },
+                { phrase: "lose one's footing", cn: "失足；跌倒", type: "single" },
+                { phrase: "find employment", cn: "找到工作", type: "single" },
+                { phrase: "make an effort", cn: "做出努力", type: "single" },
+                { phrase: "pay attention to", cn: "注意；留心", type: "single" },
+                { phrase: "take into account", cn: "把...考慮在內", type: "single" },
+                { phrase: "catch sight of", cn: "瞥見；看見", type: "single" },
+                { phrase: "make a decision", cn: "做決定", type: "single" },
+                { phrase: "play a role in", cn: "在...中扮演角色", type: "single" },
+                { phrase: "under the weather", cn: "身體不適；心情不好", type: "single" },
+                { phrase: "take for granted", cn: "視為理所當然", type: "single" },
+                { phrase: "by accident", cn: "偶然；意外地", type: "single" }
+            ]
+        };
 
+        let currentCategory = 'irregular';
         let currentQuestions = [];
         let currentIndex = 0;
         let score = 0;
@@ -337,7 +388,12 @@
         let isAnswering = false;
 
         function startGame() {
-            currentQuestions = [...verbsData].sort(() => 0.5 - Math.random()).slice(0, 10);
+            const selectEl = document.getElementById('category-select');
+            currentCategory = selectEl.value;
+            
+            let rawData = db[currentCategory];
+            currentQuestions = [...rawData].sort(() => 0.5 - Math.random()).slice(0, 10);
+            
             currentIndex = 0;
             score = 0;
             elapsedSeconds = 0;
@@ -363,16 +419,38 @@
             isAnswering = false;
             const q = currentQuestions[currentIndex];
             document.getElementById('progress-text').innerText = `進度：${currentIndex + 1} / 10`;
-            document.getElementById('base-word').innerText = q.base;
-            document.getElementById('chinese-meaning').innerText = q.cn;
             
+            const singleArea = document.getElementById('single-input-area');
+            const doubleArea = document.getElementById('double-input-area');
+            const singleInput = document.getElementById('single-input');
             const pastInput = document.getElementById('past-input');
             const ppInput = document.getElementById('pp-input');
+
+            singleInput.value = '';
             pastInput.value = '';
             ppInput.value = '';
+            singleInput.disabled = false;
             pastInput.disabled = false;
             ppInput.disabled = false;
-            pastInput.focus();
+
+            if (q.type === 'double') {
+                // 不規則動詞模式（輸入過去式與過去分詞）
+                singleArea.style.display = 'none';
+                doubleArea.style.display = 'block';
+                document.getElementById('base-word').innerText = q.base;
+                document.getElementById('chinese-meaning').innerText = q.cn;
+                pastInput.focus();
+            } else {
+                // 7000單或搭配詞模式（看中文拼英文，或看英文寫中文）
+                singleArea.style.display = 'block';
+                doubleArea.style.display = 'none';
+                
+                const promptText = q.word || q.phrase;
+                document.getElementById('base-word').innerText = promptText;
+                document.getElementById('chinese-meaning').innerText = q.cn;
+                document.getElementById('single-label').innerText = "請輸入上方單字/片語的英文拼寫：";
+                singleInput.focus();
+            }
 
             document.getElementById('feedback-msg').innerText = '';
             document.getElementById('feedback-msg').className = 'feedback';
@@ -391,34 +469,54 @@
             }
 
             const q = currentQuestions[currentIndex];
-            const userPast = document.getElementById('past-input').value.trim().toLowerCase();
-            const userPp = document.getElementById('pp-input').value.trim().toLowerCase();
+            let isCorrect = false;
+            const msgEl = document.getElementById('feedback-msg');
 
-            if (!userPast || !userPp) {
-                alert('請完整填寫過去式與過去分詞！');
-                return;
+            if (q.type === 'double') {
+                const userPast = document.getElementById('past-input').value.trim().toLowerCase();
+                const userPp = document.getElementById('pp-input').value.trim().toLowerCase();
+
+                if (!userPast || !userPp) {
+                    alert('請完整填寫過去式與過去分詞！');
+                    return;
+                }
+
+                const correctPastOptions = q.past.toLowerCase().split('/').map(s => s.trim());
+                const correctPpOptions = q.pp.toLowerCase().split('/').map(s => s.trim());
+
+                const isPastCorrect = correctPastOptions.includes(userPast);
+                const isPpCorrect = correctPpOptions.includes(userPp);
+
+                document.getElementById('past-input').disabled = true;
+                document.getElementById('pp-input').disabled = true;
+
+                if (isPastCorrect && isPpCorrect) {
+                    isCorrect = true;
+                } else {
+                    msgEl.innerText = `❌ 正確答案：過去式 [ ${q.past} ]，過去分詞 [ ${q.pp} ]`;
+                }
+            } else {
+                const userVal = document.getElementById('single-input').value.trim().toLowerCase();
+                if (!userVal) {
+                    alert('請輸入答案！');
+                    return;
+                }
+
+                const targetVal = (q.word || q.phrase).toLowerCase();
+                document.getElementById('single-input').disabled = true;
+
+                if (userVal === targetVal) {
+                    isCorrect = true;
+                } else {
+                    msgEl.innerText = `❌ 正確答案是：${q.word || q.phrase}`;
+                }
             }
 
-            // 支援多種正確寫法比對
-            const correctPastOptions = q.past.toLowerCase().split('/').map(s => s.trim());
-            const correctPpOptions = q.pp.toLowerCase().split('/').map(s => s.trim());
-
-            const isPastCorrect = correctPastOptions.includes(userPast);
-            const isPpCorrect = correctPpOptions.includes(userPp);
-
-            const msgEl = document.getElementById('feedback-msg');
-            const pastInput = document.getElementById('past-input');
-            const ppInput = document.getElementById('pp-input');
-
-            pastInput.disabled = true;
-            ppInput.disabled = true;
-
-            if (isPastCorrect && isPpCorrect) {
+            if (isCorrect) {
                 score++;
                 msgEl.innerText = '✨ 答對了！太棒了！';
                 msgEl.className = 'feedback correct';
             } else {
-                msgEl.innerText = `❌ 正確答案是：過去式 [ ${q.past} ]，過去分詞 [ ${q.pp} ]`;
                 msgEl.className = 'feedback error';
             }
 
@@ -431,13 +529,22 @@
             document.getElementById('game-screen').classList.remove('active');
             document.getElementById('result-screen').classList.add('active');
 
+            const categoryNames = {
+                irregular: "不規則動詞三態特訓",
+                vocab7000: "高中 7000 核心單字",
+                collocations: "高級搭配詞與慣用語"
+            };
+
+            document.getElementById('res-category').innerText = categoryNames[currentCategory];
+            document.getElementById('result-category-title').innerText = `${categoryNames[currentCategory]} 結算`;
             document.getElementById('res-time').innerText = `${elapsedSeconds} 秒`;
             document.getElementById('res-score').innerText = `${score} / 10`;
             document.getElementById('res-accuracy').innerText = `${Math.round((score / 10) * 100)}%`;
         }
 
-        function restartGame() {
-            startGame();
+        function backToHome() {
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('start-screen').classList.add('active');
         }
 
         // 支援 Enter 鍵送出
