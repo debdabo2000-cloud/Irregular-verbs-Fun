@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DL's 文法時空冒險 - 康軒七年級第三課特訓</title>
+    <title>DL's 文法時空冒險 - 康軒七年級第四課特訓</title>
     <style>
         :root {
             --primary-pink: #FFB5B5;
@@ -160,7 +160,7 @@
     <div class="mascot-box">
         <div class="mascot-img">🐕</div>
         <div class="dialogue" id="mascot-text">
-            汪！我是法鬥 Cookie！準備好跟我一起挑戰康軒七年級第三課的方位介系詞與祈使句了嗎？
+            汪！我是法鬥 Cookie！準備好跟我一起挑戰康軒第四課的 can 助動詞與 and / but 連接詞了嗎？
         </div>
     </div>
 
@@ -176,7 +176,7 @@
     </div>
 
     <div id="result-screen" class="hidden" style="text-align: center; padding: 20px;">
-        <h2>🎉 恭喜完成第三課特訓！</h2>
+        <h2>🎉 恭喜完成第四課特訓！</h2>
         <p id="final-score" style="font-size: 1.2rem; margin: 20px 0;"></p>
         <div style="font-size: 3rem; margin: 15px;">🏆✨</div>
         <button class="next-btn" style="display: block;" onclick="restartGame()">再玩一次 🔄</button>
@@ -184,43 +184,43 @@
 </div>
 
 <script>
-    // 嚴選康軒七年級第三課代表性題目（方位介系詞、代名詞、祈使句）
+    // 嚴選康軒七年級第四課代表性題目（can 助動詞、and / but 連接詞）
     const questions = [
         {
-            q: "Lily's bag is on her book. So (所以), her book is ______ her bag.",
-            options: ["(A) behind", "(B) on", "(C) in", "(D) under"],
-            answer: 3, // (D) under
-            exp: "詳解：包包在書的上面，所以書在包包的「下方 (under)」。"
+            q: "Ken: ______ you sing and dance at the same time?\nJane: No, I ______. It's too hard for me.",
+            options: ["(A) Can; can", "(B) Can; can't", "(C) Can't; can", "(D) Cannot; can"],
+            answer: 1, // (B) Can; can't
+            exp: "詳解：問句用 Can 開頭詢問能力；後面回答 No, I can't 表示否定。"
         },
         {
-            q: "My bedroom is ______ the kitchen. It's in the back (後面) of the house.",
-            options: ["(A) behind", "(B) in front of", "(C) under", "(D) next"],
-            answer: 0, // (A) behind
-            exp: "詳解：我的房間在廚房的「後方 (behind)」。"
+            q: "The math homework is too hard (困難的). I ______ do it.",
+            options: ["(A) can", "(B) isn't", "(C) can't", "(D) am"],
+            answer: 2, // (C) can't
+            exp: "詳解：數學作業太難了，所以「我不會做」，用否定助動詞 can't。"
         },
         {
-            q: "Please don't ______ sad. Let's ______ some games.",
-            options: ["(A) let's; play", "(B) X; play", "(C) be; to play", "(D) be; play"],
-            answer: 3, // (D) be; play
-            exp: "詳解：否定祈使句用「Don't + be + 形容詞」；Let's 後面接原形動詞 play。"
+            q: "I can't ride a bike (騎腳踏車), but I ______ walk to school.",
+            options: ["(A) can't", "(B) have", "(C) can", "(D) cannot"],
+            answer: 2, // (C) can
+            exp: "詳解：but 連接前後語氣相反的句子，前面用 can't，後面要用 can 表會走路上學。"
         },
         {
-            q: "A: Where is your daughter?\nB: She's ______ my son and the door.",
-            options: ["(A) between", "(B) next", "(C) behind", "(D) at"],
-            answer: 0, // (A) between
-            exp: "詳解：在兩者「之間」用介系詞 between (通常搭配 between A and B)。"
+            q: "Ed: Look! The dogs are eating chocolate (巧克力).\nAl: Hey! Don't ______ that. Dogs ______ eat chocolate.",
+            options: ["(A) do; can", "(B) eat; can", "(C) do; can't", "(D) eat; can't"],
+            answer: 3, // (D) eat; can't
+            exp: "詳解：Don't 後面接原形動詞 do；後半句說明狗狗「不能」吃巧克力，用 can't。"
         },
         {
-            q: "Girls, please ______ good. Don't run around in the library.",
-            options: ["(A) let's", "(B) be", "(C) let", "(D) do"],
-            answer: 1, // (B) be
-            exp: "詳解：good 是形容詞，前面搭配 be 動詞構成祈使句 (Be good!)。"
+            q: "My brother can cook, ______ I can't.",
+            options: ["(A) and", "(B) but", "(C) so", "(D) or"],
+            answer: 1, // (B) but
+            exp: "詳解：哥哥會煮飯，但我不會，前後語氣轉折，用對等連接詞 but。"
         },
         {
-            q: "The park is ______ a movie theater and a school. You can see it.",
-            options: ["(A) under", "(B) in", "(C) between", "(D) beside"],
-            answer: 2, // (C) between
-            exp: "詳解：公園在電影院和學校「之間」，用 between... and..."
+            q: "Sara: Can I play cards in the living room?\nDad: Yes, ______. But don't be too loud (大聲的).",
+            options: ["(A) I can", "(B) we can't", "(C) you can", "(D) you can't"],
+            answer: 2, // (C) you can
+            exp: "詳解：以 Can I... 徵求許可時，肯定簡答為 Yes, you can。"
         }
     ];
 
@@ -265,7 +265,7 @@
         document.getElementById('explanation-box').style.display = 'none';
         document.getElementById('next-btn').style.display = 'none';
         
-        document.getElementById('mascot-text').innerText = "汪！思考一下，這個文法跟方位該怎麼選呢？";
+        document.getElementById('mascot-text').innerText = "汪！思考一下，這個 can 或連接詞該怎麼選呢？";
         startTimer();
     }
 
@@ -329,7 +329,7 @@
             document.getElementById('quiz-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
             document.getElementById('final-score').innerText = `你答對了 ${score} / ${questions.length} 題！總共獲得 ${ingots} 個金元寶與獎勵金幣！`;
-            document.getElementById('mascot-text').innerText = "汪！第三課特訓圓滿達成！你真是個文法小達人！";
+            document.getElementById('mascot-text').innerText = "汪！第四課特訓圓滿達成！你真是個文法小達人！";
         }
     }
 
