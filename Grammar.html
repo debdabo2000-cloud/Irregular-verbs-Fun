@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DL's 文法時空冒險 - 康軒七年級第三課特訓</title>
+    <style>
+        :root {
+            --primary-pink: #FFB5B5;
+            --mint-green: #B4E197;
+            --cream-yellow: #FFFBE9;
+            --soft-brown: #795548;
+            --dark-text: #4E342E;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cream-yellow);
+            color: var(--dark-text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .game-container {
+            background: white;
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 4px solid var(--primary-pink);
+            box-sizing: border-box;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed var(--primary-pink);
+            padding-bottom: 10px;
+        }
+        .stats {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #d84315;
+        }
+        .mascot-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #fff8e1;
+            padding: 12px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #ffecb3;
+        }
+        .mascot-img {
+            font-size: 2.5rem;
+        }
+        .dialogue {
+            font-size: 0.95rem;
+            color: #5d4037;
+            line-height: 1.4;
+        }
+        .timer-bar-container {
+            width: 100%;
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .timer-bar {
+            width: 100%;
+            height: 100%;
+            background: var(--mint-green);
+            transition: width 1s linear;
+        }
+        .question-box {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            background: #fdfefe;
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 5px solid var(--mint-green);
+        }
+        .options-grid {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .option-btn {
+            background: #f9fbe7;
+            border: 2px solid #dcedc8;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            color: var(--dark-text);
+            font-weight: 600;
+        }
+        .option-btn:hover {
+            background: var(--mint-green);
+            border-color: #8bc34a;
+            transform: translateY(-2px);
+        }
+        .option-btn.correct {
+            background: #c8e6c9 !important;
+            border-color: #4caf50 !important;
+            color: #1b5e20;
+        }
+        .option-btn.wrong {
+            background: #ffcdd2 !important;
+            border-color: #f44336 !important;
+            color: #b71c1c;
+        }
+        .explanation {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #2196f3;
+            display: none;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        .next-btn {
+            background: #ff8a65;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background 0.2s;
+            display: none;
+        }
+        .next-btn:hover {
+            background: #f4511e;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div class="header">
+        <h2>🐶 DL's 文法時空冒險</h2>
+        <div class="stats">金幣: <span id="coins">0</span> 🏆 <span id="ingots">0</span></div>
+    </div>
+
+    <div class="mascot-box">
+        <div class="mascot-img">🐕</div>
+        <div class="dialogue" id="mascot-text">
+            汪！我是法鬥 Cookie！準備好跟我一起挑戰康軒七年級第三課的方位介系詞與祈使句了嗎？
+        </div>
+    </div>
+
+    <div id="quiz-screen">
+        <div class="timer-bar-container">
+            <div class="timer-bar" id="timer-bar"></div>
+        </div>
+        <div id="question-number" style="font-size: 0.9rem; color: #8d6e63; margin-bottom: 5px;"></div>
+        <div class="question-box" id="question-text">載入中...</div>
+        <div class="options-grid" id="options-container"></div>
+        <div class="explanation" id="explanation-box"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">下一題 🚀</button>
+    </div>
+
+    <div id="result-screen" class="hidden" style="text-align: center; padding: 20px;">
+        <h2>🎉 恭喜完成第三課特訓！</h2>
+        <p id="final-score" style="font-size: 1.2rem; margin: 20px 0;"></p>
+        <div style="font-size: 3rem; margin: 15px;">🏆✨</div>
+        <button class="next-btn" style="display: block;" onclick="restartGame()">再玩一次 🔄</button>
+    </div>
+</div>
+
+<script>
+    // 嚴選康軒七年級第三課代表性題目（方位介系詞、代名詞、祈使句）
+    const questions = [
+        {
+            q: "Lily's bag is on her book. So (所以), her book is ______ her bag.",
+            options: ["(A) behind", "(B) on", "(C) in", "(D) under"],
+            answer: 3, // (D) under
+            exp: "詳解：包包在書的上面，所以書在包包的「下方 (under)」。"
+        },
+        {
+            q: "My bedroom is ______ the kitchen. It's in the back (後面) of the house.",
+            options: ["(A) behind", "(B) in front of", "(C) under", "(D) next"],
+            answer: 0, // (A) behind
+            exp: "詳解：我的房間在廚房的「後方 (behind)」。"
+        },
+        {
+            q: "Please don't ______ sad. Let's ______ some games.",
+            options: ["(A) let's; play", "(B) X; play", "(C) be; to play", "(D) be; play"],
+            answer: 3, // (D) be; play
+            exp: "詳解：否定祈使句用「Don't + be + 形容詞」；Let's 後面接原形動詞 play。"
+        },
+        {
+            q: "A: Where is your daughter?\nB: She's ______ my son and the door.",
+            options: ["(A) between", "(B) next", "(C) behind", "(D) at"],
+            answer: 0, // (A) between
+            exp: "詳解：在兩者「之間」用介系詞 between (通常搭配 between A and B)。"
+        },
+        {
+            q: "Girls, please ______ good. Don't run around in the library.",
+            options: ["(A) let's", "(B) be", "(C) let", "(D) do"],
+            answer: 1, // (B) be
+            exp: "詳解：good 是形容詞，前面搭配 be 動詞構成祈使句 (Be good!)。"
+        },
+        {
+            q: "The park is ______ a movie theater and a school. You can see it.",
+            options: ["(A) under", "(B) in", "(C) between", "(D) beside"],
+            answer: 2, // (C) between
+            exp: "詳解：公園在電影院和學校「之間」，用 between... and..."
+        }
+    ];
+
+    let currentIdx = 0;
+    let score = 0;
+    let coins = 0;
+    let ingots = 0;
+    let timeLeft = 20;
+    let timer;
+
+    function startQuiz() {
+        currentIdx = 0;
+        score = 0;
+        coins = 0;
+        ingots = 0;
+        updateStats();
+        document.getElementById('result-screen').classList.add('hidden');
+        document.getElementById('quiz-screen').classList.remove('hidden');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        clearInterval(timer);
+        timeLeft = 20;
+        document.getElementById('timer-bar').style.width = '100%';
+        
+        const qData = questions[currentIdx];
+        document.getElementById('question-number').innerText = `第 ${currentIdx + 1} 題 / 共 ${questions.length} 題`;
+        document.getElementById('question-text').innerText = qData.q;
+        
+        const optContainer = document.getElementById('options-container');
+        optContainer.innerHTML = '';
+        
+        qData.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => selectOption(idx);
+            optContainer.appendChild(btn);
+        });
+
+        document.getElementById('explanation-box').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+        
+        document.getElementById('mascot-text').innerText = "汪！思考一下，這個文法跟方位該怎麼選呢？";
+        startTimer();
+    }
+
+    function startTimer() {
+        const timerBar = document.getElementById('timer-bar');
+        timer = setInterval(() => {
+            timeLeft--;
+            timerBar.style.width = (timeLeft / 20 * 100) + '%';
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                selectOption(-1); // 時間到算答錯
+            }
+        }, 1000);
+    }
+
+    function selectOption(selectedIdx) {
+        clearInterval(timer);
+        const qData = questions[currentIdx];
+        const buttons = document.querySelectorAll('.option-btn');
+        
+        buttons.forEach((btn, idx) => {
+            btn.onclick = null; // 鎖定按鈕
+            if (idx === qData.answer) {
+                btn.classList.add('correct');
+            } else if (idx === selectedIdx) {
+                btn.classList.add('wrong');
+            }
+        });
+
+        const expBox = document.getElementById('explanation-box');
+        expBox.style.display = 'block';
+
+        if (selectedIdx === qData.answer) {
+            score++;
+            coins += 20;
+            if (coins >= 100) {
+                coins -= 100;
+                ingots++;
+            }
+            updateStats();
+            expBox.innerHTML = `<strong>✨ 答對了！太棒汪！</strong><br>${qData.exp}`;
+            document.getElementById('mascot-text').innerText = "太厲害啦！Cookie 尾巴搖個不停！獲得 20 金幣！";
+        } else {
+            expBox.innerHTML = `<strong>💡 沒關係，我們學起來！</strong><br>${qData.exp}`;
+            document.getElementById('mascot-text').innerText = "別氣餒！看一看解析，下次一定會答對的汪～";
+        }
+
+        document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function updateStats() {
+        document.getElementById('coins').innerText = coins;
+        document.getElementById('ingots').innerText = ingots;
+    }
+
+    function nextQuestion() {
+        currentIdx++;
+        if (currentIdx < questions.length) {
+            loadQuestion();
+        } else {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = `你答對了 ${score} / ${questions.length} 題！總共獲得 ${ingots} 個金元寶與獎勵金幣！`;
+            document.getElementById('mascot-text').innerText = "汪！第三課特訓圓滿達成！你真是個文法小達人！";
+        }
+    }
+
+    function restartGame() {
+        startQuiz();
+    }
+
+    // 初始化啟動
+    startQuiz();
+</script>
+
+</body>
+</html>
