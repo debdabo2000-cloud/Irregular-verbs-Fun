@@ -362,10 +362,11 @@
                         <option value="lt3">龍騰版 高中第三冊 (L7-L9)</option>
                         <option value="irregular">不規則動詞三態特訓</option>
                         <option value="cap1200">國中會考 1200 核心單字</option>
+                        <option value="vocab7000">高中 7000 核心單字</option>
                     </select>
 
-                    <label for="sub-select" id="sub-label" style="margin-top: 12px;">📖 第二層：請選擇具體範圍：</label>
-                    <select id="sub-select">
+                    <label for="sub-label" id="sub-label-text" style="margin-top: 12px; display: block; font-size: 0.9rem; color: var(--text-main); font-weight: bold;">📖 第二層：請選擇具體範圍：</label>
+                    <select id="sub-select" style="width: 100%; padding: 12px; font-size: 1rem; border: 2px solid var(--primary); border-radius: 12px; background: white; color: var(--text-main); outline: none; margin-top: 6px;">
                         <!-- 動態載入 -->
                     </select>
                 </div>
@@ -454,4 +455,78 @@
     </div>
 
     <script>
-        
+        let totalCoins = parseInt(localStorage.getItem('dl_english_coins')) || 0;
+        updateCoinDisplay();
+
+        function updateCoinDisplay() {
+            document.getElementById('total-coins').innerText = `🪙 ${totalCoins} 枚金幣`;
+            localStorage.setItem('dl_english_coins', totalCoins);
+        }
+
+        const db = {
+            // ---------------- 康軒第五冊 ----------------
+            kx5_u1: [
+                { word: "subject", cn: "學科" }, { word: "history", cn: "歷史" }, { word: "topic", cn: "主題" },
+                { word: "hairdryer", cn: "吹風機（＝ hair dryer）" }, { word: "century", cn: "世紀" },
+                { word: "potato", cn: "馬鈴薯（複數 potatoes）" }, { word: "stick", cn: "枝條" }, { word: "soldier", cn: "士兵；軍人" },
+                { word: "language", cn: "語言" }, { word: "chocolate", cn: "巧克力" }, { word: "bunny", cn: "小兔子" },
+                { word: "candy", cn: "糖果" }, { word: "pumpkin", cn: "南瓜" }, { word: "Christmas Eve", cn: "聖誕節前夕；平安夜" },
+                { word: "inch", cn: "英寸" }, { word: "king", cn: "國王；王者" }, { word: "freeze", cn: "凍結；結冰" },
+                { word: "celebrate", cn: "慶祝" }, { word: "fry", cn: "油炸；油煎" }, { word: "bake", cn: "烘烤" },
+                { word: "wave", cn: "揮（手）" }, { word: "American", cn: "美國的；美國人" }, { word: "main", cn: "主要的" },
+                { word: "national", cn: "國家的；國立的" }, { word: "thick", cn: "粗的；厚的" }, { word: "yet", cn: "還（沒）；尚（未）" },
+                { word: "since", cn: "自從……以來" }, { word: "nobody", cn: "沒有人" }
+            ],
+            kx5_u2: [
+                { word: "delivery", cn: "運送" }, { word: "age", cn: "年齡" }, { word: "chart", cn: "圖表" },
+                { word: "page", cn: "頁；網頁" }, { word: "reason", cn: "原因" }, { word: "discount", cn: "折扣" },
+                { word: "driver", cn: "駕駛；司機" }, { word: "uniform", cn: "制服" }, { word: "couch", cn: "沙發" },
+                { word: "interest", cn: "興趣；使……感興趣" }, { word: "chance", cn: "機會" }, { word: "list", cn: "清單" },
+                { word: "location", cn: "位置" }, { word: "button", cn: "按鈕；鈕扣" }, { word: "offer", cn: "提供" },
+                { word: "tip", cn: "給……小費；小費" }, { word: "mind", cn: "介意" }, { word: "tap", cn: "輕觸" },
+                { word: "interested", cn: "感興趣的" }, { word: "helpful", cn: "有用的" }, { word: "tired", cn: "疲勞的" },
+                { word: "excited", cn: "感到興奮的" }, { word: "boring", cn: "無聊的；無趣的" }, { word: "bored", cn: "感到厭煩的" },
+                { word: "tiring", cn: "令人疲倦的" }, { word: "surprising", cn: "令人驚訝的" }, { word: "surprised", cn: "感到驚訝的" },
+                { word: "among", cn: "在……之中" }, { word: "at least", cn: "至少" }
+            ],
+            kx5_u3: [
+                { word: "childhood", cn: "童年" }, { word: "relative", cn: "親戚" }, { word: "company", cn: "公司" },
+                { word: "lawyer", cn: "律師" }, { word: "engineer", cn: "工程師" }, { word: "president", cn: "總統" },
+                { word: "model", cn: "模特兒；模範" }, { word: "present", cn: "禮物；呈現" }, { word: "spider", cn: "蜘蛛" },
+                { word: "comic", cn: "漫畫" }, { word: "form", cn: "形成" }, { word: "expect", cn: "期待；預計" },
+                { word: "picture", cn: "想像" }, { word: "understand", cn: "了解" }, { word: "hope", cn: "希望" },
+                { word: "allow", cn: "允許" }, { word: "public", cn: "公共的；大眾的" }, { word: "equal", cn: "平等的" },
+                { word: "hard-working", cn: "勤勉的" }, { word: "lovely", cn: "可愛的；漂亮的" }, { word: "born", cn: "出生的；誕生的" },
+                { word: "pretty", cn: "漂亮的" }, { word: "brave", cn: "勇敢的" }, { word: "stupid", cn: "愚蠢的；笨的" },
+                { word: "honest", cn: "誠實的" }, { word: "mad", cn: "惱火的" }, { word: "everywhere", cn: "到處" },
+                { word: "totally", cn: "完全地" }, { word: "such as", cn: "例如" }, { word: "be filled with", cn: "充滿" },
+                { word: "laugh at", cn: "嘲笑" }
+            ],
+            kx5_u4: [
+                { word: "dictionary", cn: "字典" }, { word: "case", cn: "實例" }, { word: "pleasure", cn: "樂趣；榮幸" },
+                { word: "notebook", cn: "筆記型電腦" }, { word: "e-mail", cn: "電子郵件" }, { word: "lip", cn: "嘴唇" },
+                { word: "idiom", cn: "慣用語" }, { word: "butterfly", cn: "蝴蝶" }, { word: "interview", cn: "面試；採訪" },
+                { word: "hen", cn: "母雞" }, { word: "salesman", cn: "銷售員" }, { word: "bat", cn: "蝙蝠" },
+                { word: "glasses", cn: "眼鏡" }, { word: "bee", cn: "蜜蜂" }, { word: "farm", cn: "農場" },
+                { word: "trouble", cn: "麻煩" }, { word: "pain", cn: "疼痛；痛苦" }, { word: "create", cn: "創造" },
+                { word: "combine", cn: "結合；合併" }, { word: "define", cn: "定義" }, { word: "lie", cn: "說謊" },
+                { word: "pray", cn: "祈禱" }, { word: "blind", cn: "瞎的；盲的" }, { word: "dead", cn: "死的" },
+                { word: "whether", cn: "是否" }, { word: "by accident", cn: "意外地" }
+            ],
+            kx5_u5: [
+                { word: "lollipop", cn: "棒棒糖" }, { word: "pink", cn: "粉紅色（的）" }, { word: "purple", cn: "紫色（的）" },
+                { word: "center", cn: "中心；中央" }, { word: "boss", cn: "老闆" }, { word: "rise", cn: "上漲；升高" },
+                { word: "success", cn: "成功" }, { word: "mark", cn: "目標；標記" }, { word: "grown-up", cn: "大人；成年人" },
+                { word: "leader", cn: "領導者" }, { word: "dentist", cn: "牙醫" }, { word: "knowledge", cn: "知識" },
+                { word: "club", cn: "社團" }, { word: "popcorn", cn: "爆米花" }, { word: "school fair", cn: "園遊會" },
+                { word: "repeat", cn: "重複；複誦" }, { word: "fail", cn: "失敗；不及格" }, { word: "fulfill", cn: "執行；實踐" },
+                { word: "pop", cn: "爆開" }, { word: "foreign", cn: "外國的" }, { word: "natural", cn: "天然的" },
+                { word: "married", cn: "已婚的" }, { word: "simple", cn: "單純的；簡單的" }, { word: "belong to", cn: "屬於" },
+                { word: "deal with", cn: "處理" }, { word: "have a sweet tooth", cn: "愛吃甜食" }
+            ],
+            kx5_u6: [
+                { word: "cent", cn: "分（金錢單位）" }, { word: "pound", cn: "磅" }, { word: "peach", cn: "桃子" },
+                { word: "pear", cn: "梨子" }, { word: "lemon", cn: "檸檬" }, { word: "tomato", cn: "番茄" },
+                { word: "pin", cn: "大頭針；別針" }, { word: "superglue", cn: "三秒膠" }, { word: "paste", cn: "漿糊；黏貼" },
+                { word: "jump rope", cn: "跳繩" }, { word: "marker", cn: "麥克筆" }, { word: "paint", cn: "顏料；油漆；畫" },
+                { word: "total", cn: "總數（的）" }, { word: "product",
