@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DL English 萌寵英文單字特訓站</title>
+    <title>DL's 單字搶救大作戰</title>
     <style>
         :root {
             --bg-color: #FFF9F5;
@@ -60,9 +60,16 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: bold;
             color: var(--text-main);
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .coin-badges {
+            display: flex;
+            gap: 8px;
         }
 
         .coin-badge {
@@ -70,7 +77,15 @@
             background: #FEF3C7;
             padding: 4px 10px;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+        }
+
+        .ingot-badge {
+            color: #B45309;
+            background: #FDE68A;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
         }
 
         h1 {
@@ -214,6 +229,14 @@
             border: 1px solid #FCE1E4;
         }
 
+        .timer-badge {
+            color: #C0392B;
+            font-weight: bold;
+            background: #FADBD8;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+
         .card-prompt {
             text-align: center;
             margin-bottom: 20px;
@@ -340,22 +363,26 @@
 <body>
 
     <div class="container">
-        <!-- 總積分橫幅 -->
+        <!-- 總積分與金元寶存摺 -->
         <div class="wallet-banner">
             <span>🐾 萌寵金庫存摺</span>
-            <span class="coin-badge" id="total-coins">🪙 0 枚金幣</span>
+            <div class="coin-badges">
+                <span class="coin-badge" id="total-coins">🪙 0 枚金幣</span>
+                <span class="ingot-badge" id="total-ingots">🟡 0 個金元寶</span>
+            </div>
         </div>
 
         <!-- 歡迎畫面 -->
         <div id="start-screen" class="screen active">
-            <h1>🐾 DL English 萌寵單字特訓站 🐶</h1>
-            <div class="subtitle">✨ 多版本版本與課次自由切換 ✨</div>
+            <h1>🐾 DL's 單字搶救大作戰 🐶</h1>
+            <div class="subtitle">✨ 多版本教材與章節自由切換 ✨</div>
             <div class="welcome-box">
                 <div class="category-select">
-                    <label for="main-select">🎯 第一層：請選擇教材大類：</label>
+                    <label for="main-select">🎯 戰鬥選擇：</label>
                     <select id="main-select">
-                        <option value="kx5">康軒版 第五冊</option>
+                        <option value="kx1">康軒版 第一冊</option>
                         <option value="kx3">康軒版 第三冊</option>
+                        <option value="kx5">康軒版 第五冊</option>
                         <option value="hl3">翰林版 第三冊</option>
                         <option value="hl5">翰林版 第五冊</option>
                         <option value="nn5">南一版 第五冊</option>
@@ -365,18 +392,13 @@
                         <option value="vocab7000">高中 7000 核心單字</option>
                     </select>
 
-                    <label for="sub-select" id="sub-label" style="margin-top: 12px; display: block; font-size: 0.9rem; color: var(--text-main); font-weight: bold;">📖 第二層：請選擇具體範圍：</label>
+                    <label for="sub-select" id="sub-label" style="margin-top: 12px; display: block; font-size: 0.9rem; color: var(--text-main); font-weight: bold;">📖 章節選擇：</label>
                     <select id="sub-select">
-                        <option value="kx5_u1">Lesson 1</option>
-                        <option value="kx5_u2">Lesson 2</option>
-                        <option value="kx5_u3">Lesson 3</option>
-                        <option value="kx5_u4">Lesson 4</option>
-                        <option value="kx5_u5">Lesson 5</option>
-                        <option value="kx5_u6">Lesson 6</option>
+                        <!-- 動態生成 -->
                     </select>
                 </div>
-                <p>每關完全隨機亂數抽考 10 道題。<br>支援語音朗讀、智慧提示與錯題複習！</p>
-                <button class="btn" onclick="startGame()">🚀 開始可愛大挑戰</button>
+                <p>每關隨機抽考 10 道題（每題限時 20 秒）。<br>支援語音朗讀、智慧提示與錯題複習！</p>
+                <button class="btn" onclick="startGame()">🚀 開始單字大作戰</button>
             </div>
         </div>
 
@@ -384,7 +406,7 @@
         <div id="game-screen" class="screen">
             <div class="game-header">
                 <span id="progress-text">進度：1 / 10</span>
-                <span id="timer-text">⏱️ 0 秒</span>
+                <span class="timer-badge" id="timer-text">⏱️ 20 秒</span>
             </div>
 
             <div class="card-prompt">
@@ -427,16 +449,12 @@
             
             <div class="result-stats">
                 <div class="stat-item">
-                    <span>測驗單元：</span>
-                    <span class="stat-value" id="res-category">康軒第五冊 Lesson 1</span>
+                    <span>測驗章節：</span>
+                    <span class="stat-value" id="res-category">康軒第一冊 Lesson 1</span>
                 </div>
                 <div class="stat-item">
                     <span>本次獲得金幣：</span>
                     <span class="stat-value" id="res-coins" style="color: #D97706;">+0 枚 🪙</span>
-                </div>
-                <div class="stat-item">
-                    <span>總花費時間：</span>
-                    <span class="stat-value" id="res-time">0 秒</span>
                 </div>
                 <div class="stat-item">
                     <span>答對題數：</span>
@@ -464,11 +482,96 @@
         updateCoinDisplay();
 
         function updateCoinDisplay() {
+            let ingots = Math.floor(totalCoins / 100);
             document.getElementById('total-coins').innerText = `🪙 ${totalCoins} 枚金幣`;
+            document.getElementById('total-ingots').innerText = `🟡 ${ingots} 個金元寶`;
             localStorage.setItem('dl_english_coins', totalCoins);
         }
 
+        const chaptersData = {
+            kx1: [
+                { id: 'kx1_u1', name: 'Lesson 1' }, { id: 'kx1_u2', name: 'Lesson 2' },
+                { id: 'kx1_u3', name: 'Lesson 3' }, { id: 'kx1_u4', name: 'Lesson 4' },
+                { id: 'kx1_u5', name: 'Lesson 5' }, { id: 'kx1_u6', name: 'Lesson 6' }
+            ],
+            kx3: [
+                { id: 'kx3_u1', name: 'Lesson 1' }, { id: 'kx3_u2', name: 'Lesson 2' },
+                { id: 'kx3_u3', name: 'Lesson 3' }, { id: 'kx3_u4', name: 'Lesson 4' },
+                { id: 'kx3_u5', name: 'Lesson 5' }, { id: 'kx3_u6', name: 'Lesson 6' }
+            ],
+            kx5: [
+                { id: 'kx5_u1', name: 'Lesson 1' }, { id: 'kx5_u2', name: 'Lesson 2' },
+                { id: 'kx5_u3', name: 'Lesson 3' }, { id: 'kx5_u4', name: 'Lesson 4' },
+                { id: 'kx5_u5', name: 'Lesson 5' }, { id: 'kx5_u6', name: 'Lesson 6' }
+            ],
+            hl3: [
+                { id: 'hl3_u1', name: 'Lesson 1' }, { id: 'hl3_u2', name: 'Lesson 2' },
+                { id: 'hl3_u3', name: 'Lesson 3' }, { id: 'hl3_u4', name: 'Lesson 4' },
+                { id: 'hl3_u5', name: 'Lesson 5' }, { id: 'hl3_u6', name: 'Lesson 6' }
+            ],
+            hl5: [
+                { id: 'hl5_u1', name: 'Lesson 1' }, { id: 'hl5_u2', name: 'Lesson 2' },
+                { id: 'hl5_u3', name: 'Lesson 3' }, { id: 'hl5_u4', name: 'Lesson 4' },
+                { id: 'hl5_u5', name: 'Lesson 5' }, { id: 'hl5_u6', name: 'Lesson 6' }
+            ],
+            nn5: [
+                { id: 'nn5_l1', name: 'Lesson 1' }, { id: 'nn5_l2', name: 'Lesson 2' },
+                { id: 'nn5_l3', name: 'Lesson 3' }, { id: 'nn5_l4', name: 'Lesson 4' },
+                { id: 'nn5_l5', name: 'Lesson 5' }
+            ],
+            lt3: [
+                { id: 'lt3_l79', name: 'L7 - L9 特訓' }
+            ],
+            irregular: [
+                { id: 'irregular', name: '不規則動詞三態總特訓' }
+            ],
+            cap1200: [
+                { id: 'cap1200', name: '會考核心單字總覽' }
+            ],
+            vocab7000: [
+                { id: 'vocab7000', name: '高中 7000 單' }
+            ]
+        };
+
         const db = {
+            // 康軒第一冊
+            kx1_u1: [
+                { word: "pencil", cn: "鉛筆" }, { word: "eraser", cn: "橡皮擦" }, { word: "ruler", cn: "尺" },
+                { word: "pen", cn: "原子筆" }, { word: "book", cn: "書本" }, { word: "desk", cn: "書桌" },
+                { word: "chair", cn: "椅子" }, { word: "bag", cn: "書包" }, { word: "notebook", cn: "筆記本" },
+                { word: "pencil case", cn: "鉛筆盒" }, { word: "marker", cn: "麥克筆" }, { word: "glue", cn: "膠水" }
+            ],
+            kx1_u2: [
+                { word: "apple", cn: "蘋果" }, { word: "banana", cn: "香蕉" }, { word: "orange", cn: "橘子" },
+                { word: "milk", cn: "牛奶" }, { word: "water", cn: "水" }, { word: "tea", cn: "茶" },
+                { word: "juice", cn: "果汁" }, { word: "bread", cn: "麵包" }, { word: "rice", cn: "米飯" },
+                { word: "egg", cn: "雞蛋" }, { word: "meat", cn: "肉" }, { word: "fish", cn: "魚肉" }
+            ],
+            kx1_u3: [
+                { word: "dog", cn: "狗" }, { word: "cat", cn: "貓" }, { word: "bird", cn: "鳥" },
+                { word: "rabbit", cn: "兔子" }, { word: "turtle", cn: "烏龜" }, { word: "fish", cn: "魚" },
+                { word: "mouse", cn: "老鼠" }, { word: "monkey", cn: "猴子" }, { word: "elephant", cn: "大象" },
+                { word: "tiger", cn: "老虎" }, { word: "lion", cn: "獅子" }, { word: "bear", cn: "熊" }
+            ],
+            kx1_u4: [
+                { word: "happy", cn: "快樂的" }, { word: "sad", cn: "傷心的" }, { word: "angry", cn: "生氣的" },
+                { word: "tired", cn: "疲倦的" }, { word: "hungry", cn: "飢餓的" }, { word: "thirsty", cn: "口渴的" },
+                { word: "busy", cn: "忙碌的" }, { word: "free", cn: "有空的" }, { word: "sick", cn: "生病的" },
+                { word: "fine", cn: "很好的" }, { word: "good", cn: "好的" }, { word: "great", cn: "很棒的" }
+            ],
+            kx1_u5: [
+                { word: "mother", cn: "母親" }, { word: "father", cn: "父親" }, { word: "brother", cn: "兄弟" },
+                { word: "sister", cn: "姊妹" }, { word: "grandmother", cn: "祖母" }, { word: "grandfather", cn: "祖父" },
+                { word: "family", cn: "家庭" }, { word: "friend", cn: "朋友" }, { word: "teacher", cn: "老師" },
+                { word: "student", cn: "學生" }, { word: "doctor", cn: "醫生" }, { word: "nurse", cn: "護理師" }
+            ],
+            kx1_u6: [
+                { word: "one", cn: "一" }, { word: "two", cn: "二" }, { word: "three", cn: "三" },
+                { word: "four", cn: "四" }, { word: "five", cn: "五" }, { word: "six", cn: "六" },
+                { word: "seven", cn: "七" }, { word: "eight", cn: "八" }, { word: "nine", cn: "九" },
+                { word: "ten", cn: "十" }, { word: "eleven", cn: "十一" }, { word: "twelve", cn: "十二" }
+            ],
+
             // ---------------- 康軒第五冊 ----------------
             kx5_u1: [
                 { word: "subject", cn: "學科" }, { word: "history", cn: "歷史" }, { word: "topic", cn: "主題" },
@@ -887,16 +990,34 @@
             ]
         };
 
-        let currentCategory = 'kx5_u1';
+        let currentCategory = 'kx1_u1';
         let currentQuestions = [];
         let wrongQuestions = [];
         let currentIndex = 0;
         let score = 0;
         let earnedCoins = 0;
-        let startTime = 0;
-        let timerInterval = null;
-        let elapsedSeconds = 0;
+        let questionTimer = null;
+        let timeLeft = 20;
         let isAnswering = false;
+
+        // 動態連動第一層與第二層選單
+        const mainSelect = document.getElementById('main-select');
+        const subSelect = document.getElementById('sub-select');
+
+        function updateSubSelect() {
+            const val = mainSelect.value;
+            const chapters = chaptersData[val] || [];
+            subSelect.innerHTML = '';
+            chapters.forEach(ch => {
+                let opt = document.createElement('option');
+                opt.value = ch.id;
+                opt.innerText = ch.name;
+                subSelect.appendChild(opt);
+            });
+        }
+
+        mainSelect.addEventListener('change', updateSubSelect);
+        updateSubSelect(); // 初始化
 
         function shuffleArray(array) {
             let arr = [...array];
@@ -908,10 +1029,8 @@
         }
 
         function startGame() {
-            const subSelect = document.getElementById('sub-select');
             currentCategory = subSelect.value;
-            
-            let rawData = db[currentCategory];
+            let rawData = db[currentCategory] || db['kx1_u1'];
             let shuffled = shuffleArray(rawData);
             currentQuestions = shuffled.slice(0, 10);
             wrongQuestions = [];
@@ -919,23 +1038,48 @@
             currentIndex = 0;
             score = 0;
             earnedCoins = 0;
-            elapsedSeconds = 0;
             
             document.getElementById('start-screen').classList.remove('active');
             document.getElementById('result-screen').classList.remove('active');
             document.getElementById('game-screen').classList.add('active');
 
-            startTimer();
             loadQuestion();
         }
 
-        function startTimer() {
-            clearInterval(timerInterval);
-            startTime = Date.now();
-            timerInterval = setInterval(() => {
-                elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-                document.getElementById('timer-text').innerText = `⏱️ ${elapsedSeconds} 秒`;
+        function startQuestionTimer() {
+            clearInterval(questionTimer);
+            timeLeft = 20;
+            document.getElementById('timer-text').innerText = `⏱️ ${timeLeft} 秒`;
+
+            questionTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-text').innerText = `⏱️ ${timeLeft} 秒`;
+                if (timeLeft <= 0) {
+                    clearInterval(questionTimer);
+                    handleTimeOut();
+                }
             }, 1000);
+        }
+
+        function handleTimeOut() {
+            if (isAnswering) return;
+            const q = currentQuestions[currentIndex];
+            const msgEl = document.getElementById('feedback-msg');
+            
+            wrongQuestions.push(q);
+            msgEl.innerText = `⏳ 時間到！正確答案是：${q.type === 'double' ? q.base + ' / ' + q.past + ' / ' + q.pp : q.word}`;
+            msgEl.className = 'feedback error';
+
+            if (q.type === 'double') {
+                document.getElementById('past-input').disabled = true;
+                document.getElementById('pp-input').disabled = true;
+            } else {
+                document.getElementById('single-input').disabled = true;
+            }
+
+            speakCurrentWord();
+            isAnswering = true;
+            document.getElementById('submit-btn').innerText = (currentIndex < currentQuestions.length - 1) ? '下一題 ➔' : '查看結算成績 ➔';
         }
 
         function loadQuestion() {
@@ -976,6 +1120,8 @@
             document.getElementById('feedback-msg').innerText = '';
             document.getElementById('feedback-msg').className = 'feedback';
             document.getElementById('submit-btn').innerText = '送出答案 ➔';
+
+            startQuestionTimer();
         }
 
         function showHintBox() {
@@ -1008,8 +1154,6 @@
                 utterance.lang = 'en-US';
                 utterance.rate = 0.9;
                 window.speechSynthesis.speak(utterance);
-            } else {
-                alert('您的瀏覽器不支援語音功能');
             }
         }
 
@@ -1024,6 +1168,7 @@
                 return;
             }
 
+            clearInterval(questionTimer);
             const q = currentQuestions[currentIndex];
             const msgEl = document.getElementById('feedback-msg');
             let isCorrect = false;
@@ -1034,6 +1179,7 @@
 
                 if (!userPast || !userPp) {
                     alert('請完整填寫過去式與過去分詞！');
+                    startQuestionTimer();
                     return;
                 }
 
@@ -1055,6 +1201,7 @@
                 const userVal = document.getElementById('single-input').value.trim().toLowerCase();
                 if (!userVal) {
                     alert('請輸入答案！');
+                    startQuestionTimer();
                     return;
                 }
 
@@ -1087,31 +1234,13 @@
         }
 
         function endGame() {
-            clearInterval(timerInterval);
+            clearInterval(questionTimer);
             document.getElementById('game-screen').classList.remove('active');
             document.getElementById('result-screen').classList.add('active');
 
-            const categoryNames = {
-                kx5_u1: "康軒第五冊 Lesson 1", kx5_u2: "康軒第五冊 Lesson 2", kx5_u3: "康軒第五冊 Lesson 3",
-                kx5_u4: "康軒第五冊 Lesson 4", kx5_u5: "康軒第五冊 Lesson 5", kx5_u6: "康軒第五冊 Lesson 6",
-                kx3_u1: "康軒第三冊 Lesson 1", kx3_u2: "康軒第三冊 Lesson 2", kx3_u3: "康軒第三冊 Lesson 3",
-                kx3_u4: "康軒第三冊 Lesson 4", kx3_u5: "康軒第三冊 Lesson 5", kx3_u6: "康軒第三冊 Lesson 6",
-                hl3_u1: "翰林第三冊 Lesson 1", hl3_u2: "翰林第三冊 Lesson 2", hl3_u3: "翰林第三冊 Lesson 3",
-                hl3_u4: "翰林第三冊 Lesson 4", hl3_u5: "翰林第三冊 Lesson 5", hl3_u6: "翰林第三冊 Lesson 6",
-                hl5_u1: "翰林第五冊 Lesson 1", hl5_u2: "翰林第五冊 Lesson 2", hl5_u3: "翰林第五冊 Lesson 3",
-                hl5_u4: "翰林第五冊 Lesson 4", hl5_u5: "翰林第五冊 Lesson 5", hl5_u6: "翰林第五冊 Lesson 6",
-                nn5_l1: "南一第五冊 Lesson 1", nn5_l2: "南一第五冊 Lesson 2", nn5_l3: "南一第五冊 Lesson 3",
-                nn5_l4: "南一第五冊 Lesson 4", nn5_l5: "南一第五冊 Lesson 5",
-                lt3_l79: "龍騰高中第三冊 L7-L9",
-                irregular: "不規則動詞三態特訓",
-                cap1200: "國中會考 1200 單",
-                vocab7000: "高中 7000 單"
-            };
-
-            document.getElementById('res-category').innerText = categoryNames[currentCategory] || "單字特訓";
-            document.getElementById('result-category-title').innerText = `${categoryNames[currentCategory] || "單字特訓"} 結算`;
+            document.getElementById('res-category').innerText = subSelect.options[subSelect.selectedIndex].text;
+            document.getElementById('result-category-title').innerText = `${subSelect.options[subSelect.selectedIndex].text} 結算`;
             document.getElementById('res-coins').innerText = `+${earnedCoins} 枚 🪙`;
-            document.getElementById('res-time').innerText = `${elapsedSeconds} 秒`;
             document.getElementById('res-score').innerText = `${score} / 10`;
             document.getElementById('res-accuracy').innerText = `${Math.round((score / 10) * 100)}%`;
 
