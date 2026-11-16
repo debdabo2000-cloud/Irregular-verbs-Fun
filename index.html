@@ -74,7 +74,7 @@
         }
 
         h1 {
-            font-size: 1.35rem;
+            font-size: 1.3rem;
             text-align: center;
             color: var(--text-main);
             margin-bottom: 6px;
@@ -348,18 +348,17 @@
         <!-- 歡迎畫面 -->
         <div id="start-screen" class="screen active">
             <h1>🐾 DL English 萌寵單字特訓站 🐶</h1>
-            <div class="subtitle">✨ 隨機抽考 ＋ 語音朗讀 ＋ 智慧提示 ✨</div>
+            <div class="subtitle">✨ 康軒版國中英語第一冊第三課專屬特訓 ✨</div>
             <div class="welcome-box">
                 <div class="category-select">
-                    <label for="category-select">🎯 請選擇今日挑戰單元：</label>
+                    <label for="category-select">🎯 請選擇練習範圍：</label>
                     <select id="category-select">
+                        <option value="kangxuan_u3">康軒版第一冊第三課 (全單字與片語)</option>
                         <option value="irregular">不規則動詞三態特訓</option>
-                        <option value="cap1200">國中會考 1200 核心單字拼寫</option>
                         <option value="vocab7000">高中 7000 核心單字拼寫</option>
-                        <option value="collocations">高級搭配詞與慣用語拼寫</option>
                     </select>
                 </div>
-                <p>每關完全隨機亂數抽考 10 道題。<br>卡住時可使用「💡 看提示」或「🔊 聽發音」！</p>
+                <p>每關完全隨機亂數抽考 10 道題。<br>支援語音朗讀、智慧提示與錯題複習！</p>
                 <button class="btn" onclick="startGame()">🚀 開始可愛大挑戰</button>
             </div>
         </div>
@@ -376,26 +375,14 @@
                     <button class="audio-btn" onclick="speakCurrentWord()">🔊 聽發音</button>
                     <button class="hint-btn" onclick="showHintBox()">💡 看提示</button>
                 </div>
-                <div id="hint-text" class="hint-display">提示：首字母為 a，共 6 個字母</div>
+                <div id="hint-text" class="hint-display">提示</div>
                 <div class="chinese" id="chinese-top-label">請根據中文提示拼出英文：</div>
                 <div class="base-word" id="base-word">吃</div>
             </div>
 
-            <div id="single-input-area" class="input-group" style="display:none;">
+            <div id="single-input-area" class="input-group">
                 <label for="single-input" id="single-label">請輸入英文單字拼寫：</label>
                 <input type="text" id="single-input" placeholder="請輸入英文拼寫" autocomplete="off" autocapitalize="none">
-            </div>
-
-            <div id="double-input-area">
-                <div class="input-group">
-                    <label for="past-input">請輸入「過去式 (Past)」：</label>
-                    <input type="text" id="past-input" placeholder="例如: ate" autocomplete="off" autocapitalize="none">
-                </div>
-
-                <div class="input-group">
-                    <label for="pp-input">請輸入「過去分詞 (Past Participle)」：</label>
-                    <input type="text" id="pp-input" placeholder="例如: eaten" autocomplete="off" autocapitalize="none">
-                </div>
             </div>
 
             <div class="feedback" id="feedback-msg"></div>
@@ -411,7 +398,7 @@
             <div class="result-stats">
                 <div class="stat-item">
                     <span>測驗單元：</span>
-                    <span class="stat-value" id="res-category">不規則動詞三態</span>
+                    <span class="stat-value" id="res-category">康軒第一冊第三課</span>
                 </div>
                 <div class="stat-item">
                     <span>本次獲得金幣：</span>
@@ -452,103 +439,86 @@
         }
 
         const db = {
-            irregular: [
-                { base: "be", past: "was / were", pp: "been", cn: "是", type: "double" },
-                { base: "begin", past: "began", pp: "begun", cn: "開始", type: "double" },
-                { base: "break", past: "broke", pp: "broken", cn: "打破", type: "double" },
-                { base: "bring", past: "brought", pp: "brought", cn: "帶來", type: "double" },
-                { base: "buy", past: "bought", pp: "bought", cn: "買", type: "double" },
-                { base: "catch", past: "caught", pp: "caught", cn: "抓住", type: "double" },
-                { base: "come", past: "came", pp: "come", cn: "來", type: "double" },
-                { base: "do", past: "did", pp: "done", cn: "做", type: "double" },
-                { base: "eat", past: "ate", pp: "eaten", cn: "吃", type: "double" },
-                { base: "find", past: "found", pp: "found", cn: "找到", type: "double" },
-                { base: "fly", past: "flew", pp: "flown", cn: "飛", type: "double" },
-                { base: "forget", past: "forgot", pp: "forgotten", cn: "忘記", type: "double" },
-                { base: "give", past: "gave", pp: "given", cn: "給", type: "double" },
-                { base: "go", past: "went", pp: "gone", cn: "去", type: "double" },
-                { base: "have", past: "had", pp: "had", cn: "有", type: "double" },
-                { base: "hear", past: "heard", pp: "heard", cn: "聽見", type: "double" },
-                { base: "know", past: "knew", pp: "known", cn: "知道", type: "double" },
-                { base: "leave", past: "left", pp: "left", cn: "離開", type: "double" },
-                { base: "make", past: "made", pp: "made", cn: "製作", type: "double" },
-                { base: "put", past: "put", pp: "put", cn: "放", type: "double" },
-                { base: "run", past: "ran", pp: "run", cn: "跑", type: "double" },
-                { base: "see", past: "saw", pp: "seen", cn: "看見", type: "double" },
-                { base: "sit", past: "sat", pp: "sat", cn: "坐", type: "double" },
-                { base: "speak", past: "spoke", pp: "spoken", cn: "說話", type: "double" },
-                { base: "take", past: "took", pp: "taken", cn: "拿取", type: "double" },
-                { base: "write", past: "wrote", pp: "written", cn: "寫", type: "double" }
+            kangxuan_u3: [
+                { word: "bedroom", cn: "臥室", type: "single" },
+                { word: "bed", cn: "床舗", type: "single" },
+                { word: "room", cn: "房間", type: "single" },
+                { word: "bathroom", cn: "浴室", type: "single" },
+                { word: "living room", cn: "客廳", type: "single" },
+                { word: "dining room", cn: "飯廳", type: "single" },
+                { word: "roommate", cn: "室友", type: "single" },
+                { word: "stair", cn: "樓梯", type: "single" },
+                { word: "cellphone", cn: "手機", type: "single" },
+                { word: "place", cn: "地方", type: "single" },
+                { word: "sofa", cn: "沙發", type: "single" },
+                { word: "house", cn: "房子", type: "single" },
+                { word: "lake", cn: "湖", type: "single" },
+                { word: "castle", cn: "城堡", type: "single" },
+                { word: "blanket", cn: "毛毯", type: "single" },
+                { word: "world", cn: "世界", type: "single" },
+                { word: "newspaper", cn: "報紙", type: "single" },
+                { word: "magic", cn: "魔法", type: "single" },
+                { word: "TV", cn: "電視 (television)", type: "single" },
+                { word: "picture", cn: "照片；圖片", type: "single" },
+                { word: "uncle", cn: "叔叔；舅舅；伯父", type: "single" },
+                { word: "aunt", cn: "姑姑；嬸嬸；阿姨", type: "single" },
+                { word: "student", cn: "學生", type: "single" },
+                { word: "schod", cn: "學校", type: "single" },
+                { word: "girl", cn: "女孩", type: "single" },
+                { word: "year", cn: "年", type: "single" },
+                { word: "year old", cn: "歲", type: "single" },
+                { word: "am", cn: "是 (主詞為I)", type: "single" },
+                { word: "is", cn: "是 (單數)", type: "single" },
+                { word: "are", cn: "是 (複數)", type: "single" },
+                { word: "on", cn: "在···上面", type: "single" },
+                { word: "in", cn: "在···裡面", type: "single" },
+                { word: "under", cn: "在···下面", type: "single" },
+                { word: "at", cn: "在···地方／場合", type: "single" },
+                { word: "behind", cn: "在···後面", type: "single" },
+                { word: "in front of", cn: "在···前面", type: "single" },
+                { word: "between", cn: "在···中間", type: "single" },
+                { word: "next to", cn: "在···旁邊", type: "single" },
+                { word: "around", cn: "圍繞", type: "single" },
+                { word: "outside", cn: "在···外面", type: "single" },
+                { word: "where", cn: "哪裡", type: "single" },
+                { word: "who", cn: "誰", type: "single" },
+                { word: "what", cn: "什麽", type: "single" },
+                { word: "how", cn: "如何", type: "single" },
+                { word: "soft", cn: "柔軟的", type: "single" },
+                { word: "hard", cn: "硬的", type: "single" },
+                { word: "magic", cn: "魔法的", type: "single" },
+                { word: "different", cn: "不同的", type: "single" },
+                { word: "small", cn: "小的", type: "single" },
+                { word: "big", cn: "大的", type: "single" },
+                { word: "old", cn: "舊的", type: "single" },
+                { word: "nine-year-old", cn: "九歲的", type: "single" },
+                { word: "later", cn: "稍後", type: "single" },
+                { word: "or", cn: "或者", type: "single" },
+                { word: "and", cn: "和", type: "single" },
+                { word: "but", cn: "但是", type: "single" },
+                { word: "this", cn: "這（一個）", type: "single" },
+                { word: "that", cn: "那（一個）", type: "single" },
+                { word: "these", cn: "這些", type: "single" },
+                { word: "those", cn: "那些", type: "single" },
+                { word: "in fact", cn: "事實上", type: "single" },
+                { word: "around the world", cn: "在世界各地", type: "single" },
+                { word: "look at", cn: "看", type: "single" }
             ],
-            cap1200: [
-                { word: "accept", cn: "接受", type: "single" },
-                { word: "active", cn: "活躍的；積極的", type: "single" },
-                { word: "activity", cn: "活動", type: "single" },
-                { word: "ad", cn: "廣告 (advertisement)", type: "single" },
-                { word: "advice", cn: "勸告；建議", type: "single" },
-                { word: "affect", cn: "影響", type: "single" },
-                { word: "afraid", cn: "害怕的", type: "single" },
-                { word: "agree", cn: "同意", type: "single" },
-                { word: "allow", cn: "允許", type: "single" },
-                { word: "almost", cn: "幾乎", type: "single" },
-                { word: "alone", cn: "單獨的；獨自地", type: "single" },
-                { word: "aloud", cn: "出聲地", type: "single" },
-                { word: "already", cn: "已經", type: "single" },
-                { word: "although", cn: "雖然；儘管", type: "single" },
-                { word: "always", cn: "總是", type: "single" },
-                { word: "among", cn: "在...之中", type: "single" },
-                { word: "ancient", cn: "古代的", type: "single" },
-                { word: "angry", cn: "生氣的", type: "single" },
-                { word: "another", cn: "另一個", type: "single" },
-                { word: "answer", cn: "回答", type: "single" },
-                { word: "anybody", cn: "任何人", type: "single" },
-                { word: "anything", cn: "任何事物", type: "single" },
-                { word: "appear", cn: "出現", type: "single" },
-                { word: "area", cn: "地區；面積", type: "single" },
-                { word: "arrive", cn: "到達", type: "single" },
-                { word: "as", cn: "如同；當...時", type: "single" },
-                { word: "ask", cn: "問；要求", type: "single" },
-                { word: "asleep", cn: "睡著的", type: "single" },
-                { word: "attack", cn: "攻擊", type: "single" },
-                { word: "attend", cn: "參加；出席", type: "single" }
+            irregular: [
+                { word: "be", cn: "是 (原形)", type: "single" },
+                { word: "begin", cn: "開始", type: "single" },
+                { word: "break", cn: "打破", type: "single" },
+                { word: "bring", cn: "帶來", type: "single" },
+                { word: "buy", cn: "買", type: "single" }
             ],
             vocab7000: [
                 { word: "abandon", cn: "放棄；拋棄", type: "single" },
-                { word: "abolish", cn: "廢除（法律、習俗等）", type: "single" },
-                { word: "abrupt", cn: "突然的；粗魯的", type: "single" },
-                { word: "absent", cn: "缺席的；心不在焉的", type: "single" },
-                { word: "absolute", cn: "絕對的；完全的", type: "single" },
-                { word: "absorb", cn: "吸收；理解；吸引", type: "single" },
-                { word: "abstract", cn: "抽象的", type: "single" },
-                { word: "absurd", cn: "荒謬的；不合理的", type: "single" },
-                { word: "abundance", cn: "豐富；充裕", type: "single" },
-                { word: "academy", cn: "學院；高等專科學校", type: "single" },
-                { word: "accelerate", cn: "加速；促進", type: "single" },
-                { word: "accessible", cn: "易接近的；可取得的", type: "single" },
-                { word: "accommodate", cn: "容納；為...提供住宿", type: "single" },
-                { word: "accompany", cn: "陪伴；伴隨", type: "single" },
-                { word: "accomplish", cn: "完成；實現", type: "single" },
-                { word: "accumulate", cn: "累積；積聚", type: "single" },
-                { word: "accustomed", cn: "習慣於...", type: "single" },
-                { word: "accurate", cn: "準確的；精確的", type: "single" }
-            ],
-            collocations: [
-                { phrase: "keep sb company", cn: "陪伴某人", type: "single" },
-                { phrase: "lose one's footing", cn: "失足；跌倒", type: "single" },
-                { phrase: "find employment", cn: "找到工作", type: "single" },
-                { phrase: "make an effort", cn: "做出努力", type: "single" },
-                { phrase: "pay attention to", cn: "注意；留心", type: "single" },
-                { phrase: "take into account", cn: "把...考慮在內", type: "single" },
-                { phrase: "catch sight of", cn: "瞥見；看見", type: "single" },
-                { phrase: "make a decision", cn: "做決定", type: "single" },
-                { phrase: "play a role in", cn: "在...中扮演角色", type: "single" },
-                { phrase: "under the weather", cn: "身體不適；心情不好", type: "single" },
-                { phrase: "take for granted", cn: "視為理所當然", type: "single" },
-                { phrase: "by accident", cn: "偶然；意外地", type: "single" }
+                { word: "abolish", cn: "廢除", type: "single" },
+                { word: "abrupt", cn: "突然的", type: "single" }
             ]
         };
 
-        let currentCategory = 'irregular';
+        let currentCategory = 'kangxuan_u3';
         let currentQuestions = [];
         let wrongQuestions = [];
         let currentIndex = 0;
@@ -604,66 +574,36 @@
             const q = currentQuestions[currentIndex];
             document.getElementById('progress-text').innerText = `進度：${currentIndex + 1} / 10`;
             
-            const singleArea = document.getElementById('single-input-area');
-            const doubleArea = document.getElementById('double-input-area');
             const singleInput = document.getElementById('single-input');
-            const pastInput = document.getElementById('past-input');
-            const ppInput = document.getElementById('pp-input');
             const hintBox = document.getElementById('hint-text');
 
             singleInput.value = '';
-            pastInput.value = '';
-            ppInput.value = '';
             singleInput.disabled = false;
-            pastInput.disabled = false;
-            ppInput.disabled = false;
-            hintBox.style.display = 'none'; // 換題時隱藏提示
+            hintBox.style.display = 'none';
 
-            if (q.type === 'double') {
-                singleArea.style.display = 'none';
-                doubleArea.style.display = 'block';
-                document.getElementById('chinese-top-label').innerText = "🐾 請根據原形動詞與中文填寫三態：";
-                document.getElementById('base-word').innerText = `${q.base} (${q.cn})`;
-                pastInput.focus();
-            } else {
-                singleArea.style.display = 'block';
-                doubleArea.style.display = 'none';
-                
-                document.getElementById('chinese-top-label').innerText = "🐶 請根據中文提示拼出英文：";
-                document.getElementById('base-word').innerText = q.cn;
-                document.getElementById('single-label').innerText = "請輸入英文拼寫：";
-                singleInput.focus();
-            }
+            document.getElementById('chinese-top-label').innerText = "🐶 請根據中文提示拼出英文：";
+            document.getElementById('base-word').innerText = q.cn;
+            document.getElementById('single-label').innerText = "請輸入英文拼寫：";
+            singleInput.focus();
 
             document.getElementById('feedback-msg').innerText = '';
             document.getElementById('feedback-msg').className = 'feedback';
             document.getElementById('submit-btn').innerText = '送出答案 ➔';
         }
 
-        // 顯示提示
         function showHintBox() {
             const q = currentQuestions[currentIndex];
             const hintBox = document.getElementById('hint-text');
-            if (q.type === 'double') {
-                const firstLetter = q.past.charAt(0);
-                hintBox.innerText = `💡 提示：過去式首字母為 [ ${firstLetter} ... ]`;
-            } else {
-                const target = q.word || q.phrase;
-                const firstLetter = target.charAt(0);
-                const len = target.length;
-                hintBox.innerText = `💡 提示：首字母為 "${firstLetter}"，總共 ${len} 個字元`;
-            }
+            const target = q.word;
+            const firstLetter = target.charAt(0);
+            const len = target.length;
+            hintBox.innerText = `💡 提示：首字母為 "${firstLetter}"，總共 ${len} 個字元`;
             hintBox.style.display = 'block';
         }
 
         function speakCurrentWord() {
             const q = currentQuestions[currentIndex];
-            let textToSpeak = "";
-            if (q.type === 'double') {
-                textToSpeak = `${q.base}, ${q.past}, ${q.pp}`;
-            } else {
-                textToSpeak = q.word || q.phrase;
-            }
+            let textToSpeak = q.word;
 
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -688,48 +628,18 @@
             }
 
             const q = currentQuestions[currentIndex];
-            let isCorrect = false;
             const msgEl = document.getElementById('feedback-msg');
-
-            if (q.type === 'double') {
-                const userPast = document.getElementById('past-input').value.trim().toLowerCase();
-                const userPp = document.getElementById('pp-input').value.trim().toLowerCase();
-
-                if (!userPast || !userPp) {
-                    alert('請完整填寫過去式與過去分詞！');
-                    return;
-                }
-
-                const correctPastOptions = q.past.toLowerCase().split('/').map(s => s.trim());
-                const correctPpOptions = q.pp.toLowerCase().split('/').map(s => s.trim());
-
-                const isPastCorrect = correctPastOptions.includes(userPast);
-                const isPpCorrect = correctPpOptions.includes(userPp);
-
-                document.getElementById('past-input').disabled = true;
-                document.getElementById('pp-input').disabled = true;
-
-                if (isPastCorrect && isPpCorrect) {
-                    isCorrect = true;
-                } else {
-                    msgEl.innerText = `❌ 正確答案：過去式 [ ${q.past} ]，過去分詞 [ ${q.pp} ]`;
-                }
-            } else {
-                const userVal = document.getElementById('single-input').value.trim().toLowerCase();
-                if (!userVal) {
-                    alert('請輸入答案！');
-                    return;
-                }
-
-                const targetVal = (q.word || q.phrase).toLowerCase();
-                document.getElementById('single-input').disabled = true;
-
-                if (userVal === targetVal) {
-                    isCorrect = true;
-                } else {
-                    msgEl.innerText = `❌ 正確答案是：${q.word || q.phrase}`;
-                }
+            const userVal = document.getElementById('single-input').value.trim().toLowerCase();
+            
+            if (!userVal) {
+                alert('請輸入答案！');
+                return;
             }
+
+            const targetVal = q.word.toLowerCase();
+            document.getElementById('single-input').disabled = true;
+
+            let isCorrect = (userVal === targetVal);
 
             if (isCorrect) {
                 score++;
@@ -740,6 +650,7 @@
                 msgEl.className = 'feedback correct';
             } else {
                 wrongQuestions.push(q);
+                msgEl.innerText = `❌ 正確答案是：${q.word}`;
                 msgEl.className = 'feedback error';
             }
 
@@ -755,10 +666,9 @@
             document.getElementById('result-screen').classList.add('active');
 
             const categoryNames = {
+                kangxuan_u3: "康軒版第一冊第三課",
                 irregular: "不規則動詞三態特訓",
-                cap1200: "國中會考 1200 核心單字拼寫",
-                vocab7000: "高中 7000 核心單字拼寫",
-                collocations: "高級搭配詞與慣用語拼寫"
+                vocab7000: "高中 7000 核心單字拼寫"
             };
 
             document.getElementById('res-category').innerText = categoryNames[currentCategory];
@@ -777,11 +687,7 @@
                 wrongQuestions.forEach((q) => {
                     let itemDiv = document.createElement('div');
                     itemDiv.className = 'wrong-item';
-                    if (q.type === 'double') {
-                        itemDiv.innerHTML = `• <b>${q.base}</b> (${q.cn}) ➔ 過去式：${q.past}，過去分詞：${q.pp}`;
-                    } else {
-                        itemDiv.innerHTML = `• <b>${q.word || q.phrase}</b> (${q.cn})`;
-                    }
+                    itemDiv.innerHTML = `• <b>${q.word}</b> (${q.cn})`;
                     wrongItemsList.appendChild(itemDiv);
                 });
             } else {
