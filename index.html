@@ -553,7 +553,7 @@
             ]
         };
 
-        // 根據第一層大類連動更新第二層選單
+        // 更新第二層選單內容
         function updateSubCategory() {
             const mainSelect = document.getElementById('main-select').value;
             const subSelect = document.getElementById('sub-select');
@@ -577,13 +577,213 @@
             }
         }
 
-        // 確保網頁載入時第二層選單一定有內容
-        document.addEventListener("DOMContentLoaded", function() {
+        // 確保網頁一開啟就載入第二層選單
+        window.onload = function() {
             updateSubCategory();
-        });
-        setTimeout(updateSubCategory, 50);
+        };
 
         let currentCategory = 'kangxuan_u1';
         let currentQuestions = [];
         let wrongQuestions = [];
-        let currentIndex = 
+        let currentIndex = 0;
+        let score = 0;
+        let earnedCoins = 0;
+        let startTime = 0;
+        let timerInterval = null;
+        let elapsedSeconds = 0;
+        let isAnswering = false;
+
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startGame() {
+            const mainSelect = document.getElementById('main-select').value;
+            const subSelect = document.getElementById('sub-select');
+            
+            if (mainSelect === 'kangxuan') {
+                currentCategory = subSelect.value;
+            } else {
+                currentCategory = mainSelect;
+            }
+            
+            let rawData = db[currentCategory];
+            let shuffled = shuffleArray(rawData);
+            currentQuestions = shuffled.slice(0, 10);
+            wrongQuestions = [];
+            
+            currentIndex = 0;
+            score = 0;
+            earnedCoins = 0;
+            elapsedSeconds = 0;
+            
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+
+            startTimer();
+            loadQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById('timer-text').innerText = `⏱️ ${elapsedSeconds} 秒`;
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            isAnswering = false;
+            const q = currentQuestions[currentIndex];
+            document.getElementById('progress-text').innerText = `進度：${currentIndex + 1} / 10`;
+            
+            const singleInput = document.getElementById('single-input');
+            const hintBox = document.getElementById('hint-text');
+
+            singleInput.value = '';
+            singleInput.disabled = false;
+            hintBox.style.display = 'none';
+
+            document.getElementById('chinese-top-label').innerText = "🐶 請根據中文提示拼出英文：";
+            document.getElementById('base-word').innerText = q.cn;
+            document.getElementById('single-label').innerText = "請輸入英文拼寫：";
+            singleInput.focus();
+
+            document.getElementById('feedback-msg').innerText = '';
+            document.getElementById('feedback-msg').className = 'feedback';
+            document.getElementById('submit-btn').innerText = '送出答案 ➔';
+        }
+
+        function showHintBox() {
+            const q = currentQuestions[currentIndex];
+            const hintBox = document.getElementById('hint-text');
+            const target = q.word;
+            const firstLetter = target.charAt(0);
+            const len = target.length;
+            hintBox.innerText = `💡 提示：首字母為 "${firstLetter}"，總共 ${len} 個字元`;
+            hintBox.style.display = 'block';
+        }
+
+        function speakCurrentWord() {
+            const q = currentQuestions[currentIndex];
+            let textToSpeak = q.word;
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                let utterance = new SpeechSynthesisUtterance(textToSpeak);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('您的瀏覽器不支援語音功能');
+            }
+        }
+
+        function checkAnswer() {
+            if (isAnswering) {
+                currentIndex++;
+                if (currentIndex < currentQuestions.length) {
+                    loadQuestion();
+                } else {
+                    endGame();
+                }
+                return;
+            }
+
+            const q = currentQuestions[currentIndex];
+            const msgEl = document.getElementById('feedback-msg');
+            const userVal = document.getElementById('single-input').value.trim().toLowerCase();
+            
+            if (!userVal) {
+                alert('請輸入答案！');
+                return;
+            }
+
+            const targetVal = q.word.toLowerCase();
+            document.getElementById('single-input').disabled = true;
+
+            let isCorrect = (userVal === targetVal);
+
+            if (isCorrect) {
+                score++;
+                earnedCoins += 1;
+                totalCoins += 1;
+                updateCoinDisplay();
+                msgEl.innerText = '✨ 太棒了！答對囉！ (+1 金幣 🪙)';
+                msgEl.className = 'feedback correct';
+            } else {
+                wrongQuestions.push(q);
+                msgEl.innerText = `❌ 正確答案是：${q.word}`;
+                msgEl.className = 'feedback error';
+            }
+
+            speakCurrentWord();
+
+            isAnswering = true;
+            document.getElementById('submit-btn').innerText = (currentIndex < currentQuestions.length - 1) ? '下一題 ➔' : '查看結算成績 ➔';
+        }
+
+        function endGame() {
+            clearInterval(timerInterval);
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+
+            const categoryNames = {
+                kangxuan_u1: "康軒第一冊 - LESSON 1",
+                kangxuan_u2: "康軒第一冊 - LESSON 2",
+                kangxuan_u3: "康軒第一冊 - LESSON 3",
+                kangxuan_u4: "康軒第一冊 - LESSON 4",
+                kangxuan_u5: "康軒第一冊 - LESSON 5",
+                kangxuan_u6: "康軒第一冊 - LESSON 6",
+                cap1200: "會考 1200 核心單字",
+                irregular: "動詞三態特訓",
+                vocab7000: "高中 7000 單拼寫"
+            };
+
+            document.getElementById('res-category').innerText = categoryNames[currentCategory];
+            document.getElementById('result-category-title').innerText = `${categoryNames[currentCategory]} 結算`;
+            document.getElementById('res-coins').innerText = `+${earnedCoins} 枚 🪙`;
+            document.getElementById('res-time').innerText = `${elapsedSeconds} 秒`;
+            document.getElementById('res-score').innerText = `${score} / 10`;
+            document.getElementById('res-accuracy').innerText = `${Math.round((score / 10) * 100)}%`;
+
+            const wrongContainer = document.getElementById('wrong-container');
+            const wrongItemsList = document.getElementById('wrong-items-list');
+            wrongItemsList.innerHTML = '';
+
+            if (wrongQuestions.length > 0) {
+                wrongContainer.style.display = 'block';
+                wrongQuestions.forEach((q) => {
+                    let itemDiv = document.createElement('div');
+                    itemDiv.className = 'wrong-item';
+                    itemDiv.innerHTML = `• <b>${q.word}</b> (${q.cn})`;
+                    wrongItemsList.appendChild(itemDiv);
+                });
+            } else {
+                wrongContainer.style.display = 'none';
+            }
+        }
+
+        function backToHome() {
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('start-screen').classList.add('active');
+        }
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const gameActive = document.getElementById('game-screen').classList.contains('active');
+                if (gameActive) {
+                    checkAnswer();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
