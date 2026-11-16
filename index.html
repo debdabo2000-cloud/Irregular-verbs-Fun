@@ -146,6 +146,7 @@
             width: 100%;
             transition: transform 0.1s, background 0.2s;
             box-shadow: 0 4px 12px rgba(232, 168, 124, 0.4);
+            margin-top: 10px;
         }
 
         .btn:active {
@@ -154,6 +155,26 @@
 
         .btn:hover {
             background-color: var(--primary-dark);
+        }
+
+        .audio-btn {
+            background-color: #F4A261;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(244, 162, 97, 0.3);
+        }
+
+        .audio-btn:hover {
+            background-color: #E76F51;
         }
 
         .game-header {
@@ -171,7 +192,7 @@
 
         .card-prompt {
             text-align: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             background: #FFFDF9;
             padding: 20px;
             border-radius: 16px;
@@ -257,7 +278,6 @@
             color: var(--text-main);
         }
 
-        /* 錯題訂正專區樣式 */
         .wrong-list-box {
             margin-top: 15px;
             background: #FFF2F2;
@@ -305,7 +325,7 @@
         <!-- 歡迎畫面 -->
         <div id="start-screen" class="screen active">
             <h1>🐾 DL English 萌寵單字特訓站 🐶</h1>
-            <div class="subtitle">✨ 隨機抽考，錯題精準複習 ✨</div>
+            <div class="subtitle">✨ 真正隨機亂數出題 ＋ 語音朗讀 ✨</div>
             <div class="welcome-box">
                 <div class="category-select">
                     <label for="category-select">🎯 請選擇今日挑戰單元：</label>
@@ -316,7 +336,7 @@
                         <option value="collocations">高級搭配詞與慣用語拼寫</option>
                     </select>
                 </div>
-                <p>每關隨機打亂順序抽考 10 道題。<br>答對賺金幣，結算時會自動列出錯題供複習！</p>
+                <p>每關完全隨機抽考 10 道題。<br>附有真人發音朗讀與錯題複習清單！</p>
                 <button class="btn" onclick="startGame()">🚀 開始可愛大挑戰</button>
             </div>
         </div>
@@ -329,6 +349,7 @@
             </div>
 
             <div class="card-prompt">
+                <button class="audio-btn" onclick="speakCurrentWord()">🔊 聽發音</button>
                 <div class="chinese" id="chinese-top-label">請根據中文提示拼出英文：</div>
                 <div class="base-word" id="base-word">吃</div>
             </div>
@@ -389,7 +410,7 @@
                 <div id="wrong-items-list"></div>
             </div>
 
-            <button class="btn" onclick="backToHome()" style="margin-top: 16px;">🏠 返回首頁再玩一次</button>
+            <button class="btn" onclick="backToHome()">🏠 返回首頁再玩一次</button>
             <div class="screenshot-hint">📸 請將此畫面截圖並傳給老師登記成績與金幣！</div>
         </div>
     </div>
@@ -491,222 +512,4 @@
                 { phrase: "make an effort", cn: "做出努力", type: "single" },
                 { phrase: "pay attention to", cn: "注意；留心", type: "single" },
                 { phrase: "take into account", cn: "把...考慮在內", type: "single" },
-                { phrase: "catch sight of", cn: "瞥見；看見", type: "single" },
-                { phrase: "make a decision", cn: "做決定", type: "single" },
-                { phrase: "play a role in", cn: "在...中扮演角色", type: "single" },
-                { phrase: "under the weather", cn: "身體不適；心情不好", type: "single" },
-                { phrase: "take for granted", cn: "視為理所當然", type: "single" },
-                { phrase: "by accident", cn: "偶然；意外地", type: "single" }
-            ]
-        };
-
-        let currentCategory = 'irregular';
-        let currentQuestions = [];
-        let wrongQuestions = []; // 記錄錯題
-        let currentIndex = 0;
-        let score = 0;
-        let earnedCoins = 0;
-        let startTime = 0;
-        let timerInterval = null;
-        let elapsedSeconds = 0;
-        let isAnswering = false;
-
-        function startGame() {
-            const selectEl = document.getElementById('category-select');
-            currentCategory = selectEl.value;
-            
-            let rawData = db[currentCategory];
-            // 隨機打亂順序並抽 10 題
-            currentQuestions = [...rawData].sort(() => 0.5 - Math.random()).slice(0, 10);
-            wrongQuestions = []; // 清空上一局錯題
-            
-            currentIndex = 0;
-            score = 0;
-            earnedCoins = 0;
-            elapsedSeconds = 0;
-            
-            document.getElementById('start-screen').classList.remove('active');
-            document.getElementById('result-screen').classList.remove('active');
-            document.getElementById('game-screen').classList.add('active');
-
-            startTimer();
-            loadQuestion();
-        }
-
-        function startTimer() {
-            clearInterval(timerInterval);
-            startTime = Date.now();
-            timerInterval = setInterval(() => {
-                elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-                document.getElementById('timer-text').innerText = `⏱️ ${elapsedSeconds} 秒`;
-            }, 1000);
-        }
-
-        function loadQuestion() {
-            isAnswering = false;
-            const q = currentQuestions[currentIndex];
-            document.getElementById('progress-text').innerText = `進度：${currentIndex + 1} / 10`;
-            
-            const singleArea = document.getElementById('single-input-area');
-            const doubleArea = document.getElementById('double-input-area');
-            const singleInput = document.getElementById('single-input');
-            const pastInput = document.getElementById('past-input');
-            const ppInput = document.getElementById('pp-input');
-
-            singleInput.value = '';
-            pastInput.value = '';
-            ppInput.value = '';
-            singleInput.disabled = false;
-            pastInput.disabled = false;
-            ppInput.disabled = false;
-
-            if (q.type === 'double') {
-                singleArea.style.display = 'none';
-                doubleArea.style.display = 'block';
-                document.getElementById('chinese-top-label').innerText = "🐾 請根據原形動詞與中文填寫三態：";
-                document.getElementById('base-word').innerText = `${q.base} (${q.cn})`;
-                pastInput.focus();
-            } else {
-                singleArea.style.display = 'block';
-                doubleArea.style.display = 'none';
-                
-                document.getElementById('chinese-top-label').innerText = "🐶 請根據中文提示拼出英文：";
-                document.getElementById('base-word').innerText = q.cn;
-                document.getElementById('single-label').innerText = "請輸入英文拼寫：";
-                singleInput.focus();
-            }
-
-            document.getElementById('feedback-msg').innerText = '';
-            document.getElementById('feedback-msg').className = 'feedback';
-            document.getElementById('submit-btn').innerText = '送出答案 ➔';
-        }
-
-        function checkAnswer() {
-            if (isAnswering) {
-                currentIndex++;
-                if (currentIndex < currentQuestions.length) {
-                    loadQuestion();
-                } else {
-                    endGame();
-                }
-                return;
-            }
-
-            const q = currentQuestions[currentIndex];
-            let isCorrect = false;
-            const msgEl = document.getElementById('feedback-msg');
-
-            if (q.type === 'double') {
-                const userPast = document.getElementById('past-input').value.trim().toLowerCase();
-                const userPp = document.getElementById('pp-input').value.trim().toLowerCase();
-
-                if (!userPast || !userPp) {
-                    alert('請完整填寫過去式與過去分詞！');
-                    return;
-                }
-
-                const correctPastOptions = q.past.toLowerCase().split('/').map(s => s.trim());
-                const correctPpOptions = q.pp.toLowerCase().split('/').map(s => s.trim());
-
-                const isPastCorrect = correctPastOptions.includes(userPast);
-                const isPpCorrect = correctPpOptions.includes(userPp);
-
-                document.getElementById('past-input').disabled = true;
-                document.getElementById('pp-input').disabled = true;
-
-                if (isPastCorrect && isPpCorrect) {
-                    isCorrect = true;
-                } else {
-                    msgEl.innerText = `❌ 正確答案：過去式 [ ${q.past} ]，過去分詞 [ ${q.pp} ]`;
-                }
-            } else {
-                const userVal = document.getElementById('single-input').value.trim().toLowerCase();
-                if (!userVal) {
-                    alert('請輸入答案！');
-                    return;
-                }
-
-                const targetVal = (q.word || q.phrase).toLowerCase();
-                document.getElementById('single-input').disabled = true;
-
-                if (userVal === targetVal) {
-                    isCorrect = true;
-                } else {
-                    msgEl.innerText = `❌ 正確答案是：${q.word || q.phrase}`;
-                }
-            }
-
-            if (isCorrect) {
-                score++;
-                earnedCoins += 1;
-                totalCoins += 1;
-                updateCoinDisplay();
-                msgEl.innerText = '✨ 太棒了！答對囉！ (+1 金幣 🪙)';
-                msgEl.className = 'feedback correct';
-            } else {
-                // 記錄錯題
-                wrongQuestions.push(q);
-                msgEl.className = 'feedback error';
-            }
-
-            isAnswering = true;
-            document.getElementById('submit-btn').innerText = (currentIndex < currentQuestions.length - 1) ? '下一題 ➔' : '查看結算成績 ➔';
-        }
-
-        function endGame() {
-            clearInterval(timerInterval);
-            document.getElementById('game-screen').classList.remove('active');
-            document.getElementById('result-screen').classList.add('active');
-
-            const categoryNames = {
-                irregular: "不規則動詞三態特訓",
-                cap1200: "國中會考 1200 核心單字拼寫",
-                vocab7000: "高中 7000 核心單字拼寫",
-                collocations: "高級搭配詞與慣用語拼寫"
-            };
-
-            document.getElementById('res-category').innerText = categoryNames[currentCategory];
-            document.getElementById('result-category-title').innerText = `${categoryNames[currentCategory]} 結算`;
-            document.getElementById('res-coins').innerText = `+${earnedCoins} 枚 🪙`;
-            document.getElementById('res-time').innerText = `${elapsedSeconds} 秒`;
-            document.getElementById('res-score').innerText = `${score} / 10`;
-            document.getElementById('res-accuracy').innerText = `${Math.round((score / 10) * 100)}%`;
-
-            // 顯示錯題清單
-            const wrongContainer = document.getElementById('wrong-container');
-            const wrongItemsList = document.getElementById('wrong-items-list');
-            wrongItemsList.innerHTML = '';
-
-            if (wrongQuestions.length > 0) {
-                wrongContainer.style.display = 'block';
-                wrongQuestions.forEach((q) => {
-                    let itemDiv = document.createElement('div');
-                    itemDiv.className = 'wrong-item';
-                    if (q.type === 'double') {
-                        itemDiv.innerHTML = `• <b>${q.base}</b> (${q.cn}) ➔ 過去式：${q.past}，過去分詞：${q.pp}`;
-                    } else {
-                        itemDiv.innerHTML = `• <b>${q.word || q.phrase}</b> (${q.cn})`;
-                    }
-                    wrongItemsList.appendChild(itemDiv);
-                });
-            } else {
-                wrongContainer.style.display = 'none'; // 全對就不顯示錯題區
-            }
-        }
-
-        function backToHome() {
-            document.getElementById('result-screen').classList.remove('active');
-            document.getElementById('start-screen').classList.add('active');
-        }
-
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const gameActive = document.getElementById('game-screen').classList.contains('active');
-                if (gameActive) {
-                    checkAnswer();
-                }
-            }
-        });
-    </script>
-</body>
-</html>
+                { phrase: "catch sight of", cn: "瞥見；看見", type
