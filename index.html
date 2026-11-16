@@ -15,7 +15,6 @@
             --text-light: #9E8A78;
             --success: #789E6E;
             --error: #E07A5F;
-            --coin: #F4A261;
             --border-radius: 20px;
         }
 
@@ -50,7 +49,6 @@
             border: 3px solid #FFEBE8;
         }
 
-        /* 總積分展示橫幅 */
         .wallet-banner {
             background: #FFFDF9;
             border: 2px solid var(--primary);
@@ -259,6 +257,33 @@
             color: var(--text-main);
         }
 
+        /* 錯題訂正專區樣式 */
+        .wrong-list-box {
+            margin-top: 15px;
+            background: #FFF2F2;
+            border: 2px solid #F5C6CB;
+            border-radius: 12px;
+            padding: 14px;
+            text-align: left;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .wrong-list-title {
+            font-weight: bold;
+            color: #C82333;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .wrong-item {
+            font-size: 0.9rem;
+            color: #721C24;
+            margin-bottom: 6px;
+            border-bottom: 1px dashed #F5C6CB;
+            padding-bottom: 4px;
+        }
+
         .screenshot-hint {
             font-size: 0.9rem;
             color: var(--primary-dark);
@@ -280,7 +305,7 @@
         <!-- 歡迎畫面 -->
         <div id="start-screen" class="screen active">
             <h1>🐾 DL English 萌寵單字特訓站 🐶</h1>
-            <div class="subtitle">✨ 輕鬆背單字，集點換獎勵 ✨</div>
+            <div class="subtitle">✨ 隨機抽考，錯題精準複習 ✨</div>
             <div class="welcome-box">
                 <div class="category-select">
                     <label for="category-select">🎯 請選擇今日挑戰單元：</label>
@@ -291,7 +316,7 @@
                         <option value="collocations">高級搭配詞與慣用語拼寫</option>
                     </select>
                 </div>
-                <p>每關隨機抽考 10 道題。<br>答對一題得 1 枚金幣！挑戰成功還可截圖交作業！</p>
+                <p>每關隨機打亂順序抽考 10 道題。<br>答對賺金幣，結算時會自動列出錯題供複習！</p>
                 <button class="btn" onclick="startGame()">🚀 開始可愛大挑戰</button>
             </div>
         </div>
@@ -358,13 +383,18 @@
                 </div>
             </div>
 
-            <button class="btn" onclick="backToHome()">🏠 返回首頁再玩一次</button>
+            <!-- 錯題清單展示區 -->
+            <div id="wrong-container" style="display:none;" class="wrong-list-box">
+                <div class="wrong-list-title">💡 本次需加強複習的錯題清單：</div>
+                <div id="wrong-items-list"></div>
+            </div>
+
+            <button class="btn" onclick="backToHome()" style="margin-top: 16px;">🏠 返回首頁再玩一次</button>
             <div class="screenshot-hint">📸 請將此畫面截圖並傳給老師登記成績與金幣！</div>
         </div>
     </div>
 
     <script>
-        // 初始化讀取玩家金幣
         let totalCoins = parseInt(localStorage.getItem('dl_english_coins')) || 0;
         updateCoinDisplay();
 
@@ -472,6 +502,7 @@
 
         let currentCategory = 'irregular';
         let currentQuestions = [];
+        let wrongQuestions = []; // 記錄錯題
         let currentIndex = 0;
         let score = 0;
         let earnedCoins = 0;
@@ -485,7 +516,9 @@
             currentCategory = selectEl.value;
             
             let rawData = db[currentCategory];
+            // 隨機打亂順序並抽 10 題
             currentQuestions = [...rawData].sort(() => 0.5 - Math.random()).slice(0, 10);
+            wrongQuestions = []; // 清空上一局錯題
             
             currentIndex = 0;
             score = 0;
@@ -605,12 +638,14 @@
 
             if (isCorrect) {
                 score++;
-                earnedCoins += 1; // 答對一題得 1 枚金幣
+                earnedCoins += 1;
                 totalCoins += 1;
                 updateCoinDisplay();
                 msgEl.innerText = '✨ 太棒了！答對囉！ (+1 金幣 🪙)';
                 msgEl.className = 'feedback correct';
             } else {
+                // 記錄錯題
+                wrongQuestions.push(q);
                 msgEl.className = 'feedback error';
             }
 
@@ -636,6 +671,27 @@
             document.getElementById('res-time').innerText = `${elapsedSeconds} 秒`;
             document.getElementById('res-score').innerText = `${score} / 10`;
             document.getElementById('res-accuracy').innerText = `${Math.round((score / 10) * 100)}%`;
+
+            // 顯示錯題清單
+            const wrongContainer = document.getElementById('wrong-container');
+            const wrongItemsList = document.getElementById('wrong-items-list');
+            wrongItemsList.innerHTML = '';
+
+            if (wrongQuestions.length > 0) {
+                wrongContainer.style.display = 'block';
+                wrongQuestions.forEach((q) => {
+                    let itemDiv = document.createElement('div');
+                    itemDiv.className = 'wrong-item';
+                    if (q.type === 'double') {
+                        itemDiv.innerHTML = `• <b>${q.base}</b> (${q.cn}) ➔ 過去式：${q.past}，過去分詞：${q.pp}`;
+                    } else {
+                        itemDiv.innerHTML = `• <b>${q.word || q.phrase}</b> (${q.cn})`;
+                    }
+                    wrongItemsList.appendChild(itemDiv);
+                });
+            } else {
+                wrongContainer.style.display = 'none'; // 全對就不顯示錯題區
+            }
         }
 
         function backToHome() {
