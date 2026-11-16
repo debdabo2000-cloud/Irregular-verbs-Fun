@@ -224,7 +224,7 @@
         }
 
         .card-prompt .base-word {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: bold;
             color: var(--text-main);
             margin-bottom: 6px;
@@ -387,9 +387,22 @@
                 <div class="base-word" id="base-word">吃</div>
             </div>
 
+            <!-- 一般單字輸入區 (單一輸入框) -->
             <div id="single-input-area" class="input-group">
                 <label for="single-input" id="single-label">請輸入英文單字拼寫：</label>
                 <input type="text" id="single-input" placeholder="請輸入英文拼寫" autocomplete="off" autocapitalize="none">
+            </div>
+
+            <!-- 動詞三態專用輸入區 (雙輸入框：過去式與過去分詞) -->
+            <div id="double-input-area" class="input-group" style="display:none;">
+                <div style="margin-bottom: 12px;">
+                    <label for="past-input">請輸入「過去式 (Past)」：</label>
+                    <input type="text" id="past-input" placeholder="例如: ate" autocomplete="off" autocapitalize="none">
+                </div>
+                <div>
+                    <label for="pp-input">請輸入「過去分詞 (Past Participle)」：</label>
+                    <input type="text" id="pp-input" placeholder="例如: eaten" autocomplete="off" autocapitalize="none">
+                </div>
             </div>
 
             <div class="feedback" id="feedback-msg"></div>
@@ -545,15 +558,38 @@
                 { word: "asleep", cn: "睡著的" }, { word: "attack", cn: "攻擊" }, { word: "attend", cn: "參加；出席" }
             ],
             irregular: [
-                { word: "be", cn: "是 (原形)" }, { word: "begin", cn: "開始" }, { word: "break", cn: "打破" },
-                { word: "bring", cn: "帶來" }, { word: "buy", cn: "買" }
+                { base: "be", past: "was / were", pp: "been", cn: "是", type: "double" },
+                { base: "begin", past: "began", pp: "begun", cn: "開始", type: "double" },
+                { base: "break", past: "broke", pp: "broken", cn: "打破", type: "double" },
+                { base: "bring", past: "brought", pp: "brought", cn: "帶來", type: "double" },
+                { base: "buy", past: "bought", pp: "bought", cn: "買", type: "double" },
+                { base: "catch", past: "caught", pp: "caught", cn: "抓住", type: "double" },
+                { base: "come", past: "came", pp: "come", cn: "來", type: "double" },
+                { base: "do", past: "did", pp: "done", cn: "做", type: "double" },
+                { base: "eat", past: "ate", pp: "eaten", cn: "吃", type: "double" },
+                { base: "find", past: "found", pp: "found", cn: "找到", type: "double" },
+                { base: "fly", past: "flew", pp: "flown", cn: "飛", type: "double" },
+                { base: "forget", past: "forgot", pp: "forgotten", cn: "忘記", type: "double" },
+                { base: "give", past: "gave", pp: "given", cn: "給", type: "double" },
+                { base: "go", past: "went", pp: "gone", cn: "去", type: "double" },
+                { base: "have", past: "had", pp: "had", cn: "有", type: "double" },
+                { base: "hear", past: "heard", pp: "heard", cn: "聽見", type: "double" },
+                { base: "know", past: "knew", pp: "known", cn: "知道", type: "double" },
+                { base: "leave", past: "left", pp: "left", cn: "離開", type: "double" },
+                { base: "make", past: "made", pp: "made", cn: "製作", type: "double" },
+                { base: "put", past: "put", pp: "put", cn: "放", type: "double" },
+                { base: "run", past: "ran", pp: "run", cn: "跑", type: "double" },
+                { base: "see", past: "saw", pp: "seen", cn: "看見", type: "double" },
+                { base: "sit", past: "sat", pp: "sat", cn: "坐", type: "double" },
+                { base: "speak", past: "spoke", pp: "spoken", cn: "說話", type: "double" },
+                { base: "take", past: "took", pp: "taken", cn: "拿取", type: "double" },
+                { base: "write", past: "wrote", pp: "written", cn: "寫", type: "double" }
             ],
             vocab7000: [
                 { word: "abandon", cn: "放棄；拋棄" }, { word: "abolish", cn: "廢除" }, { word: "abrupt", cn: "突然的" }
             ]
         };
 
-        // 更新第二層選單內容
         function updateSubCategory() {
             const mainSelect = document.getElementById('main-select').value;
             const subSelect = document.getElementById('sub-select');
@@ -577,7 +613,6 @@
             }
         }
 
-        // 確保網頁一開啟就載入第二層選單
         window.onload = function() {
             updateSubCategory();
         };
@@ -644,17 +679,35 @@
             const q = currentQuestions[currentIndex];
             document.getElementById('progress-text').innerText = `進度：${currentIndex + 1} / 10`;
             
+            const singleInputArea = document.getElementById('single-input-area');
+            const doubleInputArea = document.getElementById('double-input-area');
             const singleInput = document.getElementById('single-input');
+            const pastInput = document.getElementById('past-input');
+            const ppInput = document.getElementById('pp-input');
             const hintBox = document.getElementById('hint-text');
 
             singleInput.value = '';
+            pastInput.value = '';
+            ppInput.value = '';
             singleInput.disabled = false;
+            pastInput.disabled = false;
+            ppInput.disabled = false;
             hintBox.style.display = 'none';
 
-            document.getElementById('chinese-top-label').innerText = "🐶 請根據中文提示拼出英文：";
-            document.getElementById('base-word').innerText = q.cn;
-            document.getElementById('single-label').innerText = "請輸入英文拼寫：";
-            singleInput.focus();
+            if (q.type === 'double') {
+                singleInputArea.style.display = 'none';
+                doubleInputArea.style.display = 'block';
+                document.getElementById('chinese-top-label').innerText = "🐾 請根據原形動詞與中文填寫三態：";
+                document.getElementById('base-word').innerText = `${q.base} (${q.cn})`;
+                pastInput.focus();
+            } else {
+                singleInputArea.style.display = 'block';
+                doubleInputArea.style.display = 'none';
+                document.getElementById('chinese-top-label').innerText = "🐶 請根據中文提示拼出英文：";
+                document.getElementById('base-word').innerText = q.cn;
+                document.getElementById('single-label').innerText = "請輸入英文拼寫：";
+                singleInput.focus();
+            }
 
             document.getElementById('feedback-msg').innerText = '';
             document.getElementById('feedback-msg').className = 'feedback';
@@ -664,16 +717,26 @@
         function showHintBox() {
             const q = currentQuestions[currentIndex];
             const hintBox = document.getElementById('hint-text');
-            const target = q.word;
-            const firstLetter = target.charAt(0);
-            const len = target.length;
-            hintBox.innerText = `💡 提示：首字母為 "${firstLetter}"，總共 ${len} 個字元`;
+            if (q.type === 'double') {
+                const firstLetter = q.past.charAt(0);
+                hintBox.innerText = `💡 提示：過去式首字母為 [ ${firstLetter} ... ]`;
+            } else {
+                const target = q.word;
+                const firstLetter = target.charAt(0);
+                const len = target.length;
+                hintBox.innerText = `💡 提示：首字母為 "${firstLetter}"，總共 ${len} 個字元`;
+            }
             hintBox.style.display = 'block';
         }
 
         function speakCurrentWord() {
             const q = currentQuestions[currentIndex];
-            let textToSpeak = q.word;
+            let textToSpeak = "";
+            if (q.type === 'double') {
+                textToSpeak = `${q.base}, ${q.past}, ${q.pp}`;
+            } else {
+                textToSpeak = q.word;
+            }
 
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -699,17 +762,47 @@
 
             const q = currentQuestions[currentIndex];
             const msgEl = document.getElementById('feedback-msg');
-            const userVal = document.getElementById('single-input').value.trim().toLowerCase();
-            
-            if (!userVal) {
-                alert('請輸入答案！');
-                return;
+            let isCorrect = false;
+
+            if (q.type === 'double') {
+                const userPast = document.getElementById('past-input').value.trim().toLowerCase();
+                const userPp = document.getElementById('pp-input').value.trim().toLowerCase();
+
+                if (!userPast || !userPp) {
+                    alert('請完整填寫過去式與過去分詞！');
+                    return;
+                }
+
+                const correctPastOptions = q.past.toLowerCase().split('/').map(s => s.trim());
+                const correctPpOptions = q.pp.toLowerCase().split('/').map(s => s.trim());
+
+                const isPastCorrect = correctPastOptions.includes(userPast);
+                const isPpCorrect = correctPpOptions.includes(userPp);
+
+                document.getElementById('past-input').disabled = true;
+                document.getElementById('pp-input').disabled = true;
+
+                if (isPastCorrect && isPpCorrect) {
+                    isCorrect = true;
+                } else {
+                    msgEl.innerText = `❌ 正確答案：過去式 [ ${q.past} ]，過去分詞 [ ${q.pp} ]`;
+                }
+            } else {
+                const userVal = document.getElementById('single-input').value.trim().toLowerCase();
+                if (!userVal) {
+                    alert('請輸入答案！');
+                    return;
+                }
+
+                const targetVal = q.word.toLowerCase();
+                document.getElementById('single-input').disabled = true;
+
+                if (userVal === targetVal) {
+                    isCorrect = true;
+                } else {
+                    msgEl.innerText = `❌ 正確答案是：${q.word}`;
+                }
             }
-
-            const targetVal = q.word.toLowerCase();
-            document.getElementById('single-input').disabled = true;
-
-            let isCorrect = (userVal === targetVal);
 
             if (isCorrect) {
                 score++;
@@ -720,7 +813,6 @@
                 msgEl.className = 'feedback correct';
             } else {
                 wrongQuestions.push(q);
-                msgEl.innerText = `❌ 正確答案是：${q.word}`;
                 msgEl.className = 'feedback error';
             }
 
@@ -763,7 +855,11 @@
                 wrongQuestions.forEach((q) => {
                     let itemDiv = document.createElement('div');
                     itemDiv.className = 'wrong-item';
-                    itemDiv.innerHTML = `• <b>${q.word}</b> (${q.cn})`;
+                    if (q.type === 'double') {
+                        itemDiv.innerHTML = `• <b>${q.base}</b> (${q.cn}) ➔ 過去式：${q.past}，過去分詞：${q.pp}`;
+                    } else {
+                        itemDiv.innerHTML = `• <b>${q.word}</b> (${q.cn})`;
+                    }
                     wrongItemsList.appendChild(itemDiv);
                 });
             } else {
