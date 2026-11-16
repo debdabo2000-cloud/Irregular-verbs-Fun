@@ -349,7 +349,7 @@
         <!-- 歡迎畫面 -->
         <div id="start-screen" class="screen active">
             <h1>🐾 DL English 萌寵單字特訓站 🐶</h1>
-            <div class="subtitle">✨ 多版本與課次自由切換 ✨</div>
+            <div class="subtitle">✨ 多版本版本與課次自由切換 ✨</div>
             <div class="welcome-box">
                 <div class="category-select">
                     <label for="main-select">🎯 第一層：請選擇教材大類：</label>
@@ -367,7 +367,12 @@
 
                     <label for="sub-select" id="sub-label" style="margin-top: 12px; display: block; font-size: 0.9rem; color: var(--text-main); font-weight: bold;">📖 第二層：請選擇具體範圍：</label>
                     <select id="sub-select">
-                        <!-- 動態載入 -->
+                        <option value="kx5_u1">Lesson 1</option>
+                        <option value="kx5_u2">Lesson 2</option>
+                        <option value="kx5_u3">Lesson 3</option>
+                        <option value="kx5_u4">Lesson 4</option>
+                        <option value="kx5_u5">Lesson 5</option>
+                        <option value="kx5_u6">Lesson 6</option>
                     </select>
                 </div>
                 <p>每關完全隨機亂數抽考 10 道題。<br>支援語音朗讀、智慧提示與錯題複習！</p>
@@ -647,4 +652,503 @@
                 { word: "feed", cn: "餵養" }, { word: "pet", cn: "寵物" }, { word: "sweep", cn: "掃" },
                 { word: "floor", cn: "地板；樓層" }, { word: "fix", cn: "修理；解決" }, { word: "drawer", cn: "抽屜" },
                 { word: "mop", cn: "拖地；拖把" }, { word: "stairs", cn: "樓梯" }, { word: "wipe", cn: "擦拭" },
-                { word: "window", cn: "窗戶" }, { word
+                { word: "window", cn: "窗戶" }, { word: "dry", cn: "乾燥" }, { word: "hang", cn: "吊；掛" },
+                { word: "clothes", cn: "衣服" }, { word: "move", cn: "搬遷；移動" }, { word: "city", cn: "城市" },
+                { word: "dream", cn: "夢；夢想" }, { word: "almost", cn: "幾乎" }, { word: "scared", cn: "害怕的" },
+                { word: "problem", cn: "問題" }, { word: "however", cn: "然而" }, { word: "nothing", cn: "沒什麼" }
+            ],
+            hl3_u4: [
+                { word: "hope", cn: "希望" }, { word: "future", cn: "未來（的）" }, { word: "plan", cn: "規劃；計畫" },
+                { word: "lawyer", cn: "律師" }, { word: "job", cn: "工作" }, { word: "worry", cn: "擔心" },
+                { word: "keep", cn: "持續；保持" }, { word: "idea", cn: "主意；想法" }, { word: "right", cn: "權利" },
+                { word: "put on", cn: "穿上" }, { word: "reporter", cn: "記者" }, { word: "interview", cn: "採訪；面試" },
+                { word: "mail carrier", cn: "郵差" }, { word: "dentist", cn: "牙醫" }, { word: "factory", cn: "工廠" },
+                { word: "fisherman", cn: "漁夫" }, { word: "secretary", cn: "祕書" }, { word: "boss", cn: "老闆" },
+                { word: "salesman", cn: "銷售員" }, { word: "farmer", cn: "農夫" }, { word: "grow", cn: "種植；成長" },
+                { word: "soldier", cn: "士兵" }, { word: "country", cn: "國家" }, { word: "truck driver", cn: "卡車司機" },
+                { word: "drive", cn: "開（車）" }, { word: "successful", cn: "成功的" }, { word: "find", cn: "找到；發現" },
+                { word: "grade", cn: "年級" }, { word: "decide", cn: "決定" }, { word: "become", cn: "成為" }
+            ],
+            hl3_u5: [
+                { word: "metro", cn: "捷運" }, { word: "lost", cn: "迷路的" }, { word: "map", cn: "地圖" },
+                { word: "ask", cn: "請求；詢問" }, { word: "straight", cn: "直地；直的" }, { word: "turn left", cn: "向左轉" },
+                { word: "along", cn: "沿著" }, { word: "block", cn: "街區" }, { word: "corner", cn: "轉角；角落" },
+                { word: "across from", cn: "在……的對面" }, { word: "supermarket", cn: "超市" }, { word: "ground", cn: "地面" },
+                { word: "sir", cn: "先生" }, { word: "on foot", cn: "步行" }, { word: "take", cn: "搭乘（交通工具）" },
+                { word: "by", cn: "搭乘；藉由" }, { word: "get off", cn: "下（車、飛機等）" }, { word: "get", cn: "到達" },
+                { word: "right", cn: "右邊（的）" }, { word: "ship", cn: "輪船" }, { word: "taxi", cn: "計程車" },
+                { word: "bike", cn: "單車" }, { word: "motorcycle", cn: "機車" }, { word: "scooter", cn: "機車" },
+                { word: "bank", cn: "銀行" }, { word: "fire station", cn: "消防局" }, { word: "toy", cn: "玩具" },
+                { word: "post office", cn: "郵局" }, { word: "hospital", cn: "醫院" }, { word: "pool", cn: "水池" }
+            ],
+            hl3_u6: [
+                { word: "will", cn: "將" }, { word: "ugly", cn: "醜的" }, { word: "sweater", cn: "毛衣" },
+                { word: "tonight", cn: "今晚" }, { word: "funny", cn: "滑稽的" }, { word: "cost", cn: "價錢為；花費" },
+                { word: "price", cn: "價格" }, { word: "spend", cn: "花費（時間、金錢）" }, { word: "expensive", cn: "昂貴的" },
+                { word: "on sale", cn: "特價中" }, { word: "pair", cn: "（一）雙；（一）對" }, { word: "total", cn: "總計（的）" },
+                { word: "pay", cn: "付費；工資" }, { word: "thousand", cn: "千" }, { word: "tomorrow", cn: "明天" },
+                { word: "high", cn: "高的" }, { word: "save", cn: "節省" }, { word: "would like", cn: "想要" },
+                { word: "change", cn: "找零" }, { word: "take", cn: "花費（時間）" }, { word: "dress", cn: "打扮；洋裝" },
+                { word: "cap", cn: "帽子" }, { word: "shirt", cn: "襯衫" }, { word: "belt", cn: "腰帶" },
+                { word: "jeans", cn: "牛仔褲" }, { word: "sock", cn: "襪子" }, { word: "tie", cn: "領帶" },
+                { word: "pants", cn: "長褲" }, { word: "shoe", cn: "鞋" }, { word: "T-shirt", cn: "T 恤" }
+            ],
+
+            // ---------------- 翰林第五冊 ----------------
+            hl5_u1: [
+                { word: "diet", cn: "節食；飲食" }, { word: "photo", cn: "照片" }, { word: "type", cn: "類型" },
+                { word: "habit", cn: "習慣" }, { word: "gym", cn: "健身房；體育館" }, { word: "race", cn: "速度競賽" },
+                { word: "kind", cn: "種類" }, { word: "letter", cn: "信" }, { word: "teenager", cn: "青少年" },
+                { word: "senior high school", cn: "高中" }, { word: "drum", cn: "鼓" }, { word: "joy", cn: "樂趣；喜悅" },
+                { word: "pop", cn: "流行音樂" }, { word: "interest", cn: "興趣；使感興趣" }, { word: "garbage", cn: "垃圾" },
+                { word: "wish", cn: "願望；祝福" }, { word: "envelope", cn: "信封" }, { word: "stamp", cn: "郵票" },
+                { word: "star", cn: "明星" }, { word: "appearance", cn: "外表；外觀" }, { word: "weight", cn: "體重" },
+                { word: "mood", cn: "心情" }, { word: "exam", cn: "考試" }, { word: "feeling", cn: "情緒；感覺" },
+                { word: "raise", cn: "提高；舉起" }, { word: "cheat", cn: "作弊；欺騙" }, { word: "copy", cn: "抄襲；複製" },
+                { word: "understand", cn: "瞭解" }, { word: "call", cn: "稱呼" }, { word: "skip", cn: "省略" }
+            ],
+            hl5_u2: [
+                { word: "actor", cn: "演員" }, { word: "heart", cn: "心；心臟" }, { word: "lie", cn: "謊言" },
+                { word: "comics", cn: "漫畫" }, { word: "Internet", cn: "網路" }, { word: "ticket", cn: "票" },
+                { word: "actress", cn: "女演員" }, { word: "towel", cn: "毛巾" }, { word: "comb", cn: "梳子；梳頭" },
+                { word: "bat", cn: "蝙蝠" }, { word: "newspaper", cn: "報紙" }, { word: "piece", cn: "（一）則；片；張" },
+                { word: "sentence", cn: "句子" }, { word: "post", cn: "貼文；張貼" }, { word: "hit", cn: "點擊數" },
+                { word: "award", cn: "獎項" }, { word: "horror", cn: "恐怖" }, { word: "difference", cn: "差別" },
+                { word: "source", cn: "來源" }, { word: "touch", cn: "觸動；碰觸" }, { word: "surprise", cn: "（使）驚訝" },
+                { word: "guess", cn: "猜測" }, { word: "download", cn: "下載" }, { word: "set", cn: "建立；設定" },
+                { word: "book", cn: "預訂；預約" }, { word: "dig", cn: "挖掘" }, { word: "spell", cn: "拼字" },
+                { word: "trick", cn: "騙；圈套" }, { word: "tell", cn: "告訴" }, { word: "spread", cn: "散播；擴散" }
+            ],
+            hl5_u3: [
+                { word: "senior center", cn: "樂齡中心" }, { word: "pleasure", cn: "愉快；榮幸" }, { word: "attack", cn: "攻擊" },
+                { word: "toe", cn: "腳趾" }, { word: "bridge", cn: "橋" }, { word: "smoke", cn: "煙霧；抽菸" },
+                { word: "puppy", cn: "幼犬" }, { word: "middle", cn: "中間" }, { word: "note", cn: "紙條" },
+                { word: "wallet", cn: "錢包" }, { word: "pocket", cn: "口袋" }, { word: "area", cn: "區域" },
+                { word: "glue", cn: "膠水" }, { word: "yard", cn: "庭院" }, { word: "pipe", cn: "水管" },
+                { word: "bench", cn: "長凳；長椅" }, { word: "badminton", cn: "羽毛球" }, { word: "tennis", cn: "網球" },
+                { word: "slide", cn: "滑梯" }, { word: "seesaw", cn: "翹翹板" }, { word: "swing", cn: "鞦韆" },
+                { word: "tool", cn: "工具" }, { word: "pot", cn: "盆；鍋" }, { word: "seed", cn: "種子" },
+                { word: "basket", cn: "籃子" }, { word: "pack", cn: "（一）包；副" }, { word: "fan", cn: "風扇" },
+                { word: "gas", cn: "氣體；汽油" }, { word: "program", cn: "計畫；節目" }, { word: "side", cn: "側邊；面" }
+            ],
+            hl5_u4: [
+                { word: "gate", cn: "大門" }, { word: "file", cn: "檔案" }, { word: "quiz", cn: "小考" },
+                { word: "blackboard", cn: "黑板" }, { word: "chalk", cn: "粉筆" }, { word: "screen", cn: "螢幕" },
+                { word: "error", cn: "錯誤" }, { word: "button", cn: "按鈕；鈕扣" }, { word: "wake word", cn: "喚醒字詞" },
+                { word: "list", cn: "清單；列出" }, { word: "honey", cn: "親愛的" }, { word: "voice assistant", cn: "語音助理" },
+                { word: "machine", cn: "機器" }, { word: "dozen", cn: "（一）打" }, { word: "refrigerator", cn: "冰箱" },
+                { word: "key", cn: "鑰匙" }, { word: "the cloud", cn: "雲端" }, { word: "rise", cn: "興起；上升" },
+                { word: "lamp", cn: "檯燈" }, { word: "couch", cn: "沙發" }, { word: "cellphone", cn: "手機" },
+                { word: "fat", cn: "胖的" }, { word: "code", cn: "密碼；代碼" }, { word: "ability", cn: "能力" },
+                { word: "enter", cn: "輸入；進入" }, { word: "save", cn: "儲存" }, { word: "boil", cn: "煮沸" },
+                { word: "upload", cn: "上傳" }, { word: "type", cn: "打字" }, { word: "collect", cn: "收集" }
+            ],
+            hl5_u5: [
+                { word: "planet", cn: "行星" }, { word: "line", cn: "隊伍；線" }, { word: "god", cn: "神" },
+                { word: "restroom", cn: "洗手間" }, { word: "bath", cn: "沐浴" }, { word: "uniform", cn: "制服" },
+                { word: "tail", cn: "尾巴" }, { word: "bottom", cn: "臀部；底部" }, { word: "string", cn: "串；線" },
+                { word: "dot", cn: "圓點" }, { word: "pin", cn: "飾針；胸針" }, { word: "neighbor", cn: "鄰居" },
+                { word: "foreigner", cn: "外國人" }, { word: "hobby", cn: "嗜好" }, { word: "businessman", cn: "商人" },
+                { word: "business", cn: "生意；事業" }, { word: "shopkeeper", cn: "店主" }, { word: "dictionary", cn: "字典" },
+                { word: "workbook", cn: "作業本" }, { word: "bow", cn: "蝴蝶結" }, { word: "exercise", cn: "習題；練習" },
+                { word: "prize", cn: "獎" }, { word: "topic", cn: "主題" }, { word: "knowledge", cn: "知識" },
+                { word: "public", cn: "公眾（的）" }, { word: "key", cn: "關鍵（的）" }, { word: "booth", cn: "攤位" },
+                { word: "character", cn: "角色" }, { word: "hug", cn: "擁抱" }, { word: "noun", cn: "名詞" }
+            ],
+            hl5_u6: [
+                { word: "apartment", cn: "公寓" }, { word: "town", cn: "城鎮" }, { word: "seat", cn: "座位" },
+                { word: "present", cn: "禮物" }, { word: "sidewalk", cn: "人行道" }, { word: "April Fools' Day", cn: "愚人節" },
+                { word: "paper", cn: "紙" }, { word: "joke", cn: "玩笑；笑話" }, { word: "visitor", cn: "遊客；參觀者" },
+                { word: "lazy Susan", cn: "餐桌轉盤" }, { word: "culture", cn: "文化" }, { word: "chat", cn: "聊天" },
+                { word: "diary", cn: "日記" }, { word: "stinky tofu", cn: "臭豆腐" }, { word: "knock", cn: "敲" },
+                { word: "invite", cn: "邀請" }, { word: "kiss", cn: "吻" }, { word: "hand", cn: "遞給" },
+                { word: "tape", cn: "膠帶" }, { word: "mark", cn: "標記" }, { word: "shout", cn: "喊叫" },
+                { word: "clap", cn: "拍手；鼓掌" }, { word: "fry", cn: "油炸；油煎" }, { word: "glad", cn: "高興的" },
+                { word: "polite", cn: "有禮貌的" }, { word: "blank", cn: "空白（的）" }, { word: "serious", cn: "認真的" },
+                { word: "blind", cn: "盲的" }, { word: "rich", cn: "富裕的" }, { word: "crispy", cn: "酥脆的" }
+            ],
+
+            // ---------------- 南一第五冊 ----------------
+            nn5_l1: [
+                { word: "businessman", cn: "商人" }, { word: "Christmas", cn: "聖誕節" }, { word: "past", cn: "過去" },
+                { word: "present", cn: "現在" }, { word: "future", cn: "未來" }, { word: "character", cn: "人物；角色" },
+                { word: "eve", cn: "前夕" }, { word: "hate", cn: "憎恨；厭惡" }, { word: "lie", cn: "謊話" },
+                { word: "cheat", cn: "欺騙" }, { word: "rich", cn: "有錢的" }, { word: "speak", cn: "說話" },
+                { word: "treat", cn: "對待" }, { word: "person", cn: "人" }, { word: "appear", cn: "出現" },
+                { word: "weak", cn: "虛弱的" }, { word: "lead", cn: "領路；引導" }, { word: "yet", cn: "還（沒）" },
+                { word: "wake up", cn: "醒來" }, { word: "raise", cn: "加薪；提高" }, { word: "end", cn: "結束" }
+            ],
+            nn5_l2: [
+                { word: "PE", cn: "體育" }, { word: "rest", cn: "休息" }, { word: "burn", cn: "發燙；燃燒" },
+                { word: "sore", cn: "疼痛的" }, { word: "thirsty", cn: "口渴的" }, { word: "airplane", cn: "飛機" },
+                { word: "bug", cn: "小蟲子" }, { word: "large", cn: "大的" }, { word: "light", cn: "光" },
+                { word: "soon", cn: "不久；很快地" }, { word: "honest", cn: "誠實的" }, { word: "run", cn: "跑" },
+                { word: "tennis", cn: "網球" }, { word: "badminton", cn: "羽毛球" }, { word: "baseball", cn: "棒球" },
+                { word: "kite", cn: "風箏" }, { word: "insect", cn: "昆蟲" }, { word: "piano", cn: "鋼琴" },
+                { word: "drum", cn: "鼓" }, { word: "comb", cn: "梳子" }, { word: "scream", cn: "尖叫" }
+            ],
+            nn5_l3: [
+                { word: "club", cn: "社團" }, { word: "boring", cn: "令人無聊的" }, { word: "bored", cn: "感到無聊的" },
+                { word: "news", cn: "新聞" }, { word: "report", cn: "報導" }, { word: "in total", cn: "總共" },
+                { word: "God", cn: "上帝；神" }, { word: "teach", cn: "教導" }, { word: "crazy", cn: "瘋狂的" },
+                { word: "fact", cn: "事實" }, { word: "real", cn: "真實的" }, { word: "steal", cn: "偷竊" },
+                { word: "search for", cn: "尋找" }, { word: "fake", cn: "假的" }, { word: "fact-check", cn: "核實" },
+                { word: "lesson", cn: "教訓" }, { word: "medicine", cn: "藥品" }, { word: "on sale", cn: "特賣" },
+                { word: "heavy", cn: "重的" }, { word: "slim", cn: "纖細的" }
+            ],
+            nn5_l4: [
+                { word: "meeting", cn: "會議" }, { word: "group", cn: "團體" }, { word: "upload", cn: "上傳" },
+                { word: "topic", cn: "主題" }, { word: "correct", cn: "正確的" }, { word: "list", cn: "清單" },
+                { word: "interview", cn: "採訪" }, { word: "program", cn: "節目" }, { word: "glad", cn: "高興的" },
+                { word: "hope", cn: "希望" }, { word: "director", cn: "導演" }, { word: "wonder", cn: "想知道" },
+                { word: "film", cn: "拍攝" }, { word: "helicopter", cn: "直升機" }, { word: "drive", cn: "駕駛" },
+                { word: "taxi", cn: "計程車" }, { word: "ship", cn: "船" }, { word: "scooter", cn: "機車" },
+                { word: "motorcycle", cn: "摩托車" }, { word: "airport", cn: "機場" }, { word: "hill", cn: "山丘" }
+            ],
+            nn5_l5: [
+                { word: "radio", cn: "廣播；收音機" }, { word: "mail", cn: "信件" }, { word: "elementary school", cn: "小學" },
+                { word: "bright", cn: "鮮豔的" }, { word: "reason", cn: "原因" }, { word: "color-blind", cn: "色盲的" },
+                { word: "quickly", cn: "快速地" }, { word: "host", cn: "主持人" }, { word: "bull", cn: "公牛" },
+                { word: "cape", cn: "披風" }, { word: "on air", cn: "正在播出" }, { word: "slide", cn: "滑梯" },
+                { word: "swing", cn: "鞦韆" }, { word: "seesaw", cn: "蹺蹺板" }, { word: "row", cn: "一排" },
+                { word: "pipe", cn: "水管" }, { word: "blanket", cn: "毛毯" }, { word: "smoke", cn: "煙霧" },
+                { word: "campfire", cn: "營火" }, { word: "pet", cn: "寵物" }
+            ],
+
+            // ---------------- 龍騰第三冊 (L7-L9) ----------------
+            lt3_l79: [
+                { word: "adore", cn: "愛慕；熱愛" }, { word: "automatically", cn: "無意識地" }, { word: "automatic", cn: "自動的" },
+                { word: "affection", cn: "喜愛" }, { word: "abuse", cn: "虐待" }, { word: "adequate", cn: "充足的；足夠的" },
+                { word: "authorities", cn: "當局；掌權者" }, { word: "accommodations", cn: "住宿" }, { word: "belief", cn: "宗教信仰；相信" },
+                { word: "brutal", cn: "殘暴的" }, { word: "blessing", cn: "神的祝福" }, { word: "commit", cn: "做出（錯事）；承諾" },
+                { word: "conscious", cn: "意識到；注意到" }, { word: "circumstance", cn: "條件；狀況" }, { word: "complex", cn: "複雜的" },
+                { word: "determine", cn: "查明；測出" }, { word: "demand", cn: "需求；要求" }, { word: "demonstrate", cn: "表達；展示" },
+                { word: "designate", cn: "指定；指認" }, { word: "emerge", cn: "出現" }, { word: "exhibit", cn: "表現；表露" },
+                { word: "economy", cn: "經濟" }, { word: "exhaust", cn: "使筋疲力盡" }, { word: "explosive", cn: "一觸即發的" },
+                { word: "enthusiastically", cn: "熱情地" }, { word: "exact", cn: "精確的" }, { word: "exaggerate", cn: "誇張；誇大" },
+                { word: "fade", cn: "逐漸消失" }, { word: "fellow", cn: "同伴的；同事的" }, { word: "facilities", cn: "設施" },
+                { word: "glance", cn: "匆匆一瞥" }, { word: "grind", cn: "苦差事；磨碎" }, { word: "gesture", cn: "手勢；姿勢" },
+                { word: "hospitality", cn: "好客" }, { word: "highlight", cn: "最精彩的部分；強調" }, { word: "herd", cn: "獸群" },
+                { word: "humanity", cn: "人道；仁慈" }, { word: "heritage", cn: "遺產" }, { word: "interact", cn: "互動；交流" },
+                { word: "interpret", cn: "理解；詮釋" }, { word: "initially", cn: "起初" }, { word: "illegal", cn: "非法的" },
+                { word: "intelligent", cn: "聰明的；有才智的" }, { word: "kneel", cn: "跪" }, { word: "lure", cn: "引誘；誘惑" },
+                { word: "mercilessly", cn: "冷酷無情地" }, { word: "moreover", cn: "此外" }, { word: "meaningful", cn: "有意義的" },
+                { word: "operator", cn: "經營者" }, { word: "obedient", cn: "服從的；順從的" }, { word: "pavement", cn: "（鋪過的）路面" },
+                { word: "pierce", cn: "穿過；扎；刺穿" }, { word: "permanent", cn: "永久的" }, { word: "pilgrimage", cn: "朝聖之旅" },
+                { word: "psychology", cn: "心理學" }, { word: "reverse", cn: "相反的情況" }, { word: "religious", cn: "宗教的" },
+                { word: "ritual", cn: "宗教儀式" }, { word: "stiff", cn: "僵硬的" }, { word: "significant", cn: "重要的；顯著的" },
+                { word: "strike", cn: "打；擊；罷工" }, { word: "scratch", cn: "搔抓" }, { word: "unify", cn: "使……成為一體" },
+                { word: "undoubtedly", cn: "無疑地" }, { word: "vulnerable", cn: "脆弱的" }
+            ],
+
+            // ---------------- 其他特訓題庫 ----------------
+            cap1200: [
+                { word: "accept", cn: "接受" }, { word: "active", cn: "活躍的；積極的" }, { word: "activity", cn: "活動" },
+                { word: "ad", cn: "廣告 (advertisement)" }, { word: "advice", cn: "勸告；建議" }, { word: "affect", cn: "影響" },
+                { word: "afraid", cn: "害怕的" }, { word: "agree", cn: "同意" }, { word: "allow", cn: "允許" },
+                { word: "almost", cn: "幾乎" }, { word: "alone", cn: "單獨的；獨自地" }, { word: "aloud", cn: "出聲地" },
+                { word: "already", cn: "已經" }, { word: "although", cn: "雖然；儘管" }, { word: "always", cn: "總是" },
+                { word: "among", cn: "在...之中" }, { word: "ancient", cn: "古代的" }, { word: "angry", cn: "生氣的" },
+                { word: "another", cn: "另一個" }, { word: "answer", cn: "回答" }, { word: "anybody", cn: "任何人" },
+                { word: "anything", cn: "任何事物" }, { word: "appear", cn: "出現" }, { word: "area", cn: "地區；面積" },
+                { word: "arrive", cn: "到達" }, { word: "as", cn: "如同；當...時" }, { word: "ask", cn: "問；要求" },
+                { word: "asleep", cn: "睡著的" }, { word: "attack", cn: "攻擊" }, { word: "attend", cn: "參加；出席" }
+            ],
+            vocab7000: [
+                { word: "abandon", cn: "放棄；拋棄" }, { word: "abolish", cn: "廢除" }, { word: "abrupt", cn: "突然的" }
+            ],
+            irregular: [
+                { base: "be", past: "was / were", pp: "been", cn: "是", type: "double" },
+                { base: "begin", past: "began", pp: "begun", cn: "開始", type: "double" },
+                { base: "break", past: "broke", pp: "broken", cn: "打破", type: "double" },
+                { base: "bring", past: "brought", pp: "brought", cn: "帶來", type: "double" },
+                { base: "buy", past: "bought", pp: "bought", cn: "買", type: "double" },
+                { base: "catch", past: "caught", pp: "caught", cn: "抓住", type: "double" },
+                { base: "come", past: "came", pp: "come", cn: "來", type: "double" },
+                { base: "do", past: "did", pp: "done", cn: "做", type: "double" },
+                { base: "eat", past: "ate", pp: "eaten", cn: "吃", type: "double" },
+                { base: "find", past: "found", pp: "found", cn: "找到", type: "double" },
+                { base: "fly", past: "flew", pp: "flown", cn: "飛", type: "double" },
+                { base: "forget", past: "forgot", pp: "forgotten", cn: "忘記", type: "double" },
+                { base: "give", past: "gave", pp: "given", cn: "給", type: "double" },
+                { base: "go", past: "went", pp: "gone", cn: "去", type: "double" },
+                { base: "have", past: "had", pp: "had", cn: "有", type: "double" },
+                { base: "hear", past: "heard", pp: "heard", cn: "聽見", type: "double" },
+                { base: "know", past: "knew", pp: "known", cn: "知道", type: "double" },
+                { base: "leave", past: "left", pp: "left", cn: "離開", type: "double" },
+                { base: "make", past: "made", pp: "made", cn: "製作", type: "double" },
+                { base: "put", past: "put", pp: "put", cn: "放", type: "double" },
+                { base: "run", past: "ran", pp: "run", cn: "跑", type: "double" },
+                { base: "see", past: "saw", pp: "seen", cn: "看見", type: "double" },
+                { base: "sit", past: "sat", pp: "sat", cn: "坐", type: "double" },
+                { base: "speak", past: "spoke", pp: "spoken", cn: "說話", type: "double" },
+                { base: "take", past: "took", pp: "taken", cn: "拿取", type: "double" },
+                { base: "write", past: "wrote", pp: "written", cn: "寫", type: "double" }
+            ]
+        };
+
+        let currentCategory = 'kx5_u1';
+        let currentQuestions = [];
+        let wrongQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let earnedCoins = 0;
+        let startTime = 0;
+        let timerInterval = null;
+        let elapsedSeconds = 0;
+        let isAnswering = false;
+
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startGame() {
+            const subSelect = document.getElementById('sub-select');
+            currentCategory = subSelect.value;
+            
+            let rawData = db[currentCategory];
+            let shuffled = shuffleArray(rawData);
+            currentQuestions = shuffled.slice(0, 10);
+            wrongQuestions = [];
+            
+            currentIndex = 0;
+            score = 0;
+            earnedCoins = 0;
+            elapsedSeconds = 0;
+            
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+
+            startTimer();
+            loadQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById('timer-text').innerText = `⏱️ ${elapsedSeconds} 秒`;
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            isAnswering = false;
+            const q = currentQuestions[currentIndex];
+            document.getElementById('progress-text').innerText = `進度：${currentIndex + 1} / 10`;
+            
+            const singleInputArea = document.getElementById('single-input-area');
+            const doubleInputArea = document.getElementById('double-input-area');
+            const singleInput = document.getElementById('single-input');
+            const pastInput = document.getElementById('past-input');
+            const ppInput = document.getElementById('pp-input');
+            const hintBox = document.getElementById('hint-text');
+
+            singleInput.value = '';
+            pastInput.value = '';
+            ppInput.value = '';
+            singleInput.disabled = false;
+            pastInput.disabled = false;
+            ppInput.disabled = false;
+            hintBox.style.display = 'none';
+
+            if (q.type === 'double') {
+                singleInputArea.style.display = 'none';
+                doubleInputArea.style.display = 'block';
+                document.getElementById('chinese-top-label').innerText = "🐾 請根據原形動詞與中文填寫三態：";
+                document.getElementById('base-word').innerText = `${q.base} (${q.cn})`;
+                pastInput.focus();
+            } else {
+                singleInputArea.style.display = 'block';
+                doubleInputArea.style.display = 'none';
+                document.getElementById('chinese-top-label').innerText = "🐶 請根據中文提示拼出英文：";
+                document.getElementById('base-word').innerText = q.cn;
+                document.getElementById('single-label').innerText = "請輸入英文拼寫：";
+                singleInput.focus();
+            }
+
+            document.getElementById('feedback-msg').innerText = '';
+            document.getElementById('feedback-msg').className = 'feedback';
+            document.getElementById('submit-btn').innerText = '送出答案 ➔';
+        }
+
+        function showHintBox() {
+            const q = currentQuestions[currentIndex];
+            const hintBox = document.getElementById('hint-text');
+            if (q.type === 'double') {
+                const firstLetter = q.past.charAt(0);
+                hintBox.innerText = `💡 提示：過去式首字母為 [ ${firstLetter} ... ]`;
+            } else {
+                const target = q.word;
+                const firstLetter = target.charAt(0);
+                const len = target.length;
+                hintBox.innerText = `💡 提示：首字母為 "${firstLetter}"，總共 ${len} 個字元`;
+            }
+            hintBox.style.display = 'block';
+        }
+
+        function speakCurrentWord() {
+            const q = currentQuestions[currentIndex];
+            let textToSpeak = "";
+            if (q.type === 'double') {
+                textToSpeak = `${q.base}, ${q.past}, ${q.pp}`;
+            } else {
+                textToSpeak = q.word;
+            }
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                let utterance = new SpeechSynthesisUtterance(textToSpeak);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('您的瀏覽器不支援語音功能');
+            }
+        }
+
+        function checkAnswer() {
+            if (isAnswering) {
+                currentIndex++;
+                if (currentIndex < currentQuestions.length) {
+                    loadQuestion();
+                } else {
+                    endGame();
+                }
+                return;
+            }
+
+            const q = currentQuestions[currentIndex];
+            const msgEl = document.getElementById('feedback-msg');
+            let isCorrect = false;
+
+            if (q.type === 'double') {
+                const userPast = document.getElementById('past-input').value.trim().toLowerCase();
+                const userPp = document.getElementById('pp-input').value.trim().toLowerCase();
+
+                if (!userPast || !userPp) {
+                    alert('請完整填寫過去式與過去分詞！');
+                    return;
+                }
+
+                const correctPastOptions = q.past.toLowerCase().split('/').map(s => s.trim());
+                const correctPpOptions = q.pp.toLowerCase().split('/').map(s => s.trim());
+
+                const isPastCorrect = correctPastOptions.includes(userPast);
+                const isPpCorrect = correctPpOptions.includes(userPp);
+
+                document.getElementById('past-input').disabled = true;
+                document.getElementById('pp-input').disabled = true;
+
+                if (isPastCorrect && isPpCorrect) {
+                    isCorrect = true;
+                } else {
+                    msgEl.innerText = `❌ 正確答案：過去式 [ ${q.past} ]，過去分詞 [ ${q.pp} ]`;
+                }
+            } else {
+                const userVal = document.getElementById('single-input').value.trim().toLowerCase();
+                if (!userVal) {
+                    alert('請輸入答案！');
+                    return;
+                }
+
+                const targetVal = q.word.toLowerCase();
+                document.getElementById('single-input').disabled = true;
+
+                if (userVal === targetVal) {
+                    isCorrect = true;
+                } else {
+                    msgEl.innerText = `❌ 正確答案是：${q.word}`;
+                }
+            }
+
+            if (isCorrect) {
+                score++;
+                earnedCoins += 1;
+                totalCoins += 1;
+                updateCoinDisplay();
+                msgEl.innerText = '✨ 太棒了！答對囉！ (+1 金幣 🪙)';
+                msgEl.className = 'feedback correct';
+            } else {
+                wrongQuestions.push(q);
+                msgEl.className = 'feedback error';
+            }
+
+            speakCurrentWord();
+
+            isAnswering = true;
+            document.getElementById('submit-btn').innerText = (currentIndex < currentQuestions.length - 1) ? '下一題 ➔' : '查看結算成績 ➔';
+        }
+
+        function endGame() {
+            clearInterval(timerInterval);
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+
+            const categoryNames = {
+                kx5_u1: "康軒第五冊 Lesson 1", kx5_u2: "康軒第五冊 Lesson 2", kx5_u3: "康軒第五冊 Lesson 3",
+                kx5_u4: "康軒第五冊 Lesson 4", kx5_u5: "康軒第五冊 Lesson 5", kx5_u6: "康軒第五冊 Lesson 6",
+                kx3_u1: "康軒第三冊 Lesson 1", kx3_u2: "康軒第三冊 Lesson 2", kx3_u3: "康軒第三冊 Lesson 3",
+                kx3_u4: "康軒第三冊 Lesson 4", kx3_u5: "康軒第三冊 Lesson 5", kx3_u6: "康軒第三冊 Lesson 6",
+                hl3_u1: "翰林第三冊 Lesson 1", hl3_u2: "翰林第三冊 Lesson 2", hl3_u3: "翰林第三冊 Lesson 3",
+                hl3_u4: "翰林第三冊 Lesson 4", hl3_u5: "翰林第三冊 Lesson 5", hl3_u6: "翰林第三冊 Lesson 6",
+                hl5_u1: "翰林第五冊 Lesson 1", hl5_u2: "翰林第五冊 Lesson 2", hl5_u3: "翰林第五冊 Lesson 3",
+                hl5_u4: "翰林第五冊 Lesson 4", hl5_u5: "翰林第五冊 Lesson 5", hl5_u6: "翰林第五冊 Lesson 6",
+                nn5_l1: "南一第五冊 Lesson 1", nn5_l2: "南一第五冊 Lesson 2", nn5_l3: "南一第五冊 Lesson 3",
+                nn5_l4: "南一第五冊 Lesson 4", nn5_l5: "南一第五冊 Lesson 5",
+                lt3_l79: "龍騰高中第三冊 L7-L9",
+                irregular: "不規則動詞三態特訓",
+                cap1200: "國中會考 1200 單",
+                vocab7000: "高中 7000 單"
+            };
+
+            document.getElementById('res-category').innerText = categoryNames[currentCategory] || "單字特訓";
+            document.getElementById('result-category-title').innerText = `${categoryNames[currentCategory] || "單字特訓"} 結算`;
+            document.getElementById('res-coins').innerText = `+${earnedCoins} 枚 🪙`;
+            document.getElementById('res-time').innerText = `${elapsedSeconds} 秒`;
+            document.getElementById('res-score').innerText = `${score} / 10`;
+            document.getElementById('res-accuracy').innerText = `${Math.round((score / 10) * 100)}%`;
+
+            const wrongContainer = document.getElementById('wrong-container');
+            const wrongItemsList = document.getElementById('wrong-items-list');
+            wrongItemsList.innerHTML = '';
+
+            if (wrongQuestions.length > 0) {
+                wrongContainer.style.display = 'block';
+                wrongQuestions.forEach((q) => {
+                    let itemDiv = document.createElement('div');
+                    itemDiv.className = 'wrong-item';
+                    if (q.type === 'double') {
+                        itemDiv.innerHTML = `• <b>${q.base}</b> (${q.cn}) ➔ 過去式：${q.past}，過去分詞：${q.pp}`;
+                    } else {
+                        itemDiv.innerHTML = `• <b>${q.word}</b> (${q.cn})`;
+                    }
+                    wrongItemsList.appendChild(itemDiv);
+                });
+            } else {
+                wrongContainer.style.display = 'none';
+            }
+        }
+
+        function backToHome() {
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('start-screen').classList.add('active');
+        }
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const gameActive = document.getElementById('game-screen').classList.contains('active');
+                if (gameActive) {
+                    checkAnswer();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
