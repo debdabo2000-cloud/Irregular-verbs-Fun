@@ -479,14 +479,16 @@
 
     <script>
         let totalCoins = parseInt(localStorage.getItem('dl_english_coins')) || 0;
-        updateCoinDisplay();
-
+        
         function updateCoinDisplay() {
             let ingots = Math.floor(totalCoins / 100);
-            document.getElementById('total-coins').innerText = `🪙 ${totalCoins} 枚金幣`;
-            document.getElementById('total-ingots').innerText = `🟡 ${ingots} 個金元寶`;
+            let coinEl = document.getElementById('total-coins');
+            let ingotEl = document.getElementById('total-ingots');
+            if(coinEl) coinEl.innerText = `🪙 ${totalCoins} 枚金幣`;
+            if(ingotEl) ingotEl.innerText = `🟡 ${ingots} 個金元寶`;
             localStorage.setItem('dl_english_coins', totalCoins);
         }
+        updateCoinDisplay();
 
         const chaptersData = {
             kx1: [
@@ -662,182 +664,4 @@
                 { word: "neck", cn: "脖子" }, { word: "fever", cn: "發燒" }, { word: "headache", cn: "頭痛" },
                 { word: "mask", cn: "口罩" }, { word: "message", cn: "訊息" }, { word: "country", cn: "國家" },
                 { word: "health", cn: "健康" }, { word: "ice cream", cn: "冰淇淋" }, { word: "medicine", cn: "藥" },
-                { word: "coat", cn: "大衣" }, { word: "body", cn: "身體" }, { word: "clothes", cn: "衣服" },
-                { word: "sore throat", cn: "喉嚨痛" }, { word: "stay", cn: "停留" }, { word: "call", cn: "打電話" },
-                { word: "speak", cn: "說話" }, { word: "send", cn: "寄" }, { word: "hurt", cn: "疼痛" },
-                { word: "treat", cn: "治療" }, { word: "try", cn: "嘗試" }, { word: "serious", cn: "嚴重的" },
-                { word: "sick", cn: "生病的" }, { word: "healthy", cn: "健康的" }, { word: "strong", cn: "強壯的" },
-                { word: "why", cn: "為什麼" }, { word: "maybe", cn: "也許" }, { word: "because", cn: "因為" }
-            ],
-            kx3_u3: [
-                { word: "map", cn: "地圖" }, { word: "beginning", cn: "開頭" }, { word: "ant", cn: "螞蟻" },
-                { word: "middle", cn: "中間" }, { word: "quarter", cn: "十五分鐘" }, { word: "duck", cn: "鴨子" },
-                { word: "goose", cn: "鵝" }, { word: "chicken", cn: "雞" }, { word: "frog", cn: "青蛙" },
-                { word: "cow", cn: "母牛" }, { word: "forest", cn: "森林" }, { word: "jar", cn: "罐子" },
-                { word: "joy", cn: "喜悅" }, { word: "rock", cn: "岩石" }, { word: "top", cn: "頂端" },
-                { word: "pool", cn: "水池" }, { word: "beak", cn: "鳥嘴" }, { word: "pass", cn: "通過" },
-                { word: "shout", cn: "喊叫" }, { word: "reach", cn: "達到" }, { word: "fly", cn: "飛行" },
-                { word: "drop", cn: "丟下" }, { word: "finish", cn: "完成" }, { word: "ugly", cn: "醜陋的" },
-                { word: "clear", cn: "晴朗的" }, { word: "dry", cn: "乾燥的" }, { word: "back", cn: "回原處" },
-                { word: "finally", cn: "最後" }, { word: "close", cn: "接近的" }, { word: "along", cn: "沿著" }
-            ],
-            kx3_u4: [
-                { word: "housewife", cn: "家庭主婦" }, { word: "police officer", cn: "警察" }, { word: "secretary", cn: "祕書" },
-                { word: "reporter", cn: "記者" }, { word: "mailman", cn: "郵差" }, { word: "actress", cn: "女演員" },
-                { word: "actor", cn: "男演員" }, { word: "waitress", cn: "女服務生" }, { word: "waiter", cn: "男服務生" },
-                { word: "singer", cn: "歌手" }, { word: "writer", cn: "作家" }, { word: "future", cn: "未來" },
-                { word: "camera", cn: "相機" }, { word: "dream", cn: "夢想" }, { word: "gift", cn: "禮物" },
-                { word: "factory worker", cn: "工廠工人" }, { word: "teenager", cn: "青少年" }, { word: "money", cn: "錢" },
-                { word: "drum", cn: "鼓" }, { word: "guitar", cn: "吉他" }, { word: "music", cn: "音樂" },
-                { word: "star", cn: "明星" }, { word: "important", cn: "重要的" }, { word: "popular", cn: "受歡迎的" },
-                { word: "funny", cn: "好笑的" }, { word: "interesting", cn: "有趣的" }, { word: "famous", cn: "有名的" },
-                { word: "plan", cn: "計畫" }, { word: "fight", cn: "打架" }, { word: "train", cn: "訓練" }
-            ],
-            kx3_u5: [
-                { word: "bookstore", cn: "書店" }, { word: "supermarket", cn: "超市" }, { word: "post office", cn: "郵局" },
-                { word: "bank", cn: "銀行" }, { word: "church", cn: "教堂" }, { word: "bakery", cn: "麵包店" },
-                { word: "temple", cn: "寺廟" }, { word: "hotel", cn: "飯店" }, { word: "department store", cn: "百貨公司" },
-                { word: "flower shop", cn: "花店" }, { word: "restaurant", cn: "餐廳" }, { word: "bridge", cn: "橋" },
-                { word: "metro station", cn: "捷運站" }, { word: "trip", cn: "旅行" }, { word: "vacation", cn: "假期" },
-                { word: "tour", cn: "旅遊" }, { word: "thousand", cn: "千" }, { word: "fan", cn: "迷" },
-                { word: "vendor", cn: "攤販" }, { word: "stall", cn: "攤位" }, { word: "boat", cn: "小船" },
-                { word: "price", cn: "價格" }, { word: "cash", cn: "現金" }, { word: "pay", cn: "付錢" },
-                { word: "cost", cn: "花費" }, { word: "sell", cn: "賣" }, { word: "spend", cn: "花費" },
-                { word: "decide", cn: "決定" }, { word: "remember", cn: "記得" }, { word: "own", cn: "自己的" }
-            ],
-            kx3_u6: [
-                { word: "plane", cn: "飛機" }, { word: "bike", cn: "腳踏車" }, { word: "taxi", cn: "計程車" },
-                { word: "scooter", cn: "輕型機車" }, { word: "motorcycle", cn: "重型機車" }, { word: "truck", cn: "卡車" },
-                { word: "ship", cn: "船" }, { word: "bottom", cn: "底部" }, { word: "north", cn: "北方" },
-                { word: "west", cn: "西方" }, { word: "east", cn: "東方" }, { word: "south", cn: "南方" },
-                { word: "sir", cn: "先生" }, { word: "corner", cn: "轉角" }, { word: "block", cn: "街區" },
-                { word: "rule", cn: "規定" }, { word: "visitor", cn: "訪客" }, { word: "pocket", cn: "口袋" },
-                { word: "monster", cn: "怪物" }, { word: "clerk", cn: "店員" }, { word: "mistake", cn: "錯誤" },
-                { word: "beef", cn: "牛肉" }, { word: "parking space", cn: "停車位" }, { word: "drive", cn: "駕駛" },
-                { word: "row", cn: "划船" }, { word: "ride", cn: "騎" }, { word: "broken", cn: "破損的" },
-                { word: "convenient", cn: "方便的" }, { word: "cheap", cn: "便宜的" }, { word: "favorite", cn: "最喜愛的" }
-            ],
-            hl3_u1: [
-                { word: "summer vacation", cn: "暑假" }, { word: "weather", cn: "天氣" }, { word: "Taiwan", cn: "臺灣" },
-                { word: "fun", cn: "樂趣" }, { word: "snow", cn: "雪" }, { word: "send", cn: "寄" },
-                { word: "postcard", cn: "明信片" }, { word: "borrow", cn: "借入" }, { word: "lend", cn: "借出" },
-                { word: "glove", cn: "手套" }, { word: "kind", cn: "親切的" }, { word: "lovely", cn: "可愛的" },
-                { word: "jacket", cn: "夾克" }, { word: "give", cn: "給予" }, { word: "hate", cn: "討厭" },
-                { word: "heavy", cn: "厚重的" }, { word: "season", cn: "季節" }, { word: "spring", cn: "春天" },
-                { word: "cloud", cn: "雲" }, { word: "sun", cn: "太陽" }, { word: "autumn", cn: "秋天" },
-                { word: "wind", cn: "風" }, { word: "winter", cn: "冬天" }, { word: "sunny", cn: "晴朗的" },
-                { word: "snowy", cn: "有雪的" }, { word: "rainy", cn: "有雨的" }, { word: "cloudy", cn: "多雲的" },
-                { word: "windy", cn: "風大的" }, { word: "cool", cn: "涼爽的" }, { word: "speak", cn: "講話" }
-            ],
-            hl3_u2: [
-                { word: "club", cn: "社團" }, { word: "interesting", cn: "有趣的" }, { word: "science", cn: "科學" },
-                { word: "subject", cn: "學科" }, { word: "hear", cn: "聽見" }, { word: "same", cn: "相同的" },
-                { word: "call", cn: "打電話" }, { word: "tell", cn: "告訴" }, { word: "poor", cn: "不佳的" },
-                { word: "end", cn: "結束" }, { word: "whose", cn: "誰的" }, { word: "camera", cn: "相機" },
-                { word: "mine", cn: "我的" }, { word: "when", cn: "當" }, { word: "back", cn: "返回" },
-                { word: "math", cn: "數學" }, { word: "soccer", cn: "足球" }, { word: "Chinese", cn: "中文" },
-                { word: "history", cn: "歷史" }, { word: "violin", cn: "小提琴" }, { word: "robot", cn: "機器人" },
-                { word: "health", cn: "健康" }, { word: "PE", cn: "體育" }, { word: "look for", cn: "尋找" },
-                { word: "engineer", cn: "工程師" }, { word: "lesson", cn: "課程" }, { word: "difficult", cn: "困難的" },
-                { word: "teach", cn: "教導" }, { word: "own", cn: "自己的" }, { word: "finish", cn: "完成" }
-            ],
-            hl3_u3: [
-                { word: "someone", cn: "某人" }, { word: "break", cn: "打破" }, { word: "do the dishes", cn: "洗碗盤" },
-                { word: "half", cn: "一半" }, { word: "past", cn: "經過" }, { word: "leave", cn: "離開" },
-                { word: "quarter", cn: "十五分鐘" }, { word: "remember", cn: "記得" }, { word: "close", cn: "靠近的" },
-                { word: "feed", cn: "餵養" }, { word: "pet", cn: "寵物" }, { word: "sweep", cn: "掃" },
-                { word: "floor", cn: "地板" }, { word: "fix", cn: "修理" }, { word: "drawer", cn: "抽屜" },
-                { word: "mop", cn: "拖地" }, { word: "stairs", cn: "樓梯" }, { word: "wipe", cn: "擦拭" },
-                { word: "window", cn: "窗戶" }, { word: "dry", cn: "乾燥" }, { word: "hang", cn: "掛" },
-                { word: "clothes", cn: "衣服" }, { word: "move", cn: "搬遷" }, { word: "city", cn: "城市" },
-                { word: "dream", cn: "夢想" }, { word: "almost", cn: "幾乎" }, { word: "scared", cn: "害怕的" },
-                { word: "problem", cn: "問題" }, { word: "however", cn: "然而" }, { word: "nothing", cn: "沒什麼" }
-            ],
-            hl3_u4: [
-                { word: "hope", cn: "希望" }, { word: "future", cn: "未來" }, { word: "plan", cn: "計畫" },
-                { word: "lawyer", cn: "律師" }, { word: "job", cn: "工作" }, { word: "worry", cn: "擔心" },
-                { word: "keep", cn: "保持" }, { word: "idea", cn: "主意" }, { word: "right", cn: "權利" },
-                { word: "put on", cn: "穿上" }, { word: "reporter", cn: "記者" }, { word: "interview", cn: "採訪" },
-                { word: "mail carrier", cn: "郵差" }, { word: "dentist", cn: "牙醫" }, { word: "factory", cn: "工廠" },
-                { word: "fisherman", cn: "漁夫" }, { word: "secretary", cn: "祕書" }, { word: "boss", cn: "老闆" },
-                { word: "salesman", cn: "銷售員" }, { word: "farmer", cn: "農夫" }, { word: "grow", cn: "種植" },
-                { word: "soldier", cn: "士兵" }, { word: "country", cn: "國家" }, { word: "truck driver", cn: "卡車司機" },
-                { word: "drive", cn: "開車" }, { word: "successful", cn: "成功的" }, { word: "find", cn: "找到" },
-                { word: "grade", cn: "年級" }, { word: "decide", cn: "決定" }, { word: "become", cn: "成為" }
-            ],
-            hl3_u5: [
-                { word: "metro", cn: "捷運" }, { word: "lost", cn: "迷路的" }, { word: "map", cn: "地圖" },
-                { word: "ask", cn: "詢問" }, { word: "straight", cn: "直地" }, { word: "turn left", cn: "向左轉" },
-                { word: "along", cn: "沿著" }, { word: "block", cn: "街區" }, { word: "corner", cn: "轉角" },
-                { word: "across from", cn: "在對面" }, { word: "supermarket", cn: "超市" }, { word: "ground", cn: "地面" },
-                { word: "sir", cn: "先生" }, { word: "on foot", cn: "步行" }, { word: "take", cn: "搭乘" },
-                { word: "by", cn: "搭乘" }, { word: "get off", cn: "下車" }, { word: "get", cn: "到達" },
-                { word: "right", cn: "右邊" }, { word: "ship", cn: "輪船" }, { word: "taxi", cn: "計程車" },
-                { word: "bike", cn: "單車" }, { word: "motorcycle", cn: "機車" }, { word: "scooter", cn: "機車" },
-                { word: "bank", cn: "銀行" }, { word: "fire station", cn: "消防局" }, { word: "toy", cn: "玩具" },
-                { word: "post office", cn: "郵局" }, { word: "hospital", cn: "醫院" }, { word: "pool", cn: "水池" }
-            ],
-            hl3_u6: [
-                { word: "will", cn: "將" }, { word: "ugly", cn: "醜的" }, { word: "sweater", cn: "毛衣" },
-                { word: "tonight", cn: "今晚" }, { word: "funny", cn: "滑稽的" }, { word: "cost", cn: "花費" },
-                { word: "price", cn: "價格" }, { word: "spend", cn: "花費" }, { word: "expensive", cn: "昂貴的" },
-                { word: "on sale", cn: "特價中" }, { word: "pair", cn: "一雙" }, { word: "total", cn: "總計" },
-                { word: "pay", cn: "付費" }, { word: "thousand", cn: "千" }, { word: "tomorrow", cn: "明天" },
-                { word: "high", cn: "高的" }, { word: "save", cn: "節省" }, { word: "would like", cn: "想要" },
-                { word: "change", cn: "找零" }, { word: "take", cn: "花費時間" }, { word: "dress", cn: "洋裝" },
-                { word: "cap", cn: "帽子" }, { word: "shirt", cn: "襯衫" }, { word: "belt", cn: "腰帶" },
-                { word: "jeans", cn: "牛仔褲" }, { word: "sock", cn: "襪子" }, { word: "tie", cn: "領帶" },
-                { word: "pants", cn: "長褲" }, { word: "shoe", cn: "鞋" }, { word: "T-shirt", cn: "T 恤" }
-            ],
-            hl5_u1: [
-                { word: "diet", cn: "節食" }, { word: "photo", cn: "照片" }, { word: "type", cn: "類型" },
-                { word: "habit", cn: "習慣" }, { word: "gym", cn: "健身房" }, { word: "race", cn: "競賽" },
-                { word: "kind", cn: "種類" }, { word: "letter", cn: "信" }, { word: "teenager", cn: "青少年" },
-                { word: "senior high school", cn: "高中" }, { word: "drum", cn: "鼓" }, { word: "joy", cn: "喜悅" },
-                { word: "pop", cn: "流行音樂" }, { word: "interest", cn: "興趣" }, { word: "garbage", cn: "垃圾" },
-                { word: "wish", cn: "願望" }, { word: "envelope", cn: "信封" }, { word: "stamp", cn: "郵票" },
-                { word: "star", cn: "明星" }, { word: "appearance", cn: "外表" }, { word: "weight", cn: "體重" },
-                { word: "mood", cn: "心情" }, { word: "exam", cn: "考試" }, { word: "feeling", cn: "感覺" },
-                { word: "raise", cn: "提高" }, { word: "cheat", cn: "作弊" }, { word: "copy", cn: "抄襲" },
-                { word: "understand", cn: "瞭解" }, { word: "call", cn: "稱呼" }, { word: "skip", cn: "省略" }
-            ],
-            hl5_u2: [
-                { word: "actor", cn: "演員" }, { word: "heart", cn: "心臟" }, { word: "lie", cn: "謊言" },
-                { word: "comics", cn: "漫畫" }, { word: "Internet", cn: "網路" }, { word: "ticket", cn: "票" },
-                { word: "actress", cn: "女演員" }, { word: "towel", cn: "毛巾" }, { word: "comb", cn: "梳子" },
-                { word: "bat", cn: "蝙蝠" }, { word: "newspaper", cn: "報紙" }, { word: "piece", cn: "張" },
-                { word: "sentence", cn: "句子" }, { word: "post", cn: "貼文" }, { word: "hit", cn: "點擊數" },
-                { word: "award", cn: "獎項" }, { word: "horror", cn: "恐怖" }, { word: "difference", cn: "差別" },
-                { word: "source", cn: "來源" }, { word: "touch", cn: "觸動" }, { word: "surprise", cn: "驚訝" },
-                { word: "guess", cn: "猜測" }, { word: "download", cn: "下載" }, { word: "set", cn: "建立" },
-                { word: "book", cn: "預訂" }, { word: "dig", cn: "挖掘" }, { word: "spell", cn: "拼字" },
-                { word: "trick", cn: "騙局" }, { word: "tell", cn: "告訴" }, { word: "spread", cn: "散播" }
-            ],
-            hl5_u3: [
-                { word: "senior center", cn: "樂齡中心" }, { word: "pleasure", cn: "榮幸" }, { word: "attack", cn: "攻擊" },
-                { word: "toe", cn: "腳趾" }, { word: "bridge", cn: "橋" }, { word: "smoke", cn: "煙霧" },
-                { word: "puppy", cn: "幼犬" }, { word: "middle", cn: "中間" }, { word: "note", cn: "紙條" },
-                { word: "wallet", cn: "錢包" }, { word: "pocket", cn: "口袋" }, { word: "area", cn: "區域" },
-                { word: "glue", cn: "膠水" }, { word: "yard", cn: "庭院" }, { word: "pipe", cn: "水管" },
-                { word: "bench", cn: "長凳" }, { word: "badminton", cn: "羽毛球" }, { word: "tennis", cn: "網球" },
-                { word: "slide", cn: "滑梯" }, { word: "seesaw", cn: "翹翹板" }, { word: "swing", cn: "鞦韆" },
-                { word: "tool", cn: "工具" }, { word: "pot", cn: "鍋" }, { word: "seed", cn: "種子" },
-                { word: "basket", cn: "籃子" }, { word: "pack", cn: "包" }, { word: "fan", cn: "風扇" },
-                { word: "gas", cn: "氣體" }, { word: "program", cn: "計畫" }, { word: "side", cn: "側邊" }
-            ],
-            hl5_u4: [
-                { word: "gate", cn: "大門" }, { word: "file", cn: "檔案" }, { word: "quiz", cn: "小考" },
-                { word: "blackboard", cn: "黑板" }, { word: "chalk", cn: "粉筆" }, { word: "screen", cn: "螢幕" },
-                { word: "error", cn: "錯誤" }, { word: "button", cn: "按鈕" }, { word: "wake word", cn: "喚醒字詞" },
-                { word: "list", cn: "清單" }, { word: "honey", cn: "親愛的" }, { word: "voice assistant", cn: "語音助理" },
-                { word: "machine", cn: "機器" }, { word: "dozen", cn: "打" }, { word: "refrigerator", cn: "冰箱" },
-                { word: "key", cn: "鑰匙" }, { word: "the cloud", cn: "雲端" }, { word: "rise", cn: "興起" },
-                { word: "lamp", cn: "檯燈" }, { word: "couch", cn: "沙發" }, { word: "cellphone", cn: "手機" },
-                { word: "fat", cn: "胖的" }, { word: "code", cn: "密碼" }, { word: "ability", cn: "能力" },
-                { word: "enter", cn: "輸入" }, { word: "save", cn: "儲存" }, { word: "boil", cn: "煮沸" },
-                { word: "upload", cn: "上傳" }, { word: "type", cn: "打字" }, { word: "collect", cn: "收集" }
-            ],
-            hl5_u5: [
-                { word: "planet", cn: "行星" }, { word: "line", cn: "隊伍" }, { word: "god", cn: "神" },
-                { word: "restroom", cn: "洗手間" }, { word: "bath", cn: "沐浴" }, { word: "uniform", cn: "制服" },
-                { word: "tail", cn
+                { word: "coat", cn: "大衣" }, { word
