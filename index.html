@@ -134,6 +134,7 @@
             background: white;
             color: var(--text-main);
             outline: none;
+            margin-bottom: 10px;
         }
 
         .btn {
@@ -223,7 +224,7 @@
         }
 
         .card-prompt .base-word {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: bold;
             color: var(--text-main);
             margin-bottom: 6px;
@@ -348,16 +349,18 @@
         <!-- 歡迎畫面 -->
         <div id="start-screen" class="screen active">
             <h1>🐾 DL English 萌寵單字特訓站 🐶</h1>
-            <div class="subtitle">✨ 國中會考、高中、康軒各課特訓 ✨</div>
+            <div class="subtitle">✨ 階層式選單：版本與課次自由切換 ✨</div>
             <div class="welcome-box">
                 <div class="category-select">
-                    <label for="category-select">🎯 請選擇練習範圍：</label>
-                    <select id="category-select">
-                        <option value="cap1200">國中會考 1200 核心單字</option>
-                        <option value="kangxuan_u4">康軒版第一冊第四課</option>
-                        <option value="kangxuan_u3">康軒版第一冊第三課</option>
-                        <option value="irregular">不規則動詞三態特訓</option>
-                        <option value="vocab7000">高中 7000 核心單字拼寫</option>
+                    <label for="main-select">🎯 請選擇教材大類：</label>
+                    <select id="main-select" onchange="updateSubCategory()">
+                        <option value="kangxuan1">康軒版國中英語第一冊</option>
+                        <option value="others">其他精選題庫 (會考/高中/動詞)</option>
+                    </select>
+
+                    <label for="sub-select" id="sub-label" style="margin-top: 12px;">📖 請選擇具體課次 / 範圍：</label>
+                    <select id="sub-select">
+                        <!-- 動態載入 -->
                     </select>
                 </div>
                 <p>每關完全隨機亂數抽考 10 道題。<br>支援語音朗讀、智慧提示與錯題複習！</p>
@@ -400,7 +403,7 @@
             <div class="result-stats">
                 <div class="stat-item">
                     <span>測驗單元：</span>
-                    <span class="stat-value" id="res-category">國中會考 1200 核心單字</span>
+                    <span class="stat-value" id="res-category">康軒第一冊 Lesson 1</span>
                 </div>
                 <div class="stat-item">
                     <span>本次獲得金幣：</span>
@@ -441,369 +444,71 @@
         }
 
         const db = {
-            cap1200: [
-                { word: "accept", cn: "接受" },
-                { word: "active", cn: "活躍的；積極的" },
-                { word: "activity", cn: "活動" },
-                { word: "ad", cn: "廣告 (advertisement)" },
-                { word: "advice", cn: "勸告；建議" },
-                { word: "affect", cn: "影響" },
-                { word: "afraid", cn: "害怕的" },
-                { word: "agree", cn: "同意" },
-                { word: "allow", cn: "允許" },
-                { word: "almost", cn: "幾乎" },
-                { word: "alone", cn: "單獨的；獨自地" },
-                { word: "aloud", cn: "出聲地" },
-                { word: "already", cn: "已經" },
-                { word: "although", cn: "雖然；儘管" },
-                { word: "always", cn: "總是" },
-                { word: "among", cn: "在...之中" },
-                { word: "ancient", cn: "古代的" },
-                { word: "angry", cn: "生氣的" },
-                { word: "another", cn: "另一個" },
-                { word: "answer", cn: "回答" },
-                { word: "anybody", cn: "任何人" },
-                { word: "anything", cn: "任何事物" },
-                { word: "appear", cn: "出現" },
-                { word: "area", cn: "地區；面積" },
-                { word: "arrive", cn: "到達" },
-                { word: "as", cn: "如同；當...時" },
-                { word: "ask", cn: "問；要求" },
-                { word: "asleep", cn: "睡著的" },
-                { word: "attack", cn: "攻擊" },
-                { word: "attend", cn: "參加；出席" }
+            kangxuan_u1: [
+                { word: "wife", cn: "妻子" }, { word: "husband", cn: "丈夫" }, { word: "family", cn: "家庭；家人" },
+                { word: "aunt", cn: "姑姑；舅媽" }, { word: "uncle", cn: "叔叔；舅舅" }, { word: "cousin", cn: "堂（表）兄弟姊妹" },
+                { word: "parent", cn: "雙親之一" }, { word: "son", cn: "兒子" }, { word: "daughter", cn: "女兒" },
+                { word: "child", cn: "孩子" }, { word: "handsome", cn: "英俊的" }, { word: "man", cn: "男人" },
+                { word: "problem", cn: "問題" }, { word: "strict", cn: "嚴格" }, { word: "junior high school", cn: "國民中學" },
+                { word: "PE", cn: "體育" }, { word: "farmer", cn: "農夫" }, { word: "cook", cn: "廚師；煮" },
+                { word: "doctor", cn: "醫生" }, { word: "woman", cn: "女人" }, { word: "nurse", cn: "護理師；護士" },
+                { word: "senior high school", cn: "高級中學" }, { word: "pet", cn: "寵物" }, { word: "young", cn: "年輕的" },
+                { word: "beautiful", cn: "漂亮的；美麗的" }, { word: "warm", cn: "溫暖的" }, { word: "cute", cn: "可愛的" },
+                { word: "nice", cn: "好的；和善的" }, { word: "too", cn: "也；太" }, { word: "really", cn: "真的" },
+                { word: "our", cn: "我們的" }, { word: "Nice to meet you.", cn: "很高興認識你。" }, { word: "class", cn: "班級；課程" },
+                { word: "classroom", cn: "教室" }, { word: "same", cn: "一樣的" }, { word: "again", cn: "再一次" }, { word: "news", cn: "新聞；消息" }
             ],
-            kangxuan_u4: [
-                { word: "library", cn: "圖書館" },
-                { word: "basketball", cn: "籃球" },
-                { word: "court", cn: "球場" },
-                { word: "basketball court", cn: "籃球場" },
-                { word: "gate", cn: "大門" },
-                { word: "school gate", cn: "校門口" },
-                { word: "garden", cn: "花園" },
-                { word: "playground", cn: "遊樂場；操場" },
-                { word: "ground", cn: "地面" },
-                { word: "slide", cn: "滑梯" },
-                { word: "swing", cn: "秋千" },
-                { word: "seesaw", cn: "蹺蹺板" },
-                { word: "sport", cn: "運動" },
-                { word: "field", cn: "球場" },
-                { word: "sports field", cn: "運動場" },
-                { word: "restroom", cn: "廁所" },
-                { word: "gym", cn: "體育館" },
-                { word: "basket", cn: "籃子" },
-                { word: "classroom", cn: "教室" },
-                { word: "class", cn: "班級；課程" },
-                { word: "photo", cn: "相片" },
-                { word: "screen", cn: "螢幕" },
-                { word: "mountain", cn: "山" },
-                { word: "pond", cn: "池塘" },
-                { word: "rest", cn: "休息" },
-                { word: "storybook", cn: "故事書" },
-                { word: "story", cn: "故事" },
-                { word: "test", cn: "考試" },
-                { word: "grade", cn: "成績" },
-                { word: "fun", cn: "樂趣" },
-                { word: "favorite", cn: "最喜愛" },
-                { word: "South Africa", cn: "南非" },
-                { word: "student", cn: "學生" },
-                { word: "place", cn: "地方" },
-                { word: "school", cn: "學校" },
-                { word: "teacher", cn: "老師" },
-                { word: "game", cn: "比賽" },
-                { word: "meet", cn: "遇見" },
-                { word: "Nice to meet you.", cn: "很高興認識你。" },
-                { word: "there is", cn: "有 (單數)" },
-                { word: "there are", cn: "有 (複數)" },
-                { word: "special", cn: "特別的" },
-                { word: "whole", cn: "全部的" },
-                { word: "different", cn: "不同的" },
-                { word: "big", cn: "大的" },
-                { word: "some", cn: "一些" },
-                { word: "any", cn: "任何" },
-                { word: "a lot of", cn: "許多的" },
-                { word: "on", cn: "在···上面" },
-                { word: "in", cn: "在···裡面" },
-                { word: "from", cn: "來自" },
-                { word: "at", cn: "在···（地方）" },
-                { word: "very", cn: "非常" },
-                { word: "there", cn: "那裡" },
-                { word: "this is...", cn: "這位是···" },
-                { word: "in the mountains", cn: "在山裡" },
-                { word: "four", cn: "四" },
-                { word: "thirty", cn: "三十" }
+            kangxuan_u2: [
+                { word: "tiger", cn: "老虎" }, { word: "monkey", cn: "猴子" }, { word: "elephant", cn: "大象" },
+                { word: "mouse", cn: "老鼠" }, { word: "fox", cn: "狐狸" }, { word: "sheep", cn: "綿羊" },
+                { word: "bear", cn: "熊" }, { word: "zebra", cn: "斑馬" }, { word: "rooster", cn: "公雞" },
+                { word: "rat", cn: "大老鼠" }, { word: "goat", cn: "山羊" }, { word: "snake", cn: "蛇" },
+                { word: "rabbit", cn: "兔子" }, { word: "ox", cn: "（公）牛" }, { word: "horse", cn: "馬" },
+                { word: "animal", cn: "動物" }, { word: "dragon", cn: "龍" }, { word: "Chinese", cn: "中國人；中文；中國的" },
+                { word: "sign", cn: "符號" }, { word: "movie theater", cn: "電影院" }, { word: "smart", cn: "聰明的" },
+                { word: "picture", cn: "照片；圖畫" }, { word: "energetic", cn: "充滿活力的" }, { word: "only", cn: "僅僅；只" },
+                { word: "or", cn: "或者" }, { word: "people person", cn: "人緣好的人" }, { word: "people", cn: "人們" },
+                { word: "size", cn: "尺寸" }, { word: "true", cn: "真的；真實的" }, { word: "very", cn: "非常；很" },
+                { word: "lifespan", cn: "壽命" }, { word: "but", cn: "但是" }, { word: "their", cn: "他們的；她們的；牠們的" },
+                { word: "no wonder", cn: "難怪" }, { word: "What about...?", cn: "……怎麼樣？" }, { word: "lion", cn: "獅子" },
+                { word: "different", cn: "不同的" }, { word: "meter", cn: "公尺" }
             ],
             kangxuan_u3: [
-                { word: "bedroom", cn: "臥室" },
-                { word: "bed", cn: "床舗" },
-                { word: "room", cn: "房間" },
-                { word: "bathroom", cn: "浴室" },
-                { word: "living room", cn: "客廳" },
-                { word: "dining room", cn: "飯廳" },
-                { word: "roommate", cn: "室友" },
-                { word: "stair", cn: "樓梯" },
-                { word: "cellphone", cn: "手機" },
-                { word: "place", cn: "地方" },
-                { word: "sofa", cn: "沙發" },
-                { word: "house", cn: "房子" },
-                { word: "lake", cn: "湖" },
-                { word: "castle", cn: "城堡" },
-                { word: "blanket", cn: "毛毯" },
-                { word: "world", cn: "世界" },
-                { word: "newspaper", cn: "報紙" },
-                { word: "magic", cn: "魔法" },
-                { word: "TV", cn: "電視 (television)" },
-                { word: "picture", cn: "照片；圖片" },
-                { word: "uncle", cn: "叔叔；舅舅；伯父" },
-                { word: "aunt", cn: "姑姑；嬸嬸；阿姨" },
-                { word: "student", cn: "學生" },
-                { word: "school", cn: "學校" },
-                { word: "girl", cn: "女孩" },
-                { word: "year", cn: "年" },
-                { word: "year old", cn: "歲" },
-                { word: "am", cn: "是 (主詞為I)" },
-                { word: "is", cn: "是 (單數)" },
-                { word: "are", cn: "是 (複數)" },
-                { word: "on", cn: "在···上面" },
-                { word: "in", cn: "在···裡面" },
-                { word: "under", cn: "在···下面" },
-                { word: "at", cn: "在···地方／場合" },
-                { word: "behind", cn: "在···後面" },
-                { word: "in front of", cn: "在···前面" },
-                { word: "between", cn: "在···中間" },
-                { word: "next to", cn: "在···旁邊" },
-                { word: "around", cn: "圍繞" },
-                { word: "outside", cn: "在···外面" },
-                { word: "where", cn: "哪裡" },
-                { word: "who", cn: "誰" },
-                { word: "what", cn: "什麽" },
-                { word: "how", cn: "如何" },
-                { word: "soft", cn: "柔軟的" },
-                { word: "hard", cn: "硬的" },
-                { word: "magic", cn: "魔法的" },
-                { word: "different", cn: "不同的" },
-                { word: "small", cn: "小的" },
-                { word: "big", cn: "大的" },
-                { word: "old", cn: "舊的" },
-                { word: "nine-year-old", cn: "九歲的" },
-                { word: "later", cn: "稍後" },
-                { word: "or", cn: "或者" },
-                { word: "and", cn: "和" },
-                { word: "but", cn: "但是" },
-                { word: "this", cn: "這（一個）" },
-                { word: "that", cn: "那（一個）" },
-                { word: "these", cn: "這些" },
-                { word: "those", cn: "那些" },
-                { word: "in fact", cn: "事實上" },
-                { word: "around the world", cn: "在世界各地" },
-                { word: "look at", cn: "看" }
+                { word: "dining room", cn: "飯廳" }, { word: "theme", cn: "主題" }, { word: "bedroom", cn: "臥室" },
+                { word: "bathroom", cn: "浴室" }, { word: "living room", cn: "客廳" }, { word: "tool", cn: "工具" },
+                { word: "kitchen", cn: "廚房" }, { word: "idea", cn: "想法；點子" }, { word: "expensive", cn: "昂貴的" },
+                { word: "step", cn: "步驟；一步" }, { word: "get", cn: "獲得" }, { word: "smartphone", cn: "智慧型手機" },
+                { word: "please", cn: "請" }, { word: "upload", cn: "上傳" }, { word: "quiet", cn: "安靜的" },
+                { word: "some", cn: "一些；一些的" }, { word: "world", cn: "世界" }, { word: "house", cn: "房子" },
+                { word: "choose", cn: "選擇" }, { word: "ice", cn: "冰" }, { word: "style", cn: "風格；款式" },
+                { word: "blanket", cn: "毛毯" }, { word: "next to", cn: "在……旁邊" }, { word: "in front of", cn: "在……前面" },
+                { word: "behind", cn: "在……後面" }, { word: "between", cn: "在……中間" }, { word: "beside", cn: "在……旁邊" },
+                { word: "around", cn: "圍繞；到處" }, { word: "near", cn: "在……附近" }, { word: "inside", cn: "在……裡面；在裡面" },
+                { word: "photo", cn: "相片" }, { word: "soft", cn: "柔軟的" }, { word: "hard", cn: "硬的" },
+                { word: "I see.", cn: "我了解了。" }, { word: "let's...", cn: "我們一起……吧" }, { word: "in fact", cn: "事實上" },
+                { word: "type", cn: "種類" }, { word: "with", cn: "和；與……一起；帶有" }, { word: "wait", cn: "等待" }, { word: "question", cn: "問題" }
             ],
-            irregular: [
-                { word: "be", cn: "是 (原形)" },
-                { word: "begin", cn: "開始" },
-                { word: "break", cn: "打破" },
-                { word: "bring", cn: "帶來" },
-                { word: "buy", cn: "買" }
+            kangxuan_u4: [
+                { word: "early", cn: "早起；初期的" }, { word: "late", cn: "晚的；遲到的" }, { word: "listen", cn: "聽" },
+                { word: "talk", cn: "講話" }, { word: "voice", cn: "聲音；嗓音" }, { word: "noisy", cn: "吵鬧的" },
+                { word: "make", cn: "製造" }, { word: "can't", cn: "不能；不會；不可以" }, { word: "take a photo", cn: "拍照" },
+                { word: "sit down", cn: "坐下" }, { word: "stand up", cn: "站起來" }, { word: "noise", cn: "噪音" },
+                { word: "ground", cn: "地面" }, { word: "sidewalk", cn: "人行道" }, { word: "road", cn: "道路" },
+                { word: "traffic lights", cn: "紅綠燈" }, { word: "lane", cn: "小路；小巷" }, { word: "crosswalk", cn: "斑馬線" },
+                { word: "way", cn: "方式；方法；路" }, { word: "cross", cn: "跨越" }, { word: "warn", cn: "警告" },
+                { word: "watch out", cn: "小心；注意" }, { word: "check out", cn: "查看" }, { word: "all the time", cn: "一直" },
+                { word: "also", cn: "而且；也" }, { word: "any", cn: "任何（的）" }, { word: "download", cn: "下載" },
+                { word: "real", cn: "真的；真實的" }, { word: "the USA", cn: "美國" }, { word: "other", cn: "其它的" },
+                { word: "song", cn: "歌曲" }, { word: "user", cn: "使用者" }, { word: "design", cn: "設計" },
+                { word: "special", cn: "特別的" }, { word: "Guess what?", cn: "你猜怎麼著？" }, { word: "oncoming", cn: "迎面而來的" }
             ],
-            vocab7000: [
-                { word: "abandon", cn: "放棄；拋棄" },
-                { word: "abolish", cn: "廢除" },
-                { word: "abrupt", cn: "突然的" }
-            ]
-        };
-
-        let currentCategory = 'cap1200';
-        let currentQuestions = [];
-        let wrongQuestions = [];
-        let currentIndex = 0;
-        let score = 0;
-        let earnedCoins = 0;
-        let startTime = 0;
-        let timerInterval = null;
-        let elapsedSeconds = 0;
-        let isAnswering = false;
-
-        function shuffleArray(array) {
-            let arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                let j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
-        function startGame() {
-            const selectEl = document.getElementById('category-select');
-            currentCategory = selectEl.value;
-            
-            let rawData = db[currentCategory];
-            let shuffled = shuffleArray(rawData);
-            currentQuestions = shuffled.slice(0, 10);
-            wrongQuestions = [];
-            
-            currentIndex = 0;
-            score = 0;
-            earnedCoins = 0;
-            elapsedSeconds = 0;
-            
-            document.getElementById('start-screen').classList.remove('active');
-            document.getElementById('result-screen').classList.remove('active');
-            document.getElementById('game-screen').classList.add('active');
-
-            startTimer();
-            loadQuestion();
-        }
-
-        function startTimer() {
-            clearInterval(timerInterval);
-            startTime = Date.now();
-            timerInterval = setInterval(() => {
-                elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-                document.getElementById('timer-text').innerText = `⏱️ ${elapsedSeconds} 秒`;
-            }, 1000);
-        }
-
-        function loadQuestion() {
-            isAnswering = false;
-            const q = currentQuestions[currentIndex];
-            document.getElementById('progress-text').innerText = `進度：${currentIndex + 1} / 10`;
-            
-            const singleInput = document.getElementById('single-input');
-            const hintBox = document.getElementById('hint-text');
-
-            singleInput.value = '';
-            singleInput.disabled = false;
-            hintBox.style.display = 'none';
-
-            document.getElementById('chinese-top-label').innerText = "🐶 請根據中文提示拼出英文：";
-            document.getElementById('base-word').innerText = q.cn;
-            document.getElementById('single-label').innerText = "請輸入英文拼寫：";
-            singleInput.focus();
-
-            document.getElementById('feedback-msg').innerText = '';
-            document.getElementById('feedback-msg').className = 'feedback';
-            document.getElementById('submit-btn').innerText = '送出答案 ➔';
-        }
-
-        function showHintBox() {
-            const q = currentQuestions[currentIndex];
-            const hintBox = document.getElementById('hint-text');
-            const target = q.word;
-            const firstLetter = target.charAt(0);
-            const len = target.length;
-            hintBox.innerText = `💡 提示：首字母為 "${firstLetter}"，總共 ${len} 個字元`;
-            hintBox.style.display = 'block';
-        }
-
-        function speakCurrentWord() {
-            const q = currentQuestions[currentIndex];
-            let textToSpeak = q.word;
-
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                let utterance = new SpeechSynthesisUtterance(textToSpeak);
-                utterance.lang = 'en-US';
-                utterance.rate = 0.9;
-                window.speechSynthesis.speak(utterance);
-            } else {
-                alert('您的瀏覽器不支援語音功能');
-            }
-        }
-
-        function checkAnswer() {
-            if (isAnswering) {
-                currentIndex++;
-                if (currentIndex < currentQuestions.length) {
-                    loadQuestion();
-                } else {
-                    endGame();
-                }
-                return;
-            }
-
-            const q = currentQuestions[currentIndex];
-            const msgEl = document.getElementById('feedback-msg');
-            const userVal = document.getElementById('single-input').value.trim().toLowerCase();
-            
-            if (!userVal) {
-                alert('請輸入答案！');
-                return;
-            }
-
-            const targetVal = q.word.toLowerCase();
-            document.getElementById('single-input').disabled = true;
-
-            let isCorrect = (userVal === targetVal);
-
-            if (isCorrect) {
-                score++;
-                earnedCoins += 1;
-                totalCoins += 1;
-                updateCoinDisplay();
-                msgEl.innerText = '✨ 太棒了！答對囉！ (+1 金幣 🪙)';
-                msgEl.className = 'feedback correct';
-            } else {
-                wrongQuestions.push(q);
-                msgEl.innerText = `❌ 正確答案是：${q.word}`;
-                msgEl.className = 'feedback error';
-            }
-
-            speakCurrentWord();
-
-            isAnswering = true;
-            document.getElementById('submit-btn').innerText = (currentIndex < currentQuestions.length - 1) ? '下一題 ➔' : '查看結算成績 ➔';
-        }
-
-        function endGame() {
-            clearInterval(timerInterval);
-            document.getElementById('game-screen').classList.remove('active');
-            document.getElementById('result-screen').classList.add('active');
-
-            const categoryNames = {
-                cap1200: "國中會考 1200 核心單字",
-                kangxuan_u4: "康軒版第一冊第四課",
-                kangxuan_u3: "康軒版第一冊第三課",
-                irregular: "不規則動詞三態特訓",
-                vocab7000: "高中 7000 核心單字拼寫"
-            };
-
-            document.getElementById('res-category').innerText = categoryNames[currentCategory];
-            document.getElementById('result-category-title').innerText = `${categoryNames[currentCategory]} 結算`;
-            document.getElementById('res-coins').innerText = `+${earnedCoins} 枚 🪙`;
-            document.getElementById('res-time').innerText = `${elapsedSeconds} 秒`;
-            document.getElementById('res-score').innerText = `${score} / 10`;
-            document.getElementById('res-accuracy').innerText = `${Math.round((score / 10) * 100)}%`;
-
-            const wrongContainer = document.getElementById('wrong-container');
-            const wrongItemsList = document.getElementById('wrong-items-list');
-            wrongItemsList.innerHTML = '';
-
-            if (wrongQuestions.length > 0) {
-                wrongContainer.style.display = 'block';
-                wrongQuestions.forEach((q) => {
-                    let itemDiv = document.createElement('div');
-                    itemDiv.className = 'wrong-item';
-                    itemDiv.innerHTML = `• <b>${q.word}</b> (${q.cn})`;
-                    wrongItemsList.appendChild(itemDiv);
-                });
-            } else {
-                wrongContainer.style.display = 'none';
-            }
-        }
-
-        function backToHome() {
-            document.getElementById('result-screen').classList.remove('active');
-            document.getElementById('start-screen').classList.add('active');
-        }
-
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const gameActive = document.getElementById('game-screen').classList.contains('active');
-                if (gameActive) {
-                    checkAnswer();
-                }
-            }
-        });
-    </script>
-</body>
-</html>
+            kangxuan_u5: [
+                { word: "day", cn: "日" }, { word: "noon", cn: "中午" }, { word: "week", cn: "週" },
+                { word: "weekend", cn: "週末" }, { word: "birthday", cn: "生日" }, { word: "Monday", cn: "星期一" },
+                { word: "Tuesday", cn: "星期二" }, { word: "Wednesday", cn: "星期三" }, { word: "Thursday", cn: "星期四" },
+                { word: "Friday", cn: "星期五" }, { word: "Saturday", cn: "星期六" }, { word: "Sunday", cn: "星期日" },
+                { word: "party", cn: "派對" }, { word: "life", cn: "生活" }, { word: "a.m.", cn: "上午；凌晨" },
+                { word: "p.m.", cn: "下午；晚上" }, { word: "tonight", cn: "今晚" }, { word: "dinner", cn: "晚餐" },
+                { word: "meeting", cn: "會議" }, { word: "join", cn: "參加；加入" }, { word: "say", cn: "說" },
+                { word: "chat", cn: "聊話" }, { word: "prepare", cn: "準備" }, { word: "look for", cn: "尋找" },
+                { word: "by the way", cn
