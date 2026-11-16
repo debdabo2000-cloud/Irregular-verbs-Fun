@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DL's 文法時空冒險 - 康軒七年級第四課特訓</title>
+    <title>DL's 英語文法時空冒險 - 學習大廳</title>
     <style>
         :root {
             --primary-pink: #FFB5B5;
@@ -23,323 +23,128 @@
             align-items: center;
             min-height: 100vh;
         }
-        .game-container {
+        .lobby-container {
             background: white;
             width: 100%;
             max-width: 600px;
-            padding: 30px;
+            padding: 35px;
             border-radius: 24px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             border: 4px solid var(--primary-pink);
             box-sizing: border-box;
+            text-align: center;
         }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px dashed var(--primary-pink);
-            padding-bottom: 10px;
-        }
-        .stats {
-            font-size: 1.1rem;
-            font-weight: bold;
+        h1 {
             color: #d84315;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        .subtitle {
+            color: #8d6e63;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
         }
         .mascot-box {
             display: flex;
             align-items: center;
             gap: 15px;
             background: #fff8e1;
-            padding: 12px;
+            padding: 15px;
             border-radius: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             border: 2px solid #ffecb3;
+            text-align: left;
         }
         .mascot-img {
-            font-size: 2.5rem;
+            font-size: 3rem;
         }
         .dialogue {
             font-size: 0.95rem;
             color: #5d4037;
             line-height: 1.4;
         }
-        .timer-bar-container {
-            width: 100%;
-            height: 10px;
-            background: #eee;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-        .timer-bar {
-            width: 100%;
-            height: 100%;
-            background: var(--mint-green);
-            transition: width 1s linear;
-        }
-        .question-box {
+        .section-title {
             font-size: 1.2rem;
             font-weight: bold;
-            margin-bottom: 20px;
-            line-height: 1.5;
-            background: #fdfefe;
-            padding: 15px;
-            border-radius: 12px;
-            border-left: 5px solid var(--mint-green);
+            color: #795548;
+            text-align: left;
+            margin: 20px 0 10px 5px;
+            border-left: 4px solid var(--primary-pink);
+            padding-left: 8px;
         }
-        .options-grid {
+        .menu-grid {
             display: grid;
-            gap: 12px;
+            gap: 15px;
             margin-bottom: 20px;
         }
-        .option-btn {
+        .menu-btn {
             background: #f9fbe7;
             border: 2px solid #dcedc8;
-            padding: 14px 18px;
-            border-radius: 12px;
-            font-size: 1.05rem;
+            padding: 18px 20px;
+            border-radius: 16px;
+            font-size: 1.1rem;
             cursor: pointer;
-            text-align: left;
-            transition: all 0.2s;
+            text-decoration: none;
             color: var(--dark-text);
-            font-weight: 600;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
         }
-        .option-btn:hover {
+        .menu-btn:hover {
             background: var(--mint-green);
             border-color: #8bc34a;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
         }
-        .option-btn.correct {
-            background: #c8e6c9 !important;
-            border-color: #4caf50 !important;
-            color: #1b5e20;
+        .menu-btn span {
+            font-size: 0.85rem;
+            color: #795548;
+            background: #fff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid #dcedc8;
         }
-        .option-btn.wrong {
-            background: #ffcdd2 !important;
-            border-color: #f44336 !important;
-            color: #b71c1c;
+        .footer-note {
+            font-size: 0.85rem;
+            color: #a1887f;
+            margin-top: 20px;
         }
-        .explanation {
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border-left: 5px solid #2196f3;
-            display: none;
-            font-size: 0.95rem;
-            line-height: 1.4;
-        }
-        .next-btn {
-            background: #ff8a65;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            border-radius: 12px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            transition: background 0.2s;
-            display: none;
-        }
-        .next-btn:hover {
-            background: #f4511e;
-        }
-        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="game-container">
-    <div class="header">
-        <h2>🐶 DL's 文法時空冒險</h2>
-        <div class="stats">金幣: <span id="coins">0</span> 🏆 <span id="ingots">0</span></div>
-    </div>
+<div class="lobby-container">
+    <h1>🏡 DL's 英語文法時空冒險大廳</h1>
+    <div class="subtitle">國中英語互動闖關學習系統</div>
 
     <div class="mascot-box">
         <div class="mascot-img">🐕</div>
         <div class="dialogue" id="mascot-text">
-            汪！我是法鬥 Cookie！準備好跟我一起挑戰康軒第四課的 can 助動詞與 and / but 連接詞了嗎？
+            汪！歡迎來到文法冒險大廳！我是法鬥 Cookie。請先選擇您的教材與單元，我們馬上開始時空闖關賺金幣吧！
         </div>
     </div>
 
-    <div id="quiz-screen">
-        <div class="timer-bar-container">
-            <div class="timer-bar" id="timer-bar"></div>
-        </div>
-        <div id="question-number" style="font-size: 0.9rem; color: #8d6e63; margin-bottom: 5px;"></div>
-        <div class="question-box" id="question-text">載入中...</div>
-        <div class="options-grid" id="options-container"></div>
-        <div class="explanation" id="explanation-box"></div>
-        <button class="next-btn" id="next-btn" onclick="nextQuestion()">下一題 🚀</button>
+    <div class="section-title">📘 康軒第一冊 (Book 1)</div>
+    
+    <div class="menu-grid">
+        <a href="Grammar.html" class="menu-btn">
+            Lesson 3：方位介系詞與祈使句
+            <span>立即闖關 🚀</span>
+        </a>
+        
+        <a href="Unit4.html" class="menu-btn">
+            Lesson 4：Can 助動詞與連接詞
+            <span>立即闖關 🚀</span>
+        </a>
     </div>
 
-    <div id="result-screen" class="hidden" style="text-align: center; padding: 20px;">
-        <h2>🎉 恭喜完成第四課特訓！</h2>
-        <p id="final-score" style="font-size: 1.2rem; margin: 20px 0;"></p>
-        <div style="font-size: 3rem; margin: 15px;">🏆✨</div>
-        <button class="next-btn" style="display: block;" onclick="restartGame()">再玩一次 🔄</button>
+    <div class="footer-note">
+        ✨ 挑戰滿分賺取金幣，自動累積專屬金元寶 🏆
     </div>
 </div>
-
-<script>
-    // 嚴選康軒七年級第四課代表性題目（can 助動詞、and / but 連接詞）
-    const questions = [
-        {
-            q: "Ken: ______ you sing and dance at the same time?\nJane: No, I ______. It's too hard for me.",
-            options: ["(A) Can; can", "(B) Can; can't", "(C) Can't; can", "(D) Cannot; can"],
-            answer: 1, // (B) Can; can't
-            exp: "詳解：問句用 Can 開頭詢問能力；後面回答 No, I can't 表示否定。"
-        },
-        {
-            q: "The math homework is too hard (困難的). I ______ do it.",
-            options: ["(A) can", "(B) isn't", "(C) can't", "(D) am"],
-            answer: 2, // (C) can't
-            exp: "詳解：數學作業太難了，所以「我不會做」，用否定助動詞 can't。"
-        },
-        {
-            q: "I can't ride a bike (騎腳踏車), but I ______ walk to school.",
-            options: ["(A) can't", "(B) have", "(C) can", "(D) cannot"],
-            answer: 2, // (C) can
-            exp: "詳解：but 連接前後語氣相反的句子，前面用 can't，後面要用 can 表會走路上學。"
-        },
-        {
-            q: "Ed: Look! The dogs are eating chocolate (巧克力).\nAl: Hey! Don't ______ that. Dogs ______ eat chocolate.",
-            options: ["(A) do; can", "(B) eat; can", "(C) do; can't", "(D) eat; can't"],
-            answer: 3, // (D) eat; can't
-            exp: "詳解：Don't 後面接原形動詞 do；後半句說明狗狗「不能」吃巧克力，用 can't。"
-        },
-        {
-            q: "My brother can cook, ______ I can't.",
-            options: ["(A) and", "(B) but", "(C) so", "(D) or"],
-            answer: 1, // (B) but
-            exp: "詳解：哥哥會煮飯，但我不會，前後語氣轉折，用對等連接詞 but。"
-        },
-        {
-            q: "Sara: Can I play cards in the living room?\nDad: Yes, ______. But don't be too loud (大聲的).",
-            options: ["(A) I can", "(B) we can't", "(C) you can", "(D) you can't"],
-            answer: 2, // (C) you can
-            exp: "詳解：以 Can I... 徵求許可時，肯定簡答為 Yes, you can。"
-        }
-    ];
-
-    let currentIdx = 0;
-    let score = 0;
-    let coins = 0;
-    let ingots = 0;
-    let timeLeft = 20;
-    let timer;
-
-    function startQuiz() {
-        currentIdx = 0;
-        score = 0;
-        coins = 0;
-        ingots = 0;
-        updateStats();
-        document.getElementById('result-screen').classList.add('hidden');
-        document.getElementById('quiz-screen').classList.remove('hidden');
-        loadQuestion();
-    }
-
-    function loadQuestion() {
-        clearInterval(timer);
-        timeLeft = 20;
-        document.getElementById('timer-bar').style.width = '100%';
-        
-        const qData = questions[currentIdx];
-        document.getElementById('question-number').innerText = `第 ${currentIdx + 1} 題 / 共 ${questions.length} 題`;
-        document.getElementById('question-text').innerText = qData.q;
-        
-        const optContainer = document.getElementById('options-container');
-        optContainer.innerHTML = '';
-        
-        qData.options.forEach((opt, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.innerText = opt;
-            btn.onclick = () => selectOption(idx);
-            optContainer.appendChild(btn);
-        });
-
-        document.getElementById('explanation-box').style.display = 'none';
-        document.getElementById('next-btn').style.display = 'none';
-        
-        document.getElementById('mascot-text').innerText = "汪！思考一下，這個 can 或連接詞該怎麼選呢？";
-        startTimer();
-    }
-
-    function startTimer() {
-        const timerBar = document.getElementById('timer-bar');
-        timer = setInterval(() => {
-            timeLeft--;
-            timerBar.style.width = (timeLeft / 20 * 100) + '%';
-            if (timeLeft <= 0) {
-                clearInterval(timer);
-                selectOption(-1); // 時間到算答錯
-            }
-        }, 1000);
-    }
-
-    function selectOption(selectedIdx) {
-        clearInterval(timer);
-        const qData = questions[currentIdx];
-        const buttons = document.querySelectorAll('.option-btn');
-        
-        buttons.forEach((btn, idx) => {
-            btn.onclick = null; // 鎖定按鈕
-            if (idx === qData.answer) {
-                btn.classList.add('correct');
-            } else if (idx === selectedIdx) {
-                btn.classList.add('wrong');
-            }
-        });
-
-        const expBox = document.getElementById('explanation-box');
-        expBox.style.display = 'block';
-
-        if (selectedIdx === qData.answer) {
-            score++;
-            coins += 20;
-            if (coins >= 100) {
-                coins -= 100;
-                ingots++;
-            }
-            updateStats();
-            expBox.innerHTML = `<strong>✨ 答對了！太棒汪！</strong><br>${qData.exp}`;
-            document.getElementById('mascot-text').innerText = "太厲害啦！Cookie 尾巴搖個不停！獲得 20 金幣！";
-        } else {
-            expBox.innerHTML = `<strong>💡 沒關係，我們學起來！</strong><br>${qData.exp}`;
-            document.getElementById('mascot-text').innerText = "別氣餒！看一看解析，下次一定會答對的汪～";
-        }
-
-        document.getElementById('next-btn').style.display = 'block';
-    }
-
-    function updateStats() {
-        document.getElementById('coins').innerText = coins;
-        document.getElementById('ingots').innerText = ingots;
-    }
-
-    function nextQuestion() {
-        currentIdx++;
-        if (currentIdx < questions.length) {
-            loadQuestion();
-        } else {
-            document.getElementById('quiz-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('final-score').innerText = `你答對了 ${score} / ${questions.length} 題！總共獲得 ${ingots} 個金元寶與獎勵金幣！`;
-            document.getElementById('mascot-text').innerText = "汪！第四課特訓圓滿達成！你真是個文法小達人！";
-        }
-    }
-
-    function restartGame() {
-        startQuiz();
-    }
-
-    // 初始化啟動
-    startQuiz();
-</script>
 
 </body>
 </html>
