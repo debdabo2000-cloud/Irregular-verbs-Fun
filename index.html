@@ -223,7 +223,7 @@
         }
 
         .card-prompt .base-word {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: bold;
             color: var(--text-main);
             margin-bottom: 6px;
@@ -348,12 +348,14 @@
         <!-- 歡迎畫面 -->
         <div id="start-screen" class="screen active">
             <h1>🐾 DL English 萌寵單字特訓站 🐶</h1>
-            <div class="subtitle">✨ 康軒版國中英語第一冊第三課專屬特訓 ✨</div>
+            <div class="subtitle">✨ 國中會考、高中、康軒各課特訓 ✨</div>
             <div class="welcome-box">
                 <div class="category-select">
                     <label for="category-select">🎯 請選擇練習範圍：</label>
                     <select id="category-select">
-                        <option value="kangxuan_u3">康軒版第一冊第三課 (全單字與片語)</option>
+                        <option value="cap1200">國中會考 1200 核心單字</option>
+                        <option value="kangxuan_u4">康軒版第一冊第四課</option>
+                        <option value="kangxuan_u3">康軒版第一冊第三課</option>
                         <option value="irregular">不規則動詞三態特訓</option>
                         <option value="vocab7000">高中 7000 核心單字拼寫</option>
                     </select>
@@ -398,7 +400,7 @@
             <div class="result-stats">
                 <div class="stat-item">
                     <span>測驗單元：</span>
-                    <span class="stat-value" id="res-category">康軒第一冊第三課</span>
+                    <span class="stat-value" id="res-category">國中會考 1200 核心單字</span>
                 </div>
                 <div class="stat-item">
                     <span>本次獲得金幣：</span>
@@ -439,86 +441,178 @@
         }
 
         const db = {
+            cap1200: [
+                { word: "accept", cn: "接受" },
+                { word: "active", cn: "活躍的；積極的" },
+                { word: "activity", cn: "活動" },
+                { word: "ad", cn: "廣告 (advertisement)" },
+                { word: "advice", cn: "勸告；建議" },
+                { word: "affect", cn: "影響" },
+                { word: "afraid", cn: "害怕的" },
+                { word: "agree", cn: "同意" },
+                { word: "allow", cn: "允許" },
+                { word: "almost", cn: "幾乎" },
+                { word: "alone", cn: "單獨的；獨自地" },
+                { word: "aloud", cn: "出聲地" },
+                { word: "already", cn: "已經" },
+                { word: "although", cn: "雖然；儘管" },
+                { word: "always", cn: "總是" },
+                { word: "among", cn: "在...之中" },
+                { word: "ancient", cn: "古代的" },
+                { word: "angry", cn: "生氣的" },
+                { word: "another", cn: "另一個" },
+                { word: "answer", cn: "回答" },
+                { word: "anybody", cn: "任何人" },
+                { word: "anything", cn: "任何事物" },
+                { word: "appear", cn: "出現" },
+                { word: "area", cn: "地區；面積" },
+                { word: "arrive", cn: "到達" },
+                { word: "as", cn: "如同；當...時" },
+                { word: "ask", cn: "問；要求" },
+                { word: "asleep", cn: "睡著的" },
+                { word: "attack", cn: "攻擊" },
+                { word: "attend", cn: "參加；出席" }
+            ],
+            kangxuan_u4: [
+                { word: "library", cn: "圖書館" },
+                { word: "basketball", cn: "籃球" },
+                { word: "court", cn: "球場" },
+                { word: "basketball court", cn: "籃球場" },
+                { word: "gate", cn: "大門" },
+                { word: "school gate", cn: "校門口" },
+                { word: "garden", cn: "花園" },
+                { word: "playground", cn: "遊樂場；操場" },
+                { word: "ground", cn: "地面" },
+                { word: "slide", cn: "滑梯" },
+                { word: "swing", cn: "秋千" },
+                { word: "seesaw", cn: "蹺蹺板" },
+                { word: "sport", cn: "運動" },
+                { word: "field", cn: "球場" },
+                { word: "sports field", cn: "運動場" },
+                { word: "restroom", cn: "廁所" },
+                { word: "gym", cn: "體育館" },
+                { word: "basket", cn: "籃子" },
+                { word: "classroom", cn: "教室" },
+                { word: "class", cn: "班級；課程" },
+                { word: "photo", cn: "相片" },
+                { word: "screen", cn: "螢幕" },
+                { word: "mountain", cn: "山" },
+                { word: "pond", cn: "池塘" },
+                { word: "rest", cn: "休息" },
+                { word: "storybook", cn: "故事書" },
+                { word: "story", cn: "故事" },
+                { word: "test", cn: "考試" },
+                { word: "grade", cn: "成績" },
+                { word: "fun", cn: "樂趣" },
+                { word: "favorite", cn: "最喜愛" },
+                { word: "South Africa", cn: "南非" },
+                { word: "student", cn: "學生" },
+                { word: "place", cn: "地方" },
+                { word: "school", cn: "學校" },
+                { word: "teacher", cn: "老師" },
+                { word: "game", cn: "比賽" },
+                { word: "meet", cn: "遇見" },
+                { word: "Nice to meet you.", cn: "很高興認識你。" },
+                { word: "there is", cn: "有 (單數)" },
+                { word: "there are", cn: "有 (複數)" },
+                { word: "special", cn: "特別的" },
+                { word: "whole", cn: "全部的" },
+                { word: "different", cn: "不同的" },
+                { word: "big", cn: "大的" },
+                { word: "some", cn: "一些" },
+                { word: "any", cn: "任何" },
+                { word: "a lot of", cn: "許多的" },
+                { word: "on", cn: "在···上面" },
+                { word: "in", cn: "在···裡面" },
+                { word: "from", cn: "來自" },
+                { word: "at", cn: "在···（地方）" },
+                { word: "very", cn: "非常" },
+                { word: "there", cn: "那裡" },
+                { word: "this is...", cn: "這位是···" },
+                { word: "in the mountains", cn: "在山裡" },
+                { word: "four", cn: "四" },
+                { word: "thirty", cn: "三十" }
+            ],
             kangxuan_u3: [
-                { word: "bedroom", cn: "臥室", type: "single" },
-                { word: "bed", cn: "床舗", type: "single" },
-                { word: "room", cn: "房間", type: "single" },
-                { word: "bathroom", cn: "浴室", type: "single" },
-                { word: "living room", cn: "客廳", type: "single" },
-                { word: "dining room", cn: "飯廳", type: "single" },
-                { word: "roommate", cn: "室友", type: "single" },
-                { word: "stair", cn: "樓梯", type: "single" },
-                { word: "cellphone", cn: "手機", type: "single" },
-                { word: "place", cn: "地方", type: "single" },
-                { word: "sofa", cn: "沙發", type: "single" },
-                { word: "house", cn: "房子", type: "single" },
-                { word: "lake", cn: "湖", type: "single" },
-                { word: "castle", cn: "城堡", type: "single" },
-                { word: "blanket", cn: "毛毯", type: "single" },
-                { word: "world", cn: "世界", type: "single" },
-                { word: "newspaper", cn: "報紙", type: "single" },
-                { word: "magic", cn: "魔法", type: "single" },
-                { word: "TV", cn: "電視 (television)", type: "single" },
-                { word: "picture", cn: "照片；圖片", type: "single" },
-                { word: "uncle", cn: "叔叔；舅舅；伯父", type: "single" },
-                { word: "aunt", cn: "姑姑；嬸嬸；阿姨", type: "single" },
-                { word: "student", cn: "學生", type: "single" },
-                { word: "schod", cn: "學校", type: "single" },
-                { word: "girl", cn: "女孩", type: "single" },
-                { word: "year", cn: "年", type: "single" },
-                { word: "year old", cn: "歲", type: "single" },
-                { word: "am", cn: "是 (主詞為I)", type: "single" },
-                { word: "is", cn: "是 (單數)", type: "single" },
-                { word: "are", cn: "是 (複數)", type: "single" },
-                { word: "on", cn: "在···上面", type: "single" },
-                { word: "in", cn: "在···裡面", type: "single" },
-                { word: "under", cn: "在···下面", type: "single" },
-                { word: "at", cn: "在···地方／場合", type: "single" },
-                { word: "behind", cn: "在···後面", type: "single" },
-                { word: "in front of", cn: "在···前面", type: "single" },
-                { word: "between", cn: "在···中間", type: "single" },
-                { word: "next to", cn: "在···旁邊", type: "single" },
-                { word: "around", cn: "圍繞", type: "single" },
-                { word: "outside", cn: "在···外面", type: "single" },
-                { word: "where", cn: "哪裡", type: "single" },
-                { word: "who", cn: "誰", type: "single" },
-                { word: "what", cn: "什麽", type: "single" },
-                { word: "how", cn: "如何", type: "single" },
-                { word: "soft", cn: "柔軟的", type: "single" },
-                { word: "hard", cn: "硬的", type: "single" },
-                { word: "magic", cn: "魔法的", type: "single" },
-                { word: "different", cn: "不同的", type: "single" },
-                { word: "small", cn: "小的", type: "single" },
-                { word: "big", cn: "大的", type: "single" },
-                { word: "old", cn: "舊的", type: "single" },
-                { word: "nine-year-old", cn: "九歲的", type: "single" },
-                { word: "later", cn: "稍後", type: "single" },
-                { word: "or", cn: "或者", type: "single" },
-                { word: "and", cn: "和", type: "single" },
-                { word: "but", cn: "但是", type: "single" },
-                { word: "this", cn: "這（一個）", type: "single" },
-                { word: "that", cn: "那（一個）", type: "single" },
-                { word: "these", cn: "這些", type: "single" },
-                { word: "those", cn: "那些", type: "single" },
-                { word: "in fact", cn: "事實上", type: "single" },
-                { word: "around the world", cn: "在世界各地", type: "single" },
-                { word: "look at", cn: "看", type: "single" }
+                { word: "bedroom", cn: "臥室" },
+                { word: "bed", cn: "床舗" },
+                { word: "room", cn: "房間" },
+                { word: "bathroom", cn: "浴室" },
+                { word: "living room", cn: "客廳" },
+                { word: "dining room", cn: "飯廳" },
+                { word: "roommate", cn: "室友" },
+                { word: "stair", cn: "樓梯" },
+                { word: "cellphone", cn: "手機" },
+                { word: "place", cn: "地方" },
+                { word: "sofa", cn: "沙發" },
+                { word: "house", cn: "房子" },
+                { word: "lake", cn: "湖" },
+                { word: "castle", cn: "城堡" },
+                { word: "blanket", cn: "毛毯" },
+                { word: "world", cn: "世界" },
+                { word: "newspaper", cn: "報紙" },
+                { word: "magic", cn: "魔法" },
+                { word: "TV", cn: "電視 (television)" },
+                { word: "picture", cn: "照片；圖片" },
+                { word: "uncle", cn: "叔叔；舅舅；伯父" },
+                { word: "aunt", cn: "姑姑；嬸嬸；阿姨" },
+                { word: "student", cn: "學生" },
+                { word: "school", cn: "學校" },
+                { word: "girl", cn: "女孩" },
+                { word: "year", cn: "年" },
+                { word: "year old", cn: "歲" },
+                { word: "am", cn: "是 (主詞為I)" },
+                { word: "is", cn: "是 (單數)" },
+                { word: "are", cn: "是 (複數)" },
+                { word: "on", cn: "在···上面" },
+                { word: "in", cn: "在···裡面" },
+                { word: "under", cn: "在···下面" },
+                { word: "at", cn: "在···地方／場合" },
+                { word: "behind", cn: "在···後面" },
+                { word: "in front of", cn: "在···前面" },
+                { word: "between", cn: "在···中間" },
+                { word: "next to", cn: "在···旁邊" },
+                { word: "around", cn: "圍繞" },
+                { word: "outside", cn: "在···外面" },
+                { word: "where", cn: "哪裡" },
+                { word: "who", cn: "誰" },
+                { word: "what", cn: "什麽" },
+                { word: "how", cn: "如何" },
+                { word: "soft", cn: "柔軟的" },
+                { word: "hard", cn: "硬的" },
+                { word: "magic", cn: "魔法的" },
+                { word: "different", cn: "不同的" },
+                { word: "small", cn: "小的" },
+                { word: "big", cn: "大的" },
+                { word: "old", cn: "舊的" },
+                { word: "nine-year-old", cn: "九歲的" },
+                { word: "later", cn: "稍後" },
+                { word: "or", cn: "或者" },
+                { word: "and", cn: "和" },
+                { word: "but", cn: "但是" },
+                { word: "this", cn: "這（一個）" },
+                { word: "that", cn: "那（一個）" },
+                { word: "these", cn: "這些" },
+                { word: "those", cn: "那些" },
+                { word: "in fact", cn: "事實上" },
+                { word: "around the world", cn: "在世界各地" },
+                { word: "look at", cn: "看" }
             ],
             irregular: [
-                { word: "be", cn: "是 (原形)", type: "single" },
-                { word: "begin", cn: "開始", type: "single" },
-                { word: "break", cn: "打破", type: "single" },
-                { word: "bring", cn: "帶來", type: "single" },
-                { word: "buy", cn: "買", type: "single" }
+                { word: "be", cn: "是 (原形)" },
+                { word: "begin", cn: "開始" },
+                { word: "break", cn: "打破" },
+                { word: "bring", cn: "帶來" },
+                { word: "buy", cn: "買" }
             ],
             vocab7000: [
-                { word: "abandon", cn: "放棄；拋棄", type: "single" },
-                { word: "abolish", cn: "廢除", type: "single" },
-                { word: "abrupt", cn: "突然的", type: "single" }
+                { word: "abandon", cn: "放棄；拋棄" },
+                { word: "abolish", cn: "廢除" },
+                { word: "abrupt", cn: "突然的" }
             ]
         };
 
-        let currentCategory = 'kangxuan_u3';
+        let currentCategory = 'cap1200';
         let currentQuestions = [];
         let wrongQuestions = [];
         let currentIndex = 0;
@@ -666,6 +760,8 @@
             document.getElementById('result-screen').classList.add('active');
 
             const categoryNames = {
+                cap1200: "國中會考 1200 核心單字",
+                kangxuan_u4: "康軒版第一冊第四課",
                 kangxuan_u3: "康軒版第一冊第三課",
                 irregular: "不規則動詞三態特訓",
                 vocab7000: "高中 7000 核心單字拼寫"
