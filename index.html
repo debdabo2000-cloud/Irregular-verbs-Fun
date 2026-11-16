@@ -15,6 +15,7 @@
             --text-light: #9E8A78;
             --success: #789E6E;
             --error: #E07A5F;
+            --coin: #F4A261;
             --border-radius: 20px;
         }
 
@@ -47,6 +48,29 @@
             padding: 28px;
             margin-top: 20px;
             border: 3px solid #FFEBE8;
+        }
+
+        /* 總積分展示橫幅 */
+        .wallet-banner {
+            background: #FFFDF9;
+            border: 2px solid var(--primary);
+            border-radius: 14px;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .coin-badge {
+            color: #D97706;
+            background: #FEF3C7;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
         }
 
         h1 {
@@ -247,10 +271,16 @@
 <body>
 
     <div class="container">
+        <!-- 總積分橫幅 -->
+        <div class="wallet-banner">
+            <span>🐾 萌寵金庫存摺</span>
+            <span class="coin-badge" id="total-coins">🪙 0 枚金幣</span>
+        </div>
+
         <!-- 歡迎畫面 -->
         <div id="start-screen" class="screen active">
             <h1>🐾 DL English 萌寵單字特訓站 🐶</h1>
-            <div class="subtitle">✨ 輕鬆背單字，快樂過三關 ✨</div>
+            <div class="subtitle">✨ 輕鬆背單字，集點換獎勵 ✨</div>
             <div class="welcome-box">
                 <div class="category-select">
                     <label for="category-select">🎯 請選擇今日挑戰單元：</label>
@@ -261,7 +291,7 @@
                         <option value="collocations">高級搭配詞與慣用語拼寫</option>
                     </select>
                 </div>
-                <p>每關隨機抽考 10 道題。<br>單字與搭配詞需看中文自己拼出英文！<br>完成後請將成績單截圖傳給老師領取獎勵喔！</p>
+                <p>每關隨機抽考 10 道題。<br>答對一題得 1 枚金幣！挑戰成功還可截圖交作業！</p>
                 <button class="btn" onclick="startGame()">🚀 開始可愛大挑戰</button>
             </div>
         </div>
@@ -311,6 +341,10 @@
                     <span class="stat-value" id="res-category">不規則動詞三態</span>
                 </div>
                 <div class="stat-item">
+                    <span>本次獲得金幣：</span>
+                    <span class="stat-value" id="res-coins" style="color: #D97706;">+0 枚 🪙</span>
+                </div>
+                <div class="stat-item">
                     <span>總花費時間：</span>
                     <span class="stat-value" id="res-time">0 秒</span>
                 </div>
@@ -325,11 +359,20 @@
             </div>
 
             <button class="btn" onclick="backToHome()">🏠 返回首頁再玩一次</button>
-            <div class="screenshot-hint">📸 請將此畫面截圖並傳給老師登記成績！</div>
+            <div class="screenshot-hint">📸 請將此畫面截圖並傳給老師登記成績與金幣！</div>
         </div>
     </div>
 
     <script>
+        // 初始化讀取玩家金幣
+        let totalCoins = parseInt(localStorage.getItem('dl_english_coins')) || 0;
+        updateCoinDisplay();
+
+        function updateCoinDisplay() {
+            document.getElementById('total-coins').innerText = `🪙 ${totalCoins} 枚金幣`;
+            localStorage.setItem('dl_english_coins', totalCoins);
+        }
+
         const db = {
             irregular: [
                 { base: "be", past: "was / were", pp: "been", cn: "是", type: "double" },
@@ -431,6 +474,7 @@
         let currentQuestions = [];
         let currentIndex = 0;
         let score = 0;
+        let earnedCoins = 0;
         let startTime = 0;
         let timerInterval = null;
         let elapsedSeconds = 0;
@@ -445,6 +489,7 @@
             
             currentIndex = 0;
             score = 0;
+            earnedCoins = 0;
             elapsedSeconds = 0;
             
             document.getElementById('start-screen').classList.remove('active');
@@ -560,7 +605,10 @@
 
             if (isCorrect) {
                 score++;
-                msgEl.innerText = '✨ 太棒了！答對囉！';
+                earnedCoins += 1; // 答對一題得 1 枚金幣
+                totalCoins += 1;
+                updateCoinDisplay();
+                msgEl.innerText = '✨ 太棒了！答對囉！ (+1 金幣 🪙)';
                 msgEl.className = 'feedback correct';
             } else {
                 msgEl.className = 'feedback error';
@@ -584,6 +632,7 @@
 
             document.getElementById('res-category').innerText = categoryNames[currentCategory];
             document.getElementById('result-category-title').innerText = `${categoryNames[currentCategory]} 結算`;
+            document.getElementById('res-coins').innerText = `+${earnedCoins} 枚 🪙`;
             document.getElementById('res-time').innerText = `${elapsedSeconds} 秒`;
             document.getElementById('res-score').innerText = `${score} / 10`;
             document.getElementById('res-accuracy').innerText = `${Math.round((score / 10) * 100)}%`;
