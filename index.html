@@ -352,13 +352,15 @@
             <div class="subtitle">✨ 階層式選單：版本與課次自由切換 ✨</div>
             <div class="welcome-box">
                 <div class="category-select">
-                    <label for="main-select">🎯 請選擇教材大類：</label>
+                    <label for="main-select">🎯 第一層：請選擇教材大類：</label>
                     <select id="main-select" onchange="updateSubCategory()">
-                        <option value="kangxuan1">康軒版國中英語第一冊</option>
-                        <option value="others">其他精選題庫 (會考/高中/動詞)</option>
+                        <option value="kangxuan">1. 康軒第一冊</option>
+                        <option value="cap1200">2. 會考 1200</option>
+                        <option value="irregular">3. 動詞三態</option>
+                        <option value="vocab7000">4. 高中 7000 單</option>
                     </select>
 
-                    <label for="sub-select" id="sub-label" style="margin-top: 12px;">📖 請選擇具體課次 / 範圍：</label>
+                    <label for="sub-select" id="sub-label" style="margin-top: 12px;">📖 第二層：請選擇具體範圍：</label>
                     <select id="sub-select">
                         <!-- 動態載入 -->
                     </select>
@@ -511,4 +513,77 @@
                 { word: "p.m.", cn: "下午；晚上" }, { word: "tonight", cn: "今晚" }, { word: "dinner", cn: "晚餐" },
                 { word: "meeting", cn: "會議" }, { word: "join", cn: "參加；加入" }, { word: "say", cn: "說" },
                 { word: "chat", cn: "聊話" }, { word: "prepare", cn: "準備" }, { word: "look for", cn: "尋找" },
-                { word: "by the way", cn
+                { word: "by the way", cn: "順帶一提" }, { word: "group", cn: "團體" }, { word: "basketball", cn: "籃球" },
+                { word: "city", cn: "城市" }, { word: "Hurry up.", cn: "快一點。" }, { word: "sun", cn: "太陽" },
+                { word: "shine", cn: "照耀；發光" }, { word: "o'clock", cn: "……點鐘" }, { word: "everyone", cn: "每個人；各位" },
+                { word: "rise", cn: "上升" }, { word: "wake up", cn: "醒來" }
+            ],
+            kangxuan_u6: [
+                { word: "garden", cn: "花園" }, { word: "playground", cn: "遊樂場" }, { word: "slide", cn: "滑梯" },
+                { word: "seesaw", cn: "蹺蹺板" }, { word: "swing", cn: "秋千" }, { word: "rest", cn: "休息" },
+                { word: "gate", cn: "大門" }, { word: "restroom", cn: "廁所" }, { word: "basketball court", cn: "籃球場" },
+                { word: "basket", cn: "籃子" }, { word: "gym", cn: "體育館" }, { word: "sports field", cn: "運動場；操場" },
+                { word: "library", cn: "圖書館" }, { word: "classmate", cn: "同班同學" }, { word: "friendly", cn: "友善的" },
+                { word: "think", cn: "想起；思考；認為" }, { word: "thing", cn: "事；物" }, { word: "sandwich", cn: "三明治" },
+                { word: "put", cn: "放置" }, { word: "outside", cn: "在……外面；在室外" }, { word: "a lot of", cn: "許多的" },
+                { word: "hungry", cn: "飢餓的" }, { word: "still", cn: "仍然" }, { word: "worry", cn: "擔心" },
+                { word: "meaning", cn: "意思；意義" }, { word: "find", cn: "找到" }, { word: "find one's feet", cn: "適應新環境" },
+                { word: "large", cn: "大的；大量的" }, { word: "show... around", cn: "帶……參觀" }, { word: "work out", cn: "鍛鍊身體" },
+                { word: "feet", cn: "腳" }, { word: "wear", cn: "穿；戴" }, { word: "building", cn: "建築物" },
+                { word: "shelf", cn: "架子" }, { word: "after school", cn: "放學後" }, { word: "however", cn: "然而" }
+            ],
+            cap1200: [
+                { word: "accept", cn: "接受" }, { word: "active", cn: "活躍的；積極的" }, { word: "activity", cn: "活動" },
+                { word: "ad", cn: "廣告 (advertisement)" }, { word: "advice", cn: "勸告；建議" }, { word: "affect", cn: "影響" },
+                { word: "afraid", cn: "害怕的" }, { word: "agree", cn: "同意" }, { word: "allow", cn: "允許" },
+                { word: "almost", cn: "幾乎" }, { word: "alone", cn: "單獨的；獨自地" }, { word: "aloud", cn: "出聲地" },
+                { word: "already", cn: "已經" }, { word: "although", cn: "雖然；儘管" }, { word: "always", cn: "總是" },
+                { word: "among", cn: "在...之中" }, { word: "ancient", cn: "古代的" }, { word: "angry", cn: "生氣的" },
+                { word: "another", cn: "另一個" }, { word: "answer", cn: "回答" }, { word: "anybody", cn: "任何人" },
+                { word: "anything", cn: "任何事物" }, { word: "appear", cn: "出現" }, { word: "area", cn: "地區；面積" },
+                { word: "arrive", cn: "到達" }, { word: "as", cn: "如同；當...時" }, { word: "ask", cn: "問；要求" },
+                { word: "asleep", cn: "睡著的" }, { word: "attack", cn: "攻擊" }, { word: "attend", cn: "參加；出席" }
+            ],
+            irregular: [
+                { word: "be", cn: "是 (原形)" }, { word: "begin", cn: "開始" }, { word: "break", cn: "打破" },
+                { word: "bring", cn: "帶來" }, { word: "buy", cn: "買" }
+            ],
+            vocab7000: [
+                { word: "abandon", cn: "放棄；拋棄" }, { word: "abolish", cn: "廢除" }, { word: "abrupt", cn: "突然的" }
+            ]
+        };
+
+        // 根據第一層大類連動更新第二層選單
+        function updateSubCategory() {
+            const mainSelect = document.getElementById('main-select').value;
+            const subSelect = document.getElementById('sub-select');
+            subSelect.innerHTML = '';
+
+            if (mainSelect === 'kangxuan') {
+                subSelect.innerHTML = `
+                    <option value="kangxuan_u1">LESSON 1</option>
+                    <option value="kangxuan_u2">LESSON 2</option>
+                    <option value="kangxuan_u3">LESSON 3</option>
+                    <option value="kangxuan_u4">LESSON 4</option>
+                    <option value="kangxuan_u5">LESSON 5</option>
+                    <option value="kangxuan_u6">LESSON 6</option>
+                `;
+            } else if (mainSelect === 'cap1200') {
+                subSelect.innerHTML = `<option value="cap1200">國中會考 1200 核心單字</option>`;
+            } else if (mainSelect === 'irregular') {
+                subSelect.innerHTML = `<option value="irregular">不規則動詞三態特訓</option>`;
+            } else if (mainSelect === 'vocab7000') {
+                subSelect.innerHTML = `<option value="vocab7000">高中 7000 核心單字拼寫</option>`;
+            }
+        }
+
+        // 確保網頁載入時第二層選單一定有內容
+        document.addEventListener("DOMContentLoaded", function() {
+            updateSubCategory();
+        });
+        setTimeout(updateSubCategory, 50);
+
+        let currentCategory = 'kangxuan_u1';
+        let currentQuestions = [];
+        let wrongQuestions = [];
+        let currentIndex = 
