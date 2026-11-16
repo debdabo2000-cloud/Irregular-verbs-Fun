@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高中英文單字與動詞特訓測驗系統</title>
+    <title>DL English 萌寵英文單字特訓站</title>
     <style>
         :root {
-            --bg-color: #FBF8F5;
+            --bg-color: #FFF9F5;
             --card-bg: #FFFFFF;
-            --primary: #A89078;
-            --primary-dark: #8C735D;
-            --accent: #D8C2B0;
+            --primary: #E8A87C;
+            --primary-dark: #D38E61;
+            --accent: #FCE1E4;
             --text-main: #5C4A42;
-            --text-light: #8E7A6E;
-            --success: #6B8E23;
-            --error: #CD5C5C;
-            --border-radius: 16px;
+            --text-light: #9E8A78;
+            --success: #789E6E;
+            --error: #E07A5F;
+            --border-radius: 20px;
         }
 
         * {
@@ -33,6 +33,9 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
+            background-image: radial-gradient(#FCE1E4 15%, transparent 16%), radial-gradient(#FCE1E4 15%, transparent 16%);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
         }
 
         .container {
@@ -40,13 +43,14 @@
             max-width: 600px;
             background: var(--card-bg);
             border-radius: var(--border-radius);
-            box-shadow: 0 10px 30px rgba(92, 74, 66, 0.08);
-            padding: 24px;
+            box-shadow: 0 12px 35px rgba(232, 168, 124, 0.15);
+            padding: 28px;
             margin-top: 20px;
+            border: 3px solid #FFEBE8;
         }
 
         h1 {
-            font-size: 1.3rem;
+            font-size: 1.35rem;
             text-align: center;
             color: var(--text-main);
             margin-bottom: 6px;
@@ -54,9 +58,10 @@
 
         .subtitle {
             text-align: center;
-            font-size: 0.85rem;
-            color: var(--text-light);
-            margin-bottom: 16px;
+            font-size: 0.9rem;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            font-weight: bold;
         }
 
         .screen {
@@ -67,29 +72,32 @@
             display: block;
         }
 
-        /* 歡迎與選擇畫面 */
         .welcome-box {
             text-align: center;
             padding: 10px 0;
         }
 
         .welcome-box p {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             color: var(--text-light);
             font-size: 0.95rem;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .category-select {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             text-align: left;
+            background: #FFFDF9;
+            padding: 14px;
+            border-radius: 14px;
+            border: 2px dashed var(--primary);
         }
 
         .category-select label {
             display: block;
             font-size: 0.9rem;
-            color: var(--text-light);
-            margin-bottom: 6px;
+            color: var(--text-main);
+            margin-bottom: 8px;
             font-weight: bold;
         }
 
@@ -97,9 +105,9 @@
             width: 100%;
             padding: 12px;
             font-size: 1rem;
-            border: 2px solid var(--accent);
-            border-radius: 10px;
-            background: var(--bg-color);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            background: white;
             color: var(--text-main);
             outline: none;
         }
@@ -108,107 +116,114 @@
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
+            padding: 14px 24px;
+            font-size: 1.05rem;
             font-weight: bold;
-            border-radius: 12px;
+            border-radius: 14px;
             cursor: pointer;
             width: 100%;
-            transition: background 0.2s;
+            transition: transform 0.1s, background 0.2s;
+            box-shadow: 0 4px 12px rgba(232, 168, 124, 0.4);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
         }
 
         .btn:hover {
             background-color: var(--primary-dark);
         }
 
-        /* 遊戲介面 */
         .game-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            font-size: 0.9rem;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
             color: var(--text-light);
-            background: var(--bg-color);
-            padding: 10px 16px;
-            border-radius: 10px;
+            background: #FFFDF9;
+            padding: 12px 18px;
+            border-radius: 12px;
+            border: 1px solid #FCE1E4;
         }
 
         .card-prompt {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            background: #FFFDF9;
+            padding: 20px;
+            border-radius: 16px;
+            border: 2px solid #FCE1E4;
         }
 
         .card-prompt .base-word {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: bold;
             color: var(--text-main);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             word-break: break-all;
         }
 
         .card-prompt .chinese {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--text-light);
+            font-weight: bold;
         }
 
         .input-group {
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
 
         .input-group label {
             display: block;
-            font-size: 0.85rem;
-            color: var(--text-light);
-            margin-bottom: 4px;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            font-weight: bold;
         }
 
         .input-group input {
             width: 100%;
-            padding: 10px 14px;
-            font-size: 1.05rem;
-            border: 2px solid var(--accent);
-            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 1.1rem;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
             outline: none;
-            background: var(--bg-color);
+            background: #FFFDF9;
             color: var(--text-main);
             transition: border-color 0.2s;
         }
 
         .input-group input:focus {
-            border-color: var(--primary);
+            border-color: var(--primary-dark);
+            background: white;
         }
 
         .feedback {
             text-align: center;
             font-weight: bold;
-            min-height: 24px;
-            margin-bottom: 14px;
-            font-size: 0.9rem;
+            min-height: 28px;
+            margin-bottom: 16px;
+            font-size: 1rem;
         }
 
         .feedback.correct { color: var(--success); }
         .feedback.error { color: var(--error); }
 
-        /* 結算畫面 */
-        .result-box {
-            text-align: center;
-            padding: 10px 0;
-        }
-
         .result-stats {
-            background: var(--bg-color);
-            border-radius: 12px;
-            padding: 16px;
-            margin: 16px 0;
+            background: #FFFDF9;
+            border-radius: 14px;
+            padding: 20px;
+            margin: 20px 0;
             text-align: left;
+            border: 2px dashed var(--primary);
         }
 
         .stat-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 0.95rem;
+            margin-bottom: 12px;
+            font-size: 1rem;
         }
 
         .stat-item:last-child {
@@ -221,9 +236,11 @@
         }
 
         .screenshot-hint {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            margin-top: 14px;
+            font-size: 0.9rem;
+            color: var(--primary-dark);
+            margin-top: 16px;
+            text-align: center;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -232,19 +249,20 @@
     <div class="container">
         <!-- 歡迎畫面 -->
         <div id="start-screen" class="screen active">
-            <h1>高中英文單字與動詞特訓系統</h1>
-            <div class="subtitle">DL English 多元學習平台</div>
+            <h1>🐾 DL English 萌寵單字特訓站 🐶</h1>
+            <div class="subtitle">✨ 輕鬆背單字，快樂過三關 ✨</div>
             <div class="welcome-box">
                 <div class="category-select">
-                    <label for="category-select">請選擇練習單元：</label>
+                    <label for="category-select">🎯 請選擇今日挑戰單元：</label>
                     <select id="category-select">
                         <option value="irregular">不規則動詞三態特訓</option>
-                        <option value="vocab7000">高中 7000 核心單字精選</option>
-                        <option value="collocations">高級搭配詞與慣用語</option>
+                        <option value="cap1200">國中會考 1200 核心單字拼寫</option>
+                        <option value="vocab7000">高中 7000 核心單字拼寫</option>
+                        <option value="collocations">高級搭配詞與慣用語拼寫</option>
                     </select>
                 </div>
-                <p>系統將隨機抽考 10 道題目。完成後請將成績單截圖傳給老師！</p>
-                <button class="btn" onclick="startGame()">開始挑戰</button>
+                <p>每關隨機抽考 10 道題。<br>單字與搭配詞需看中文自己拼出英文！<br>完成後請將成績單截圖傳給老師領取獎勵喔！</p>
+                <button class="btn" onclick="startGame()">🚀 開始可愛大挑戰</button>
             </div>
         </div>
 
@@ -256,13 +274,13 @@
             </div>
 
             <div class="card-prompt">
-                <div class="base-word" id="base-word">eat</div>
-                <div class="chinese" id="chinese-meaning">吃</div>
+                <div class="chinese" id="chinese-top-label">請根據中文提示拼出英文：</div>
+                <div class="base-word" id="base-word">吃</div>
             </div>
 
             <div id="single-input-area" class="input-group" style="display:none;">
-                <label for="single-input" id="single-label">請輸入中文意思或英文拼寫：</label>
-                <input type="text" id="single-input" placeholder="請輸入答案" autocomplete="off" autocapitalize="none">
+                <label for="single-input" id="single-label">請輸入英文單字拼寫：</label>
+                <input type="text" id="single-input" placeholder="請輸入英文拼寫" autocomplete="off" autocapitalize="none">
             </div>
 
             <div id="double-input-area">
@@ -279,12 +297,12 @@
 
             <div class="feedback" id="feedback-msg"></div>
 
-            <button class="btn" id="submit-btn" onclick="checkAnswer()">送出答案</button>
+            <button class="btn" id="submit-btn" onclick="checkAnswer()">送出答案 ➔</button>
         </div>
 
         <!-- 結算畫面 (截圖區) -->
         <div id="result-screen" class="screen">
-            <h1>🎉 挑戰完成！</h1>
+            <h1>🎉 太棒了！挑戰成功！ 🎉</h1>
             <div class="subtitle" id="result-category-title">單元特訓結束</div>
             
             <div class="result-stats">
@@ -306,13 +324,12 @@
                 </div>
             </div>
 
-            <button class="btn" onclick="backToHome()">返回首頁</button>
+            <button class="btn" onclick="backToHome()">🏠 返回首頁再玩一次</button>
             <div class="screenshot-hint">📸 請將此畫面截圖並傳給老師登記成績！</div>
         </div>
     </div>
 
     <script>
-        // 資料庫：包含不規則動詞、高中 7000 單、搭配詞
         const db = {
             irregular: [
                 { base: "be", past: "was / were", pp: "been", cn: "是", type: "double" },
@@ -341,6 +358,38 @@
                 { base: "speak", past: "spoke", pp: "spoken", cn: "說話", type: "double" },
                 { base: "take", past: "took", pp: "taken", cn: "拿取", type: "double" },
                 { base: "write", past: "wrote", pp: "written", cn: "寫", type: "double" }
+            ],
+            cap1200: [
+                { word: "accept", cn: "接受", type: "single" },
+                { word: "active", cn: "活躍的；積極的", type: "single" },
+                { word: "activity", cn: "活動", type: "single" },
+                { word: "ad", cn: "廣告 (advertisement)", type: "single" },
+                { word: "advice", cn: "勸告；建議", type: "single" },
+                { word: "affect", cn: "影響", type: "single" },
+                { word: "afraid", cn: "害怕的", type: "single" },
+                { word: "agree", cn: "同意", type: "single" },
+                { word: "allow", cn: "允許", type: "single" },
+                { word: "almost", cn: "幾乎", type: "single" },
+                { word: "alone", cn: "單獨的；獨自地", type: "single" },
+                { word: "aloud", cn: "出聲地", type: "single" },
+                { word: "already", cn: "已經", type: "single" },
+                { word: "although", cn: "雖然；儘管", type: "single" },
+                { word: "always", cn: "總是", type: "single" },
+                { word: "among", cn: "在...之中", type: "single" },
+                { word: "ancient", cn: "古代的", type: "single" },
+                { word: "angry", cn: "生氣的", type: "single" },
+                { word: "another", cn: "另一個", type: "single" },
+                { word: "answer", cn: "回答", type: "single" },
+                { word: "anybody", cn: "任何人", type: "single" },
+                { word: "anything", cn: "任何事物", type: "single" },
+                { word: "appear", cn: "出現", type: "single" },
+                { word: "area", cn: "地區；面積", type: "single" },
+                { word: "arrive", cn: "到達", type: "single" },
+                { word: "as", cn: "如同；當...時", type: "single" },
+                { word: "ask", cn: "問；要求", type: "single" },
+                { word: "asleep", cn: "睡著的", type: "single" },
+                { word: "attack", cn: "攻擊", type: "single" },
+                { word: "attend", cn: "參加；出席", type: "single" }
             ],
             vocab7000: [
                 { word: "abandon", cn: "放棄；拋棄", type: "single" },
@@ -434,27 +483,24 @@
             ppInput.disabled = false;
 
             if (q.type === 'double') {
-                // 不規則動詞模式（輸入過去式與過去分詞）
                 singleArea.style.display = 'none';
                 doubleArea.style.display = 'block';
-                document.getElementById('base-word').innerText = q.base;
-                document.getElementById('chinese-meaning').innerText = q.cn;
+                document.getElementById('chinese-top-label').innerText = "🐾 請根據原形動詞與中文填寫三態：";
+                document.getElementById('base-word').innerText = `${q.base} (${q.cn})`;
                 pastInput.focus();
             } else {
-                // 7000單或搭配詞模式（看中文拼英文，或看英文寫中文）
                 singleArea.style.display = 'block';
                 doubleArea.style.display = 'none';
                 
-                const promptText = q.word || q.phrase;
-                document.getElementById('base-word').innerText = promptText;
-                document.getElementById('chinese-meaning').innerText = q.cn;
-                document.getElementById('single-label').innerText = "請輸入上方單字/片語的英文拼寫：";
+                document.getElementById('chinese-top-label').innerText = "🐶 請根據中文提示拼出英文：";
+                document.getElementById('base-word').innerText = q.cn;
+                document.getElementById('single-label').innerText = "請輸入英文拼寫：";
                 singleInput.focus();
             }
 
             document.getElementById('feedback-msg').innerText = '';
             document.getElementById('feedback-msg').className = 'feedback';
-            document.getElementById('submit-btn').innerText = '送出答案';
+            document.getElementById('submit-btn').innerText = '送出答案 ➔';
         }
 
         function checkAnswer() {
@@ -514,14 +560,14 @@
 
             if (isCorrect) {
                 score++;
-                msgEl.innerText = '✨ 答對了！太棒了！';
+                msgEl.innerText = '✨ 太棒了！答對囉！';
                 msgEl.className = 'feedback correct';
             } else {
                 msgEl.className = 'feedback error';
             }
 
             isAnswering = true;
-            document.getElementById('submit-btn').innerText = (currentIndex < currentQuestions.length - 1) ? '下一題 ➔' : '看結算成績 ➔';
+            document.getElementById('submit-btn').innerText = (currentIndex < currentQuestions.length - 1) ? '下一題 ➔' : '查看結算成績 ➔';
         }
 
         function endGame() {
@@ -531,8 +577,9 @@
 
             const categoryNames = {
                 irregular: "不規則動詞三態特訓",
-                vocab7000: "高中 7000 核心單字",
-                collocations: "高級搭配詞與慣用語"
+                cap1200: "國中會考 1200 核心單字拼寫",
+                vocab7000: "高中 7000 核心單字拼寫",
+                collocations: "高級搭配詞與慣用語拼寫"
             };
 
             document.getElementById('res-category').innerText = categoryNames[currentCategory];
@@ -547,7 +594,6 @@
             document.getElementById('start-screen').classList.add('active');
         }
 
-        // 支援 Enter 鍵送出
         document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const gameActive = document.getElementById('game-screen').classList.contains('active');
