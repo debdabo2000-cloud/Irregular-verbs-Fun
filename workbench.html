@@ -558,7 +558,7 @@ function cycleHw(id) { const h = db.homeworks.find(x => x.id === id); if (h) h.s
 function renderHomework() {
   renderHwSelectors();
   const cf = document.getElementById('globalClassFilter').value;
-  document.getElementById('homeworkList').innerHTML = db.homeworks.filter(h => cf === 'ALL' || h.classId === cf).map(h => `
+  document.getElementById('homeworkList').innerHTML = db.homeworks.filter(h => cf === 'ALL' || (!h.classId || h.classId === cf).map(h => `
     <div class="list-item">
       <div><span class="badge" style="background:#ffe5ec;color:#c94a63;">👤 ${h.studentName}</span><span class="badge" style="background:#e2f1ff;color:#3a7ca5;">${h.type}</span><div style="font-weight:700;margin-top:4px;">${h.title}</div><div style="font-size:12px;color:#888;">開始：${h.startDate || '未填'}｜到期：${h.due || '未設定'}</div></div>
       <div style="display:flex;gap:6px;"><button class="status-btn" style="background:#fff0d6;color:#9c6615;" onclick="cycleHw('${h.id}')">${h.status} ↻</button><button class="del-btn" onclick="delItem('homeworks','${h.id}')">刪除</button></div>
