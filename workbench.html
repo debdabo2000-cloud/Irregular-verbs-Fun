@@ -652,8 +652,15 @@ function addStudent() {
   saveData(); renderAll();
 }
 function renderStudentsManage() {
-  document.getElementById('studentManageList').innerHTML = db.students.map(s => `
-    <div class="list-item"><div><b>${s.name}</b> <span style="font-size:12px;color:#888;">(${getClassById(s.classId).name})</span></div><button class="del-btn" onclick="delItem('students','${s.id}')">刪除</button></div>`).join('');
+  const cf = document.getElementById('globalClassFilter').value;
+  const list = db.students.filter(s => cf === 'ALL' || s.classId === cf);
+  const titleEl = document.querySelector('#tab-students .card:last-child h2');
+  if (titleEl) {
+    const className = cf === 'ALL' ? '全部班級' : getClassById(cf).name;
+    titleEl.textContent = `👥 目前學生名單（${className}：共 ${list.length} 人）`;
+  }
+  document.getElementById('studentManageList').innerHTML = list.map(s => `
+    <div class="list-item"><div><b>${s.name}</b> <span style="font-size:12px;color:#888;">(${getClassById(s.classId).name})</span></div><button class="del-btn" onclick="delItem('students','${s.id}')">刪除</button></div>`).join('') || '<p style="color:#999;">此班級目前尚無學生</p>';
 }
 
 function exportData() {
