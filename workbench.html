@@ -1,27 +1,4 @@
-好消息是**妳的網址已經開對了**（`debdabo2000-cloud.github.io` 正式網頁已經成功打開）！
-
-現在畫面「按了沒反應、不能動」，原因是貼進 GitHub 的 `workbench.html` 程式碼在複製貼上時**漏掉了後半段的程式區塊（`<script>`）**——妳可以從畫面上「待辦、功課未完成全部顯示 `0`」以及「新增應做事項底下的選單是空白的」看出來，目前網頁只有外殼、裡面的按鈕功能還沒載入。
-
-請在**電腦**上重新貼一次完整程式碼（手機貼上長程式碼很容易漏掉尾巴），就能立刻恢復正常：
-
-1. **清空 GitHub 上殘缺的 workbench.html:** 建議用電腦瀏覽器操作，避免手機複製漏行.
-用電腦開啟 `[https://github.com/debdabo2000-cloud/Irregular-verbs-Fun/blob/main/workbench.html](https://github.com/debdabo2000-cloud/Irregular-verbs-Fun/blob/main/workbench.html)`，點擊右上角的**鉛筆圖示（Edit this file）**，按 `Ctrl + A` 全選並按 `Delete` 清空。
-*Verification:* 編輯框內完全清空，行數變回 `1`。
-
-
-2. **貼上完整的「一鍵登入版」程式碼並儲存:** 確認開頭與結尾完整.
-點擊下方程式碼區塊右上角的「複製」按鈕，貼入 GitHub 編輯框中，確認第一行是 `<!DOCTYPE html>`、最後一行是 `</html>`，然後點擊右上角綠色按鈕 **Commit changes** 儲存。
-*Verification:* 儲存後顯示 `Update workbench.html`，且頁面不會出現紅色語法錯誤提示。
-
-
-3. **重新整理手機瀏覽器確認按鈕恢復正常:** 約需 30 秒至 1 分鐘自動更新.
-等待約 1 分鐘後，回到手機瀏覽器按下**重新整理**，畫面上會先出現法鬥 Cookie 的一鍵登入畫面；點進去後檢查頂部統計數字不再是全 `0`，且手機版頂部也直接加上了「📤 匯出／📥 匯入」按鈕方便同步。
-*Verification:* 點擊「🐶 Debra 老師一鍵快速登入」可順利進入，且上方分頁與下拉選單皆可正常點選。
-
-
-### 完整修正版程式碼（含一鍵登入＋手機版直接匯出／匯入同步按鈕）
-
-```html
+ ```html
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
