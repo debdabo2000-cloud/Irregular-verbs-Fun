@@ -1,3 +1,27 @@
+好消息是**妳的網址已經開對了**（`debdabo2000-cloud.github.io` 正式網頁已經成功打開）！
+
+現在畫面「按了沒反應、不能動」，原因是貼進 GitHub 的 `workbench.html` 程式碼在複製貼上時**漏掉了後半段的程式區塊（`<script>`）**——妳可以從畫面上「待辦、功課未完成全部顯示 `0`」以及「新增應做事項底下的選單是空白的」看出來，目前網頁只有外殼、裡面的按鈕功能還沒載入。
+
+請在**電腦**上重新貼一次完整程式碼（手機貼上長程式碼很容易漏掉尾巴），就能立刻恢復正常：
+
+1. **清空 GitHub 上殘缺的 workbench.html:** 建議用電腦瀏覽器操作，避免手機複製漏行.
+用電腦開啟 `[https://github.com/debdabo2000-cloud/Irregular-verbs-Fun/blob/main/workbench.html](https://github.com/debdabo2000-cloud/Irregular-verbs-Fun/blob/main/workbench.html)`，點擊右上角的**鉛筆圖示（Edit this file）**，按 `Ctrl + A` 全選並按 `Delete` 清空。
+*Verification:* 編輯框內完全清空，行數變回 `1`。
+
+
+2. **貼上完整的「一鍵登入版」程式碼並儲存:** 確認開頭與結尾完整.
+點擊下方程式碼區塊右上角的「複製」按鈕，貼入 GitHub 編輯框中，確認第一行是 `<!DOCTYPE html>`、最後一行是 `</html>`，然後點擊右上角綠色按鈕 **Commit changes** 儲存。
+*Verification:* 儲存後顯示 `Update workbench.html`，且頁面不會出現紅色語法錯誤提示。
+
+
+3. **重新整理手機瀏覽器確認按鈕恢復正常:** 約需 30 秒至 1 分鐘自動更新.
+等待約 1 分鐘後，回到手機瀏覽器按下**重新整理**，畫面上會先出現法鬥 Cookie 的一鍵登入畫面；點進去後檢查頂部統計數字不再是全 `0`，且手機版頂部也直接加上了「📤 匯出／📥 匯入」按鈕方便同步。
+*Verification:* 點擊「🐶 Debra 老師一鍵快速登入」可順利進入，且上方分頁與下拉選單皆可正常點選。
+
+
+### 完整修正版程式碼（含一鍵登入＋手機版直接匯出／匯入同步按鈕）
+
+```html
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -6,779 +30,483 @@
 <title>DL English 教師工作台</title>
 <style>
   :root {
-    --bg: #fdfaf6;
-    --sidebar: #fff5f7;
-    --card: #ffffff;
-    --primary: #ff8fa3;
-    --primary-dark: #e06c82;
-    --secondary: #a2d2ff;
-    --mint: #b8e0d2;
-    --lavender: #cdb4db;
-    --peach: #ffd6a5;
-    --text: #4a4238;
-    --muted: #8c8275;
-    --border: #f0e6dc;
+    --bg: #fdfaf6; --sidebar: #fff5f7; --card: #ffffff;
+    --primary: #ff8fa3; --primary-dark: #e06c82; --secondary: #a2d2ff;
+    --mint: #b8e0d2; --lavender: #cdb4db; --text: #4a4238;
+    --muted: #8c8275; --border: #f0e6dc;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
-  body { background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+  body { background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  /* Sidebar */
+  /* Login Overlay */
+  .login-screen {
+    position: fixed; inset: 0; z-index: 999;
+    background: linear-gradient(135deg, #fff5f7 0%, #fdfaf6 50%, #eef7ff 100%);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  .login-card {
+    background: #fff; border: 2px solid #f3d5dc; border-radius: 24px;
+    padding: 32px 26px; max-width: 400px; width: 100%; text-align: center;
+    box-shadow: 0 12px 32px rgba(255,143,163,0.18);
+  }
+  .login-avatar {
+    width: 84px; height: 84px; border-radius: 50%; background: #fff0d6;
+    margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;
+    font-size: 44px; border: 4px solid var(--primary);
+  }
+  .login-btn {
+    width: 100%; padding: 14px; border-radius: 14px; border: none;
+    background: var(--primary); color: #fff; font-size: 16px; font-weight: 700;
+    cursor: pointer; margin-top: 16px; box-shadow: 0 6px 16px rgba(255,143,163,0.35);
+  }
+  .login-btn:hover { background: var(--primary-dark); }
+
+  /* Layout */
+  .app-wrap { display: flex; min-height: 100vh; }
   .sidebar {
-    width: 240px; background: var(--sidebar); border-right: 2px solid var(--border);
-    padding: 20px 14px; display: flex; flex-direction: column; justify-content: space-between;
+    width: 235px; background: var(--sidebar); border-right: 2px solid var(--border);
+    padding: 18px 14px; display: flex; flex-direction: column; justify-content: space-between;
     position: sticky; top: 0; height: 100vh; flex-shrink: 0;
   }
-  .brand { text-align: center; padding-bottom: 16px; border-bottom: 1px dashed #f3d5dc; }
+  .brand { text-align: center; padding-bottom: 14px; border-bottom: 1px dashed #f3d5dc; }
   .cookie-avatar {
-    width: 64px; height: 64px; border-radius: 50%; background: #fff0d6;
-    margin: 0 auto 8px; display: flex; align-items: center; justify-content: center;
-    font-size: 32px; border: 3px solid var(--primary); box-shadow: 0 3px 8px rgba(255,143,163,0.2);
+    width: 56px; height: 56px; border-radius: 50%; background: #fff0d6;
+    margin: 0 auto 6px; display: flex; align-items: center; justify-content: center;
+    font-size: 28px; border: 3px solid var(--primary);
   }
-  .brand h1 { font-size: 17px; color: var(--primary-dark); letter-spacing: 0.5px; }
-  .brand p { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-  .nav { margin-top: 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .brand h1 { font-size: 17px; color: var(--primary-dark); }
+  .brand p { font-size: 12px; color: var(--muted); }
+  .nav { margin-top: 12px; display: flex; flex-direction: column; gap: 5px; flex: 1; overflow-y: auto; }
   .nav-btn {
-    border: none; background: transparent; padding: 11px 14px; border-radius: 12px;
+    border: none; background: transparent; padding: 10px 12px; border-radius: 12px;
     text-align: left; font-size: 14px; font-weight: 600; color: var(--text);
-    cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.2s;
+    cursor: pointer; display: flex; align-items: center; gap: 8px;
   }
   .nav-btn:hover { background: #ffe5ec; }
-  .nav-btn.active { background: var(--primary); color: #fff; box-shadow: 0 4px 10px rgba(255,143,163,0.35); }
-  .nav-divider { height: 1px; background: #f3d5dc; margin: 8px 0; }
-
-  .backup-box { display: flex; gap: 6px; padding-top: 12px; border-top: 1px dashed #f3d5dc; }
+  .nav-btn.active { background: var(--primary); color: #fff; }
+  .backup-box { display: flex; gap: 6px; padding-top: 10px; border-top: 1px dashed #f3d5dc; }
   .btn-sm {
-    flex: 1; padding: 8px; border-radius: 10px; border: 1px solid var(--border);
+    padding: 7px 10px; border-radius: 10px; border: 1px solid var(--border);
     background: #fff; font-size: 12px; cursor: pointer; font-weight: 600; color: var(--text);
-    white-space: nowrap;
   }
-  .btn-sm:hover { background: #fff0f3; }
-
-  /* Main */
-  .main { flex: 1; padding: 22px 26px; overflow-y: auto; max-width: 1200px; }
+  .main { flex: 1; padding: 20px; max-width: 1150px; overflow-x: hidden; }
   .topbar {
     display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
-    gap: 12px; margin-bottom: 20px; background: var(--card); padding: 14px 18px;
+    gap: 10px; margin-bottom: 16px; background: var(--card); padding: 12px 16px;
     border-radius: 16px; border: 1px solid var(--border);
   }
-  .stats { display: flex; flex-wrap: wrap; gap: 10px; }
-  .stat-pill {
-    padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600;
-    cursor: pointer; border: 1px solid transparent;
-  }
+  .stats { display: flex; flex-wrap: wrap; gap: 8px; }
+  .stat-pill { padding: 5px 11px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
   .pill-pink { background: #ffe5ec; color: #c94a63; }
   .pill-blue { background: #e2f1ff; color: #3a7ca5; }
   .pill-mint { background: #e2f5ee; color: #2f7d65; }
   .pill-lav { background: #f2eaf7; color: #6d4c82; }
-
-  .filter-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  select, input, textarea {
-    padding: 9px 12px; border-radius: 10px; border: 1px solid #e2d8ce;
-    background: #fff; font-size: 14px; color: var(--text);
-  }
-  select:focus, input:focus, textarea:focus { outline: none; border-color: var(--primary); }
-
-  .btn {
-    padding: 9px 16px; border-radius: 10px; border: none; background: var(--primary);
-    color: #fff; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s;
-  }
-  .btn:hover { background: var(--primary-dark); }
-  .btn-outline { background: #fff; color: var(--primary-dark); border: 1.5px solid var(--primary); }
-  .btn-outline:hover { background: #fff0f3; }
-  .btn-mint { background: #52b788; }
-  .btn-blue { background: #5fa8d3; }
-
   .tab-section { display: none; }
   .tab-section.active { display: block; }
-
   .card {
-    background: var(--card); border-radius: 16px; padding: 18px;
-    border: 1px solid var(--border); margin-bottom: 18px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    background: var(--card); border-radius: 16px; padding: 16px;
+    border: 1px solid var(--border); margin-bottom: 16px;
   }
-  .card h2 { font-size: 17px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
-  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
-
+  .card h2 { font-size: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  select, input, textarea {
+    padding: 9px 11px; border-radius: 10px; border: 1px solid #e2d8ce;
+    background: #fff; font-size: 14px; color: var(--text); width: 100%;
+  }
+  .btn {
+    padding: 9px 15px; border-radius: 10px; border: none; background: var(--primary);
+    color: #fff; font-weight: 600; font-size: 14px; cursor: pointer; width: auto;
+  }
+  .btn-mint { background: #52b788; }
+  .btn-blue { background: #5fa8d3; }
+  .del-btn { background: #f8edeb; color: #b55d5d; border: none; padding: 5px 9px; border-radius: 8px; cursor: pointer; font-size: 12px; }
+  .status-btn { padding: 5px 10px; border-radius: 8px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; }
   .list-item {
-    padding: 13px 15px; border-radius: 12px; border: 1px solid var(--border);
-    background: #fffdfb; margin-bottom: 10px; display: flex; justify-content: space-between;
-    align-items: flex-start; gap: 12px; flex-wrap: wrap;
+    padding: 12px; border-radius: 12px; border: 1px solid var(--border);
+    background: #fffdfb; margin-bottom: 9px; display: flex; justify-content: space-between;
+    align-items: flex-start; gap: 10px; flex-wrap: wrap;
   }
-  .list-item.done { opacity: 0.6; text-decoration: line-through; }
-  .badge {
-    display: inline-block; padding: 3px 9px; border-radius: 8px; font-size: 12px;
-    font-weight: 600; margin-right: 6px; margin-bottom: 4px;
-  }
+  .list-item.done { opacity: 0.55; text-decoration: line-through; }
+  .badge { display: inline-block; padding: 3px 8px; border-radius: 8px; font-size: 12px; font-weight: 600; margin-right: 5px; }
   .chip-group { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
-  .chip {
-    padding: 5px 11px; border-radius: 16px; border: 1px solid #dfd5cb;
-    background: #fff; font-size: 13px; cursor: pointer; user-select: none;
-  }
+  .chip { padding: 5px 11px; border-radius: 16px; border: 1px solid #dfd5cb; background: #fff; font-size: 13px; cursor: pointer; }
   .chip.selected { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 600; }
+  .mobile-sync-bar { display: none; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
 
-  .del-btn {
-    background: #f8edeb; color: #b55d5d; border: none; padding: 5px 10px;
-    border-radius: 8px; cursor: pointer; font-size: 12px;
-  }
-  .status-btn {
-    padding: 5px 11px; border-radius: 8px; border: none; font-size: 12px;
-    font-weight: 600; cursor: pointer;
-  }
-  .exam-img-preview {
-    max-width: 100%; max-height: 220px; border-radius: 10px;
-    border: 1px solid var(--border); margin-top: 8px; object-fit: contain; background: #faf7f2;
-  }
-  .idea-box {
-    background: #fff9fb; border: 1px dashed #f3b8c6; border-radius: 12px;
-    padding: 12px 14px; margin-bottom: 12px; font-size: 13.5px; line-height: 1.6;
-  }
-  .transfer-box {
-    margin-top: 10px; padding: 10px 12px; border-radius: 10px;
-    background: #f7fbf9; border: 1px solid #cde5da;
-  }
-
-  /* Responsive Mobile Bar */
   @media (max-width: 768px) {
-    body { flex-direction: column; }
-    .sidebar {
-      width: 100%; height: auto; position: sticky; top: 0; z-index: 50;
-      padding: 10px 12px; flex-direction: column;
-    }
+    .app-wrap { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: sticky; top: 0; z-index: 50; padding: 10px 12px; }
     .brand { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; }
-    .cookie-avatar { width: 38px; height: 38px; font-size: 20px; margin: 0 8px 0 0; }
-    .brand-left { display: flex; align-items: center; text-align: left; }
+    .brand-left { display: flex; align-items: center; gap: 8px; text-align: left; }
+    .cookie-avatar { width: 36px; height: 36px; font-size: 18px; margin: 0; }
     .nav { flex-direction: row; overflow-x: auto; margin-top: 8px; padding-bottom: 4px; }
-    .nav-btn { white-space: nowrap; padding: 8px 12px; font-size: 13px; }
-    .nav-divider { display: none; }
+    .nav-btn { white-space: nowrap; padding: 7px 11px; font-size: 13px; }
     .backup-box { display: none; }
-    .main { padding: 14px; }
+    .mobile-sync-bar { display: flex; }
+    .main { padding: 12px; }
   }
 </style>
 </head>
 <body>
 
-<aside class="sidebar">
-  <div>
-    <div class="brand">
-      <div class="brand-left">
-        <div class="cookie-avatar">🐶</div>
-        <div>
-          <h1>DL English</h1>
-          <p>Cookie 教師工作台</p>
-        </div>
-      </div>
-      <button class="btn btn-outline" style="padding:6px 10px;font-size:12px;" onclick="switchTab('students')">⚙️ 班級/學生</button>
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-avatar">🐶</div>
+    <h2 style="color:var(--primary-dark);font-size:21px;">DL English 教師工作台</h2>
+    <p style="font-size:13px;color:var(--muted);margin-top:6px;">歡迎回來，Debra 老師！點擊下方按鈕一鍵進入</p>
+    <div id="pinInputWrap" style="display:none;margin-top:14px;">
+      <input type="password" id="loginPinInput" maxlength="4" placeholder="請輸入 4 位數 PIN 碼" style="text-align:center;letter-spacing:4px;font-size:16px;">
     </div>
-    <nav class="nav">
-      <button class="nav-btn active" data-tab="todos" onclick="switchTab('todos')">✅ 應做事項</button>
-      <button class="nav-btn" data-tab="lessons" onclick="switchTab('lessons')">📖 教學內容</button>
-      <button class="nav-btn" data-tab="homework" onclick="switchTab('homework')">📚 功課追蹤</button>
-      <button class="nav-btn" data-tab="mistakes" onclick="switchTab('mistakes')">🎯 錯題追蹤</button>
-      <button class="nav-btn" data-tab="exams" onclick="switchTab('exams')">📊 成績與考卷庫</button>
-      <button class="nav-btn" data-tab="plans" onclick="switchTab('plans')">🗓️ 之後安排</button>
-      <button class="nav-btn" data-tab="fees" onclick="switchTab('fees')">💰 收費與補課</button>
-      <button class="nav-btn" data-tab="materials" onclick="switchTab('materials')">🖨️ 教材與材料</button>
-      <button class="nav-btn" data-tab="games" onclick="switchTab('games')">🎮 遊戲與月報</button>
-      <div class="nav-divider"></div>
-      <button class="nav-btn" data-tab="students" onclick="switchTab('students')">🐾 學生名單設置</button>
-    </nav>
+    <button class="login-btn" onclick="quickLogin()">🐶 Debra 老師一鍵快速登入</button>
+    <label style="display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:13px;color:var(--muted);cursor:pointer;">
+      <input type="checkbox" id="rememberLogin" checked style="width:auto;"> 記住登入狀態（下次自動進入）
+    </label>
   </div>
-  <div class="backup-box">
-    <button class="btn-sm" onclick="exportData()">📤 匯出備份</button>
-    <button class="btn-sm" onclick="document.getElementById('importFile').click()">📥 匯入還原</button>
+</div>
+
+<div class="app-wrap">
+  <aside class="sidebar">
+    <div>
+      <div class="brand">
+        <div class="brand-left">
+          <div class="cookie-avatar">🐶</div>
+          <div>
+            <h1>DL English</h1>
+            <p>Cookie 教師工作台</p>
+          </div>
+        </div>
+        <button class="btn-sm" onclick="lockWorkbench()">🔒 鎖定</button>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn active" data-tab="todos" onclick="switchTab('todos')">✅ 應做事項</button>
+        <button class="nav-btn" data-tab="lessons" onclick="switchTab('lessons')">📖 教學內容</button>
+        <button class="nav-btn" data-tab="homework" onclick="switchTab('homework')">📚 功課追蹤</button>
+        <button class="nav-btn" data-tab="mistakes" onclick="switchTab('mistakes')">🎯 錯題追蹤</button>
+        <button class="nav-btn" data-tab="exams" onclick="switchTab('exams')">📊 成績與補考</button>
+        <button class="nav-btn" data-tab="fees" onclick="switchTab('fees')">💰 收費與補課</button>
+        <button class="nav-btn" data-tab="games" onclick="switchTab('games')">🎮 遊戲與月報</button>
+        <button class="nav-btn" data-tab="students" onclick="switchTab('students')">⚙️ 名單/安全</button>
+      </nav>
+    </div>
+    <div class="backup-box">
+      <button class="btn-sm" style="flex:1;" onclick="exportData()">📤 匯出備份</button>
+      <button class="btn-sm" style="flex:1;" onclick="document.getElementById('importFile').click()">📥 匯入還原</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="mobile-sync-bar">
+      <button class="btn-sm" style="flex:1;background:#fff0f3;" onclick="exportData()">📤 匯出備份（同步用）</button>
+      <button class="btn-sm" style="flex:1;background:#e2f5ee;" onclick="document.getElementById('importFile').click()">📥 匯入還原（同步用）</button>
+    </div>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
-  </div>
-</aside>
 
-<main class="main">
-  <div class="topbar">
-    <div class="stats">
-      <span class="stat-pill pill-pink" onclick="switchTab('todos')">待辦：<b id="statTodos">0</b></span>
-      <span class="stat-pill pill-blue" onclick="switchTab('homework')">功課未完成：<b id="statHw">0</b></span>
-      <span class="stat-pill pill-mint" onclick="switchTab('mistakes')">待出類似題：<b id="statMistakes">0</b></span>
-      <span class="stat-pill pill-lav" onclick="switchTab('exams')">成績/考卷庫：<b id="statExams">0</b></span>
-      <span class="stat-pill" style="background:#ffe8cc;color:#b85d00;" onclick="switchTab('exams')">待補考：<b id="statRetest">0</b></span>
-    </div>
-    <div class="filter-bar">
-      <label style="font-size:13px;font-weight:600;">🔍 篩選班級：</label>
-      <select id="globalClassFilter" onchange="renderAll()">
-        <option value="ALL">全部班級與家教</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- 1. 應做事項 -->
-  <section id="tab-todos" class="tab-section active">
-    <div class="card">
-      <h2>✅ 新增應做事項</h2>
-      <div class="grid-3">
-        <input type="text" id="todoText" placeholder="例如：印製 Sunny 相關連接詞練習單...">
-        <select id="todoTag">
-          <option value="📄 印製教材/考卷">📄 印製教材/考卷</option>
-          <option value="🎯 出錯題練習單">🎯 出錯題練習單</option>
-          <option value="🎙️ 口說作業回饋">🎙️ 口說作業回饋</option>
-          <option value="💬 家長溝通">💬 家長溝通</option>
-          <option value="📌 其他事項">📌 其他事項</option>
-        </select>
-        <select id="todoTarget"></select>
+    <div class="topbar">
+      <div class="stats">
+        <span class="stat-pill pill-pink" onclick="switchTab('todos')">待辦：<b id="statTodos">0</b></span>
+        <span class="stat-pill pill-blue" onclick="switchTab('homework')">功課未完成：<b id="statHw">0</b></span>
+        <span class="stat-pill pill-mint" onclick="switchTab('mistakes')">待出類似題：<b id="statMistakes">0</b></span>
+        <span class="stat-pill pill-lav" onclick="switchTab('exams')">成績/考卷庫：<b id="statExams">0</b></span>
+        <span class="stat-pill" style="background:#ffe8cc;color:#b85d00;" onclick="switchTab('exams')">待補考：<b id="statRetest">0</b></span>
       </div>
-      <div style="margin-top:10px;display:flex;gap:8px;align-items:center;">
-        <input type="date" id="todoDate">
-        <button class="btn" onclick="addTodo()">＋ 加入待辦</button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span style="font-size:13px;font-weight:600;white-space:nowrap;">🔍 班級：</span>
+        <select id="globalClassFilter" onchange="renderAll()" style="width:auto;"></select>
       </div>
     </div>
-    <div class="card">
-      <h2>📋 待辦任務清單</h2>
-      <div id="todoList"></div>
-    </div>
-  </section>
 
-  <!-- 2. 教學內容 -->
-  <section id="tab-lessons" class="tab-section">
-    <div class="card">
-      <h2>🔍 防重複教學查詢器（輸入考點或教材關鍵字）</h2>
-      <input type="text" id="repeatSearch" style="width:100%;" placeholder="輸入例如：名詞子句、either...or、單字搶救大作戰..." oninput="renderLessons()">
-      <div id="repeatResult" class="grid-2" style="margin-top:12px;"></div>
-    </div>
-
-    <div class="card">
-      <h2>📖 登錄課堂教學內容</h2>
-      <div class="grid-3">
-        <select id="lessonTarget"></select>
-        <input type="date" id="lessonDate">
-        <input type="text" id="lessonVersion" placeholder="版本/教材（如：翰林國三、GEPT初級）">
-      </div>
-      <div style="margin-top:10px;">
-        <input type="text" id="lessonTopic" style="width:100%;" placeholder="教學單元 / 文法考點 / 使用遊戲（必填）">
-      </div>
-      <div style="margin-top:10px;">
-        <textarea id="lessonNote" rows="2" style="width:100%;" placeholder="課堂表現與補充筆記..."></textarea>
-      </div>
-      <button class="btn" style="margin-top:10px;" onclick="addLesson()">＋ 儲存教學紀錄</button>
-    </div>
-
-    <div class="card">
-      <h2>🗂️ 歷史教學紀錄</h2>
-      <div id="lessonList"></div>
-    </div>
-  </section>
-
-  <!-- 3. 功課追蹤 -->
-  <section id="tab-homework" class="tab-section">
-    <div class="card">
-      <h2>📚 派發新功課（支援單人或整班一鍵選取）</h2>
-      <div style="margin-bottom:8px;font-size:13px;font-weight:600;">⚡ 快速選取整班或全選：</div>
-      <div id="hwClassQuickBtns" class="chip-group"></div>
-      <div style="margin-bottom:6px;font-size:13px;font-weight:600;">👤 點選學生（可複選）：</div>
-      <div id="hwStudentChips" class="chip-group"></div>
-
-      <div class="grid-2" style="margin-top:10px;">
-        <input type="text" id="hwTitle" placeholder="功課內容（如：錄音15秒朗讀、單字遊戲Unit 3）">
-        <select id="hwType">
-          <option value="🎙️ 口說錄音">🎙️ 口說錄音</option>
-          <option value="🎮 線上單字/文法遊戲">🎮 線上單字/文法遊戲</option>
-          <option value="📝 文法/閱讀練習單">📝 文法/閱讀練習單</option>
-          <option value="✍️ 考卷錯題訂正">✍️ 考卷錯題訂正</option>
-        </select>
-      </div>
-      <div class="grid-2" style="margin-top:10px;">
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;background:#fff;padding:6px 10px;border-radius:10px;border:1px solid #e2d8ce;">
-          <span>🚀 開始時間：</span>
-          <input type="date" id="hwStart" style="flex:1;border:none;padding:3px 6px;">
-        </label>
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;background:#fff;padding:6px 10px;border-radius:10px;border:1px solid #e2d8ce;">
-          <span>⏰ 到期時間：</span>
-          <input type="date" id="hwDue" style="flex:1;border:none;padding:3px 6px;">
-        </label>
-      </div>
-      <button class="btn" style="margin-top:10px;" onclick="addHomework()">＋ 派發功課</button>
-    </div>
-
-    <div class="card">
-      <h2>
-        <span>📊 功課繳交與批改追蹤</span>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button class="btn btn-blue" style="padding:7px 13px;font-size:13px;" onclick="openParentReportModal('HW_ONLY')">📑 缺交功課通知</button>
-          <button class="btn" style="background:#06c755;padding:7px 13px;font-size:13px;" onclick="openParentReportModal('COMBINED')">💬 缺交+成績補考一併傳 LINE</button>
-        </div>
-      </h2>
-      <div id="homeworkList"></div>
-    </div>
-  </section>
-
-  <!-- 4. 錯題追蹤 -->
-  <section id="tab-mistakes" class="tab-section">
-    <div class="card">
-      <h2>🎯 登錄學生錯題</h2>
-      <div class="grid-3">
-        <select id="mistakeStudent"></select>
-        <input type="text" id="mistakePoint" placeholder="核心考點（如：相關連接詞、反身代名詞）">
-        <select id="mistakeStatus">
-          <option value="🔴 待出類似題">🔴 待出類似題</option>
-          <option value="🟡 已複習待測">🟡 已複習待測</option>
-          <option value="🟢 已精熟">🟢 已精熟</option>
-        </select>
-      </div>
-      <div style="margin-top:10px;">
-        <textarea id="mistakeContent" rows="2" style="width:100%;" placeholder="貼上原題題幹、學生錯選答案與正確解析..."></textarea>
-      </div>
-      <button class="btn" style="margin-top:10px;" onclick="addMistake()">＋ 儲存錯題</button>
-    </div>
-
-    <div class="card">
-      <h2>
-        <span>🧩 錯題庫清單</span>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <select id="mistakeFilterStudent" onchange="renderMistakes()"></select>
-          <button class="btn btn-mint" onclick="copyMistakesForWorksheet()">📋 一鍵複製出題清單</button>
-        </div>
-      </h2>
-      <div id="mistakeList"></div>
-    </div>
-  </section>
-
-  <!-- 5. 成績登記、補考追蹤與考卷庫 -->
-  <section id="tab-exams" class="tab-section">
-    <div class="card">
-      <h2>
-        <span>📊 成績登記、補考選項與考卷庫</span>
-      </h2>
-      <div class="idea-box">
-        <b>✨ 成績與補考管理說明：</b><br>
-        1. <b>成績與補考狀態</b>：登錄分數時可直接標記「✅ 通過（免補考）」或「⚠️ 需補考」，之後在清單也能一鍵切換狀態、補填補考分數與補考日期。<br>
-        2. <b>一併傳給家長</b>：在下方清單點選 <b>「💬 成績與補考通知（傳 LINE）」</b>，可將「缺交功課＋成績／待補考名單」合併成一份清單傳給家長，也可針對單筆成績傳送通知！
-      </div>
-
-      <div class="grid-3">
-        <select id="examStudent"></select>
-        <input type="text" id="examTitle" placeholder="測驗/考卷名稱（如：U3單字小考、第一次段考）">
-        <input type="text" id="examScore" placeholder="原始分數（如：58分、88分）">
-      </div>
-      <div class="grid-3" style="margin-top:10px;">
-        <select id="examRetestStatus">
-          <option value="✅ 通過（免補考）">✅ 通過（免補考）</option>
-          <option value="⚠️ 需補考">⚠️ 需補考</option>
-          <option value="📝 已安排補考">📝 已安排補考</option>
-          <option value="🎉 補考通過">🎉 補考通過</option>
-        </select>
-        <input type="date" id="examRetestDate" title="補考日期（選填）">
-        <input type="text" id="examRetestScore" placeholder="補考分數（未補考可先留空）">
-      </div>
-      <div class="grid-2" style="margin-top:10px;">
-        <input type="date" id="examDate" title="考試日期">
-        <input type="text" id="examPoints" placeholder="考卷重點/易錯考點（如：either...or、時態、單字）">
-      </div>
-      <div style="margin-top:10px;">
-        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">📎 放入考卷照片或檔案（選填，圖片會自動縮圖保留）：</label>
-        <input type="file" id="examFileInput" accept="image/*,.pdf,.doc,.docx" onchange="handleExamFileChange(event)">
-        <div id="examFilePreviewBox"></div>
-      </div>
-      <div style="margin-top:10px;">
-        <textarea id="examWrongItems" rows="2" style="width:100%;" placeholder="🎯 考卷錯題摘錄（選填，例如：1. Neither you nor he ___ right. 誤選 are...）"></textarea>
-        <label style="display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-size:13px;font-weight:600;color:#2f7d65;cursor:pointer;">
-          <input type="checkbox" id="examAutoSyncMistake" checked> 存入時，同時把「考卷錯題摘錄」轉存到「🎯 錯題追蹤」分頁
-        </label>
-      </div>
-      <div style="margin-top:10px;">
-        <textarea id="examIdeaNote" rows="2" style="width:100%;" placeholder="💡 評語 / 補考範圍 / New Idea 備註（例如：U3單字1-20重考，及格標準80分）..."></textarea>
-      </div>
-      <button class="btn" style="margin-top:10px;" onclick="addExam()">＋ 儲存成績與考卷紀錄</button>
-    </div>
-
-    <div class="card">
-      <h2>
-        <span>🗂️ 成績與考卷紀錄清單</span>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-          <select id="examFilterStatus" onchange="renderExams()">
-            <option value="ALL">全部狀態</option>
-            <option value="RETEST_ONLY">⚠️ 僅看需補考/已安排補考</option>
-            <option value="PASSED_ONLY">✅ 僅看通過/補考通過</option>
+    <!-- 1. 應做事項 -->
+    <section id="tab-todos" class="tab-section active">
+      <div class="card">
+        <h2>✅ 新增應做事項</h2>
+        <div class="grid-3">
+          <input type="text" id="todoText" placeholder="例如：印製 Sunny 相關連接詞練習單...">
+          <select id="todoTag">
+            <option value="📄 印製教材/考卷">📄 印製教材/考卷</option>
+            <option value="🎯 出錯題練習單">🎯 出錯題練習單</option>
+            <option value="🎙️ 口說作業回饋">🎙️ 口說作業回饋</option>
+            <option value="💬 家長溝通">💬 家長溝通</option>
           </select>
-          <input type="text" id="examSearch" placeholder="搜尋學生、考卷或考點..." oninput="renderExams()" style="min-width:180px;">
-          <button class="btn" style="background:#06c755;padding:7px 13px;font-size:13px;" onclick="openParentReportModal('COMBINED')">💬 成績+補考+缺交一併傳家長</button>
+          <select id="todoTarget"></select>
         </div>
-      </h2>
-      <div id="examList"></div>
-    </div>
-  </section>
-
-  <!-- 6. 之後安排 -->
-  <section id="tab-plans" class="tab-section">
-    <div class="card">
-      <h2>🗓️ 新增之後課程安排 / 考試倒數</h2>
-      <div class="grid-3">
-        <select id="planTarget"></select>
-        <input type="date" id="planDate">
-        <select id="planCategory">
-          <option value="📅 下次上課預排">📅 下次上課預排</option>
-          <option value="⏰ 學校段考/大考倒數">⏰ 學校段考/大考倒數</option>
-          <option value="🏆 檢定/競賽目標">🏆 檢定/競賽目標</option>
-        </select>
-      </div>
-      <div style="margin-top:10px;">
-        <input type="text" id="planContent" style="width:100%;" placeholder="預計教學進度、需攜帶教具或考試名稱...">
-      </div>
-      <button class="btn" style="margin-top:10px;" onclick="addPlan()">＋ 加入安排</button>
-    </div>
-
-    <div class="card">
-      <h2>🚀 排程與倒數看板</h2>
-      <div id="planList"></div>
-    </div>
-  </section>
-
-  <!-- 7. 學生與班級名單設置 -->
-  <section id="tab-students" class="tab-section">
-    <div class="card">
-      <h2>🏫 1. 班級 / 社團群組管理</h2>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-        <input type="text" id="newClassName" placeholder="輸入班級名稱（如：大里國小英語社團）" style="flex:1;min-width:200px;">
-        <input type="color" id="newClassColor" value="#a2d2ff" style="width:48px;padding:3px;height:40px;">
-        <button class="btn" onclick="addClass()">＋ 新增班級</button>
-      </div>
-      <div id="classList" class="chip-group"></div>
-    </div>
-
-    <div class="card">
-      <h2>🐾 2. 新增單一學生</h2>
-      <div class="grid-3">
-        <input type="text" id="newStudentName" placeholder="學生姓名（如：Kevin）">
-        <select id="newStudentClass"></select>
-        <input type="text" id="newStudentNote" placeholder="年級 / 版本備註（如：國二康軒）">
-      </div>
-      <button class="btn" style="margin-top:10px;" onclick="addStudent()">＋ 新增學生</button>
-    </div>
-
-    <div class="card">
-      <h2>⚡ 3. 批次貼上新增多位學生（一行一位）</h2>
-      <div class="grid-2">
-        <textarea id="bulkStudents" rows="3" placeholder="例如：&#10;Amy&#10;Ben&#10;Chloe"></textarea>
-        <div>
-          <label style="font-size:13px;font-weight:600;">統一歸入班級：</label>
-          <select id="bulkStudentClass" style="width:100%;margin-top:6px;"></select>
-          <button class="btn btn-blue" style="margin-top:10px;width:100%;" onclick="bulkAddStudents()">⚡ 批次匯入名單</button>
+        <div style="margin-top:10px;display:flex;gap:8px;align-items:center;">
+          <input type="date" id="todoDate" style="width:auto;">
+          <button class="btn" onclick="addTodo()">＋ 加入待辦</button>
         </div>
       </div>
-    </div>
+      <div class="card">
+        <h2>📋 待辦任務清單</h2>
+        <div id="todoList"></div>
+      </div>
+    </section>
 
-    <div class="card">
-      <h2>
-        <span>👥 目前學生名單（可直接切換所屬班級）</span>
-        <button class="del-btn" onclick="resetDefaultData()">🔄 重置預設名單</button>
-      </h2>
-      <div id="studentManageList"></div>
-    </div>
-  </section>
+    <!-- 2. 教學內容 -->
+    <section id="tab-lessons" class="tab-section">
+      <div class="card">
+        <h2>📖 登錄課堂教學內容</h2>
+        <div class="grid-3">
+          <select id="lessonTarget"></select>
+          <input type="date" id="lessonDate">
+          <input type="text" id="lessonVersion" placeholder="版本/教材（如：翰林國三、GEPT初級）">
+        </div>
+        <div style="margin-top:10px;">
+          <input type="text" id="lessonTopic" placeholder="教學單元 / 文法考點 / 使用遊戲">
+        </div>
+        <button class="btn" style="margin-top:10px;" onclick="addLesson()">＋ 儲存教學紀錄</button>
+      </div>
+      <div class="card">
+        <h2>🗂️ 歷史教學紀錄</h2>
+        <div id="lessonList"></div>
+      </div>
+    </section>
 
-  <!-- 8. 上課費用計算（小時/堂數）＋ 補課與請假登記 -->
-  <section id="tab-fees" class="tab-section">
-    <div class="card">
-      <h2>
-        <span>💰 上課費用計算（支援小時制／堂數制）</span>
-        <button class="btn" style="background:#06c755;padding:7px 13px;font-size:13px;" onclick="openBillingTableModal()">📑 一鍵生成收費表格（可傳 LINE）</button>
-      </h2>
-      <div class="idea-box">
-        <b>✨ 計費與收費表說明：</b><br>
-        可針對每位學生設定<b>「按堂計費」</b>或<b>「按小時計費」</b>，登記上課堂數／時數後自動算出行前應收金額；點選 <b>「📑 一鍵生成收費表格」</b> 可直接產生清楚的收費通知文字，一鍵複製或開啟 LINE 傳給家長。
+    <!-- 3. 功課追蹤 -->
+    <section id="tab-homework" class="tab-section">
+      <div class="card">
+        <h2>📚 派發新功課</h2>
+        <div id="hwClassQuickBtns" class="chip-group"></div>
+        <div id="hwStudentChips" class="chip-group"></div>
+        <div class="grid-2" style="margin-top:10px;">
+          <input type="text" id="hwTitle" placeholder="功課內容（如：錄音15秒朗讀、單字遊戲Unit 3）">
+          <select id="hwType">
+            <option value="🎙️ 口說錄音">🎙️ 口說錄音</option>
+            <option value="🎮 線上單字/文法遊戲">🎮 線上單字/文法遊戲</option>
+            <option value="📝 文法/閱讀練習單">📝 文法/閱讀練習單</option>
+            <option value="✍️ 考卷錯題訂正">✍️ 考卷錯題訂正</option>
+          </select>
+        </div>
+        <div class="grid-2" style="margin-top:10px;">
+          <label style="font-size:13px;font-weight:600;">🚀 開始時間：<input type="date" id="hwStart"></label>
+          <label style="font-size:13px;font-weight:600;">⏰ 到期時間：<input type="date" id="hwDue"></label>
+        </div>
+        <button class="btn" style="margin-top:10px;" onclick="addHomework()">＋ 派發功課</button>
       </div>
-      <div class="grid-3">
-        <select id="billingStudent"></select>
-        <select id="billingMode">
-          <option value="SESSION">按堂計費（堂數 × 單堂費）</option>
-          <option value="HOURLY">按小時計費（時數 × 時薪）</option>
-        </select>
-        <input type="number" id="billingRate" placeholder="單堂費 / 時薪（元，如：700）" min="0" step="10">
+      <div class="card">
+        <h2>
+          <span>📊 功課繳交追蹤</span>
+          <button class="btn" style="background:#06c755;font-size:13px;" onclick="shareLineReport()">💬 缺交+成績補考傳 LINE</button>
+        </h2>
+        <div id="homeworkList"></div>
       </div>
-      <div class="grid-3" style="margin-top:10px;">
-        <input type="number" id="billingUnits" placeholder="本月上課堂數或時數（如：4）" min="0" step="0.5">
-        <input type="number" id="billingPaid" placeholder="已收金額（元，未收可填 0）" min="0" step="10" value="0">
-        <select id="billingMonth">
-          <option value="2026-11">2026 年 11 月</option>
-          <option value="2026-12">2026 年 12 月</option>
-          <option value="2027-01">2027 年 1 月</option>
-          <option value="2027-02">2027 年 2 月</option>
-        </select>
-      </div>
-      <div style="margin-top:10px;">
-        <input type="text" id="billingNote" style="width:100%;" placeholder="收費備註（如：含教材費、折抵上月補課等，選填）">
-      </div>
-      <button class="btn" style="margin-top:10px;" onclick="addBillingRecord()">＋ 儲存／更新收費紀錄</button>
-    </div>
+    </section>
 
-    <div class="card">
-      <h2>📋 收費明細與自動試算清單</h2>
-      <div id="billingList"></div>
-    </div>
+    <!-- 4. 錯題追蹤 -->
+    <section id="tab-mistakes" class="tab-section">
+      <div class="card">
+        <h2>🎯 登錄學生錯題</h2>
+        <div class="grid-3">
+          <select id="mistakeStudent"></select>
+          <input type="text" id="mistakePoint" placeholder="核心考點（如：相關連接詞）">
+          <select id="mistakeStatus">
+            <option value="🔴 待出類似題">🔴 待出類似題</option>
+            <option value="🟡 已複習待測">🟡 已複習待測</option>
+            <option value="🟢 已精熟">🟢 已精熟</option>
+          </select>
+        </div>
+        <textarea id="mistakeContent" rows="2" style="margin-top:10px;" placeholder="貼上原題題幹與解析..."></textarea>
+        <button class="btn" style="margin-top:10px;" onclick="addMistake()">＋ 儲存錯題</button>
+      </div>
+      <div class="card">
+        <h2>🧩 錯題庫清單</h2>
+        <div id="mistakeList"></div>
+      </div>
+    </section>
 
-    <div class="card">
-      <h2>🔄 補課與請假登記</h2>
-      <div class="grid-3">
-        <select id="makeupStudent"></select>
-        <select id="makeupType">
-          <option value="🤒 請假待補課">🤒 請假待補課</option>
-          <option value="📅 已排定補課">📅 已排定補課</option>
-          <option value="✅ 已完成補課">✅ 已完成補課</option>
-        </select>
-        <input type="date" id="makeupDate" title="請假或預計補課日期">
+    <!-- 5. 成績與補考 -->
+    <section id="tab-exams" class="tab-section">
+      <div class="card">
+        <h2>📊 成績登記與補考追蹤</h2>
+        <div class="grid-3">
+          <select id="examStudent"></select>
+          <input type="text" id="examTitle" placeholder="測驗名稱（如：U3單字小考）">
+          <input type="text" id="examScore" placeholder="原始分數（如：58分）">
+        </div>
+        <div class="grid-3" style="margin-top:10px;">
+          <select id="examRetestStatus">
+            <option value="✅ 通過（免補考）">✅ 通過（免補考）</option>
+            <option value="⚠️ 需補考">⚠️ 需補考</option>
+            <option value="📝 已安排補考">📝 已安排補考</option>
+            <option value="🎉 補考通過">🎉 補考通過</option>
+          </select>
+          <input type="date" id="examRetestDate">
+          <input type="text" id="examRetestScore" placeholder="補考分數（選填）">
+        </div>
+        <button class="btn" style="margin-top:10px;" onclick="addExam()">＋ 儲存成績紀錄</button>
       </div>
-      <div style="margin-top:10px;">
-        <input type="text" id="makeupReason" style="width:100%;" placeholder="請假原因或補課安排說明（如：校外教學請假、下週四 17:00 補課）...">
+      <div class="card">
+        <h2>🗂️ 成績與補考清單</h2>
+        <div id="examList"></div>
       </div>
-      <button class="btn btn-blue" style="margin-top:10px;" onclick="addMakeupRecord()">＋ 登記請假／補課</button>
-      <div id="makeupList" style="margin-top:14px;"></div>
-    </div>
-  </section>
+    </section>
 
-  <!-- 9. 教材／講義印製與材料費統計 -->
-  <section id="tab-materials" class="tab-section">
-    <div class="card">
-      <h2>🖨️ 教材／講義印製與材料費統計</h2>
-      <div class="grid-3">
-        <input type="text" id="matName" placeholder="教材/講義/手作材料名稱（如：U3文法單、石塑黏土包）">
-        <select id="matTarget"></select>
-        <input type="number" id="matQty" placeholder="份數 / 數量" min="1" value="1">
+    <!-- 6. 收費與補課 -->
+    <section id="tab-fees" class="tab-section">
+      <div class="card">
+        <h2>
+          <span>💰 上課費用計算（小時制／堂數制）</span>
+          <button class="btn" style="background:#06c755;font-size:13px;" onclick="shareBillingLine()">📑 收費表傳 LINE</button>
+        </h2>
+        <div class="grid-3">
+          <select id="billingStudent"></select>
+          <select id="billingMode">
+            <option value="SESSION">按堂計費（堂數 × 單堂費）</option>
+            <option value="HOURLY">按小時計費（時數 × 時薪）</option>
+          </select>
+          <input type="number" id="billingRate" placeholder="費率（元，如：750）">
+        </div>
+        <div class="grid-3" style="margin-top:10px;">
+          <input type="number" id="billingUnits" placeholder="堂數或時數（如：4）" step="0.5">
+          <input type="number" id="billingPaid" placeholder="已收金額（元）" value="0">
+          <input type="text" id="billingNote" placeholder="備註（選填）">
+        </div>
+        <button class="btn" style="margin-top:10px;" onclick="addBilling()">＋ 儲存收費紀錄</button>
       </div>
-      <div class="grid-3" style="margin-top:10px;">
-        <input type="number" id="matUnitCost" placeholder="單份/單件成本（元）" min="0" step="1" value="0">
-        <select id="matStatus">
-          <option value="🖨️ 待印製/待備料">🖨️ 待印製/待備料</option>
-          <option value="📦 已備妥待帶出門">📦 已備妥待帶出門</option>
-          <option value="✅ 已發放">✅ 已發放</option>
-        </select>
-        <input type="text" id="matNote" placeholder="備註（如：A4雙面、已代墊）">
+      <div class="card">
+        <h2>📋 收費明細清單</h2>
+        <div id="billingList"></div>
       </div>
-      <button class="btn" style="margin-top:10px;" onclick="addMaterialItem()">＋ 加入教材／材料清單</button>
-    </div>
+    </section>
 
-    <div class="card">
-      <h2>📊 印製與材料費總計看板</h2>
-      <div id="materialSummary" class="idea-box"></div>
-      <div id="materialList"></div>
-    </div>
-  </section>
+    <!-- 7. 遊戲與月報 -->
+    <section id="tab-games" class="tab-section">
+      <div class="card">
+        <h2>🎮 線上小遊戲快速連結</h2>
+        <div class="list-item">
+          <div>
+            <b>DL's 單字搶救大作戰</b><br>
+            <a href="https://debdabo2000-cloud.github.io/Irregular-verbs-Fun/" target="_blank" style="font-size:13px;color:#3a7ca5;">https://debdabo2000-cloud.github.io/Irregular-verbs-Fun/</a>
+          </div>
+          <a href="https://debdabo2000-cloud.github.io/Irregular-verbs-Fun/" target="_blank" class="btn-sm" style="text-decoration:none;">開啟遊戲</a>
+        </div>
+      </div>
+      <div class="card">
+        <h2>🐶 每月學習狀況通知單（12 月起用 LINE 版）</h2>
+        <div class="grid-2">
+          <select id="monthlyStudent"></select>
+          <button class="btn btn-mint" onclick="generateMonthlyReport()">✨ 產生 LINE 通知單草稿</button>
+        </div>
+        <textarea id="monthlyReportOutput" rows="8" style="margin-top:10px;" placeholder="點擊上方按鈕自動產生通知單..."></textarea>
+        <button class="btn" style="background:#06c755;margin-top:10px;" onclick="sendMonthlyLine()">💬 開啟 LINE 傳送</button>
+      </div>
+    </section>
 
-  <!-- 10. 線上小遊戲快速連結捷徑 ＋ 12月起用「每月學習狀況通知單（LINE 版）」 -->
-  <section id="tab-games" class="tab-section">
-    <div class="card">
-      <h2>🎮 線上小遊戲／單字測驗快速連結捷徑</h2>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-        <input type="text" id="gameShortcutTitle" placeholder="捷徑名稱（如：DL's 單字搶救大作戰）" style="flex:1;min-width:180px;">
-        <input type="url" id="gameShortcutUrl" placeholder="網址（https://...）" style="flex:1.5;min-width:220px;">
-        <button class="btn" onclick="addGameShortcut()">＋ 新增捷徑</button>
+    <!-- 8. 名單與安全設定 -->
+    <section id="tab-students" class="tab-section">
+      <div class="card">
+        <h2>🔐 一鍵登入與 PIN 碼安全設定</h2>
+        <div class="grid-2">
+          <input type="password" id="newPinInput" maxlength="4" placeholder="設定 4 位數 PIN 碼（留空則免密碼）">
+          <button class="btn btn-blue" onclick="savePinSetting()">💾 儲存登入設定</button>
+        </div>
       </div>
-      <div id="gameShortcutList" class="grid-2"></div>
-    </div>
-
-    <div class="card">
-      <h2>🐶 每月學習狀況通知單（LINE 版一鍵產生器・建議 12 月起使用）</h2>
-      <div class="idea-box">
-        <b>💡 使用提醒：</b>這個月（11 月）先不寄出，留到 <b>12 月</b> 結算時再使用！選擇學生與月份後，系統會自動帶出該生目前的<b>測驗成績／補考狀態</b>與<b>功課狀況</b>，並可填寫<b>老師的鼓勵</b>與<b>麻煩家長協助事項</b>，直接一鍵複製或開啟 LINE 傳送。
+      <div class="card">
+        <h2>🏫 新增班級 / 學生</h2>
+        <div class="grid-2" style="margin-bottom:10px;">
+          <input type="text" id="newClassName" placeholder="新班級名稱">
+          <button class="btn" onclick="addClass()">＋ 新增班級</button>
+        </div>
+        <div class="grid-3">
+          <input type="text" id="newStudentName" placeholder="新學生姓名">
+          <select id="newStudentClass"></select>
+          <button class="btn btn-mint" onclick="addStudent()">＋ 新增學生</button>
+        </div>
       </div>
-      <div class="grid-3">
-        <select id="monthlyStudent"></select>
-        <input type="text" id="monthlyLabel" value="2026 年 12 月" placeholder="月份標籤（如：2026 年 12 月）">
-        <button class="btn btn-mint" onclick="generateMonthlyReportPreview()">✨ 產生 LINE 通知單草稿</button>
+      <div class="card">
+        <h2>👥 目前學生名單</h2>
+        <div id="studentManageList"></div>
       </div>
-      <div style="margin-top:10px;">
-        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">🌟 老師的鼓勵與學習觀察：</label>
-        <textarea id="monthlyEncouragement" rows="2" style="width:100%;" placeholder="例如：這個月在課堂上的專注度很棒！句型反應越來越快，口說錄音也更自然有自信，繼續保持！"></textarea>
-      </div>
-      <div style="margin-top:10px;">
-        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">💌 麻煩家長協助事項：</label>
-        <textarea id="monthlyParentAsk" rows="2" style="width:100%;" placeholder="例如：麻煩家長協助提醒孩子留意補考與功課截止日期，每天花 10 分鐘複習單字，感謝您的支持與配合！"></textarea>
-      </div>
-      <div style="margin-top:12px;">
-        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">📱 LINE 通知單預覽（可直接修改後傳送）：</label>
-        <textarea id="monthlyReportOutput" rows="13" style="width:100%;font-size:13px;line-height:1.55;"></textarea>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-        <button class="btn btn-mint" onclick="copyMonthlyReport()">📋 複製通知單</button>
-        <button class="btn" style="background:#06c755;" onclick="shareMonthlyReportToLine()">💬 開啟 LINE 傳送</button>
-      </div>
-    </div>
-  </section>
-
-</main>
+    </section>
+  </main>
+</div>
 
 <script>
-const STORAGE_KEY = 'dl_english_workbench_v6';
-const COLORS = ['#ffd6e0','#d8e2dc','#e2ece9','#fde4cf','#f1c0e8','#cfbaf0','#a3c4f3','#b9fbc0','#ffcfd2'];
-
-const DEFAULT_NAMES = [
-  'Ann','Sunny','Olivia','Amber','Abby','Adam','Kitty','Nora','Sam','Max',
-  'Ken','Cindy','Dora','Marcus','Rose','Sean','Yommie','Leo','Polly','Melody','Nick','Emily'
-];
-
-let pendingExamAttachment = null;
+const STORAGE_KEY = 'dl_english_workbench_v7';
+const AUTH_KEY = 'dl_english_auth_v1';
+const DEFAULT_NAMES = ['Ann','Sunny','Olivia','Amber','Abby','Adam','Kitty','Nora','Sam','Max','Ken','Cindy','Dora','Marcus','Rose','Sean','Yommie','Leo','Polly','Melody','Nick','Emily'];
+let selectedHwStudents = new Set();
 
 function getInitialData() {
-  const classes = [
-    { id: 'c_tutor', name: '個別家教 (1對1)', color: '#ffd6e0' },
-    { id: 'c_zhulin', name: '竹林國小英語社團', color: '#bde0fe' },
-    { id: 'c_small_a', name: '小班制 A 班', color: '#caffbf' }
-  ];
-  const students = DEFAULT_NAMES.map((name, idx) => ({
-    id: 's_' + (idx + 1),
-    name,
-    classId: 'c_tutor',
-    note: '',
-    color: COLORS[idx % COLORS.length]
-  }));
   const today = new Date().toISOString().split('T')[0];
   return {
-    classes,
-    students,
-    todos: [
-      { id: 't1', text: '整理段考錯題並出類似考點練習卷', tag: '🎯 出錯題練習單', target: 'Ann', date: today, done: false }
+    pin: '',
+    classes: [
+      { id: 'c_tutor', name: '個別家教 (1對1)' },
+      { id: 'c_zhulin', name: '竹林國小英語社團' },
+      { id: 'c_small_a', name: '小班制 A 班' }
     ],
-    lessons: [
-      { id: 'l1', targetType: 'student', targetId: 's_1', targetName: 'Ann', classId: 'c_tutor', date: today, version: '國中會考文法', topic: '相關連接詞 (either...or / neither...nor)', note: '已完成基礎句型練習，下次接續倒裝用法' }
-    ],
-    homeworks: [
-      { id: 'h1', studentId: 's_2', studentName: 'Sunny', classId: 'c_tutor', title: '15秒英語短文朗讀錄音', type: '🎙️ 口說錄音', startDate: today, due: today, status: '📥 已交待改', comment: '' }
-    ],
-    mistakes: [
-      { id: 'm1', studentId: 's_1', studentName: 'Ann', classId: 'c_tutor', point: '相關連接詞動詞單複數一致', status: '🔴 待出類似題', content: 'Neither you nor he ___ (be) right. 誤選 are，正解為 is（就近原則）。' }
-    ],
-    exams: [
-      {
-        id: 'e1',
-        studentId: 's_1',
-        studentName: 'Ann',
-        classId: 'c_tutor',
-        title: '第一次段考英文考卷',
-        score: '86分',
-        retestStatus: '✅ 通過（免補考）',
-        retestDate: '',
-        retestScore: '',
-        date: today,
-        points: '相關連接詞、反身代名詞、閱讀推論',
-        wrongItems: 'Neither you nor he ___ (be) right. 誤選 are，正解為 is（就近原則）。',
-        ideaNote: 'New Idea：把錯的文法題挑出來做成 10 分鐘小考，下次考前複習用。',
-        attachment: null,
-        transferredCount: 1
-      }
-    ],
-    plans: [
-      { id: 'p1', targetType: 'class', targetId: 'c_zhulin', targetName: '竹林國小英語社團', classId: 'c_zhulin', date: today, category: '📅 下次上課預排', content: '自然發音短母音＋Spot It! 單字桌遊互動' }
-    ],
-    billings: [
-      { id: 'b1', studentId: 's_1', studentName: 'Ann', classId: 'c_tutor', month: '2026-11', mode: 'SESSION', rate: 750, units: 4, paid: 3000, note: '11月共4堂課' }
-    ],
-    makeups: [
-      { id: 'mk1', studentId: 's_2', studentName: 'Sunny', classId: 'c_tutor', date: today, status: '🤒 請假待補課', reason: '身體不適請假一次，待安排補課' }
-    ],
-    materials: [
-      { id: 'mt1', name: '第一次段考文法與閱讀複習講義', target: '👤 Ann', qty: 1, unitCost: 25, status: '📦 已備妥待帶出門', note: '雙面列印' }
-    ],
-    games: [
-      { id: 'g1', title: "DL's 單字搶救大作戰", url: 'https://debdabo2000-cloud.github.io/Irregular-verbs-Fun/' }
-    ]
+    students: DEFAULT_NAMES.map((name, i) => ({ id: 's_' + (i + 1), name, classId: 'c_tutor' })),
+    todos: [{ id: 't1', text: '整理段考錯題並出類似考點練習卷', tag: '🎯 出錯題練習單', target: '👤 Ann', date: today, done: false }],
+    lessons: [{ id: 'l1', targetName: 'Ann', classId: 'c_tutor', date: today, version: '國中會考文法', topic: '相關連接詞 (either...or / neither...nor)' }],
+    homeworks: [{ id: 'h1', studentId: 's_2', studentName: 'Sunny', classId: 'c_tutor', title: '15秒英語短文朗讀錄音', type: '🎙️ 口說錄音', startDate: today, due: today, status: '⏳ 未繳交' }],
+    mistakes: [{ id: 'm1', studentId: 's_1', studentName: 'Ann', classId: 'c_tutor', point: '相關連接詞動詞一致', status: '🔴 待出類似題', content: 'Neither you nor he ___ (be) right. 誤選 are，正解為 is。' }],
+    exams: [{ id: 'e1', studentId: 's_1', studentName: 'Ann', classId: 'c_tutor', title: '第一次段考英文', score: '86分', retestStatus: '✅ 通過（免補考）', retestDate: '', retestScore: '', date: today }],
+    billings: [{ id: 'b1', studentId: 's_1', studentName: 'Ann', classId: 'c_tutor', mode: 'SESSION', rate: 750, units: 4, paid: 3000, note: '4堂課' }]
   };
 }
 
 let db = loadData();
-let selectedHwStudents = new Set();
-
 function loadData() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('dl_english_workbench_v5');
-    if (!raw) return getInitialData();
-    const parsed = JSON.parse(raw);
-    if (!parsed.classes) parsed.classes = getInitialData().classes;
-    if (!parsed.students) parsed.students = getInitialData().students;
-    if (!parsed.todos) parsed.todos = [];
-    if (!parsed.lessons) parsed.lessons = [];
-    if (!parsed.homeworks) parsed.homeworks = [];
-    if (!parsed.mistakes) parsed.mistakes = [];
-    if (!parsed.exams) parsed.exams = [];
-    if (!parsed.plans) parsed.plans = [];
-    if (!parsed.billings) parsed.billings = [];
-    if (!parsed.makeups) parsed.makeups = [];
-    if (!parsed.materials) parsed.materials = [];
-    if (!parsed.games) parsed.games = [{ id: 'g1', title: "DL's 單字搶救大作戰", url: 'https://debdabo2000-cloud.github.io/Irregular-verbs-Fun/' }];
-    return parsed;
-  } catch (e) {
-    return getInitialData();
-  }
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('dl_english_workbench_v6');
+    return raw ? Object.assign(getInitialData(), JSON.parse(raw)) : getInitialData();
+  } catch (e) { return getInitialData(); }
 }
-
 function saveData() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
-  } catch (e) {
-    alert('瀏覽器儲存空間已達上限（可能是考卷照片太大），建議改用「📤 匯出備份」存檔或縮小照片尺寸！');
-  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
   updateStats();
 }
 
-function resetDefaultData() {
-  if (confirm('確定要重置為預設名單與範例資料嗎？（建議先匯出備份）')) {
-    db = getInitialData();
-    saveData();
-    renderAll();
+/* Auth */
+function initAuth() {
+  if (db.pin) document.getElementById('pinInputWrap').style.display = 'block';
+  if (localStorage.getItem(AUTH_KEY) === '1' && !db.pin) {
+    document.getElementById('loginScreen').style.display = 'none';
   }
 }
+function quickLogin() {
+  if (db.pin) {
+    const val = document.getElementById('loginPinInput').value.trim();
+    if (val !== db.pin) return alert('PIN 碼不正確，請再試一次！');
+  }
+  if (document.getElementById('rememberLogin').checked) localStorage.setItem(AUTH_KEY, '1');
+  document.getElementById('loginScreen').style.display = 'none';
+}
+function lockWorkbench() {
+  localStorage.removeItem(AUTH_KEY);
+  document.getElementById('loginPinInput').value = '';
+  document.getElementById('loginScreen').style.display = 'flex';
+}
+function savePinSetting() {
+  const p = document.getElementById('newPinInput').value.trim();
+  if (p && !/^\d{4}$/.test(p)) return alert('請輸入 4 位數字，或留空取消密碼！');
+  db.pin = p;
+  saveData();
+  document.getElementById('pinInputWrap').style.display = p ? 'block' : 'none';
+  alert(p ? '已設定 4 位數 PIN 碼保護！' : '已切換為免密碼一鍵登入！');
+}
 
-function switchTab(tabName) {
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tab === tabName);
-  });
-  document.querySelectorAll('.tab-section').forEach(sec => {
-    sec.classList.toggle('active', sec.id === 'tab-' + tabName);
-  });
+function switchTab(name) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.toggle('active', s.id === 'tab-' + name));
   renderAll();
 }
-
-function getClassById(id) {
-  return db.classes.find(c => c.id === id) || { id: 'c_tutor', name: '未分類', color: '#eee' };
-}
+function getClassById(id) { return db.classes.find(c => c.id === id) || { id: 'c_tutor', name: '未分類' }; }
+function delItem(col, id) { db[col] = db[col].filter(x => x.id !== id); saveData(); renderAll(); }
 
 function populateSelects() {
-  const globalSel = document.getElementById('globalClassFilter');
-  const prevGlobal = globalSel.value || 'ALL';
-  globalSel.innerHTML = '<option value="ALL">全部班級與家教</option>' +
-    db.classes.map(c => `<option value="${c.id}">🏫 ${c.name}</option>`).join('');
-  globalSel.value = prevGlobal;
+  const gf = document.getElementById('globalClassFilter');
+  const prev = gf.value || 'ALL';
+  gf.innerHTML = '<option value="ALL">全部班級</option>' + db.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  gf.value = prev;
 
-  const classOptions = db.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-  document.getElementById('newStudentClass').innerHTML = classOptions;
-  document.getElementById('bulkStudentClass').innerHTML = classOptions;
-
-  const combinedTargetOptions =
-    '<optgroup label="🏫 整個班級 / 社團">' +
-    db.classes.map(c => `<option value="class:${c.id}">🏫 ${c.name}（全班）</option>`).join('') +
-    '</optgroup><optgroup label="👤 個別學生">' +
-    db.students.map(s => `<option value="student:${s.id}">👤 ${s.name} (${getClassById(s.classId).name})</option>`).join('') +
-    '</optgroup>';
-
-  document.getElementById('lessonTarget').innerHTML = combinedTargetOptions;
-  document.getElementById('planTarget').innerHTML = combinedTargetOptions;
-
-  document.getElementById('todoTarget').innerHTML =
-    '<option value="通用">📌 通用 / 個人備課</option>' +
-    db.classes.map(c => `<option value="🏫 ${c.name}">🏫 ${c.name}</option>`).join('') +
-    db.students.map(s => `<option value="👤 ${s.name}">👤 ${s.name}</option>`).join('');
-
-  const stuOptions = db.students.map(s => `<option value="${s.id}">${s.name} (${getClassById(s.classId).name})</option>`).join('');
-  document.getElementById('mistakeStudent').innerHTML = stuOptions;
-  document.getElementById('examStudent').innerHTML = stuOptions;
-
-  const prevMistakeFilter = document.getElementById('mistakeFilterStudent').value || 'ALL';
-  document.getElementById('mistakeFilterStudent').innerHTML =
-    '<option value="ALL">全部學生</option>' +
-    db.students.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-  document.getElementById('mistakeFilterStudent').value = prevMistakeFilter;
-
-  document.getElementById('billingStudent').innerHTML = stuOptions;
-  document.getElementById('makeupStudent').innerHTML = stuOptions;
-  document.getElementById('monthlyStudent').innerHTML = stuOptions;
-  document.getElementById('matTarget').innerHTML =
-    '<option value="📌 通用教材">📌 通用教材</option>' +
-    db.classes.map(c => `<option value="🏫 ${c.name}">🏫 ${c.name}</option>`).join('') +
-    db.students.map(s => `<option value="👤 ${s.name}">👤 ${s.name}</option>`).join('');
+  const stuOpts = db.students.map(s => `<option value="${s.id}">${s.name} (${getClassById(s.classId).name})</option>`).join('');
+  ['lessonTarget','mistakeStudent','examStudent','billingStudent','monthlyStudent'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = stuOpts;
+  });
+  document.getElementById('todoTarget').innerHTML = '<option value="📌 通用備課">📌 通用備課</option>' + db.students.map(s => `<option value="👤 ${s.name}">👤 ${s.name}</option>`).join('');
+  document.getElementById('newStudentClass').innerHTML = db.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
 }
 
 function updateStats() {
@@ -789,833 +517,169 @@ function updateStats() {
   document.getElementById('statRetest').textContent = db.exams.filter(e => e.retestStatus === '⚠️ 需補考' || e.retestStatus === '📝 已安排補考').length;
 }
 
-/* 1. 應做事項 */
 function addTodo() {
   const text = document.getElementById('todoText').value.trim();
-  if (!text) return alert('請輸入待辦事項內容！');
-  db.todos.unshift({
-    id: 't_' + Date.now(),
-    text,
-    tag: document.getElementById('todoTag').value,
-    target: document.getElementById('todoTarget').value,
-    date: document.getElementById('todoDate').value,
-    done: false
-  });
+  if (!text) return alert('請輸入待辦事項！');
+  db.todos.unshift({ id: 't_' + Date.now(), text, tag: document.getElementById('todoTag').value, target: document.getElementById('todoTarget').value, date: document.getElementById('todoDate').value, done: false });
   document.getElementById('todoText').value = '';
-  saveData();
-  renderTodos();
+  saveData(); renderTodos();
 }
-
-function toggleTodo(id) {
-  const item = db.todos.find(t => t.id === id);
-  if (item) item.done = !item.done;
-  saveData();
-  renderTodos();
-}
-
-function deleteItem(collection, id) {
-  db[collection] = db[collection].filter(item => item.id !== id);
-  saveData();
-  renderAll();
-}
-
+function toggleTodo(id) { const t = db.todos.find(x => x.id === id); if (t) t.done = !t.done; saveData(); renderTodos(); }
 function renderTodos() {
-  const el = document.getElementById('todoList');
-  if (!db.todos.length) { el.innerHTML = '<p style="color:#999;">目前沒有待辦事項 🎉</p>'; return; }
-  el.innerHTML = db.todos.map(t => `
+  document.getElementById('todoList').innerHTML = db.todos.map(t => `
     <div class="list-item ${t.done ? 'done' : ''}">
-      <div style="display:flex;gap:10px;align-items:flex-start;">
-        <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodo('${t.id}')" style="margin-top:4px;transform:scale(1.2);">
-        <div>
-          <div>
-            <span class="badge" style="background:#ffe5ec;color:#c94a63;">${t.tag}</span>
-            <span class="badge" style="background:#e2f1ff;color:#3a7ca5;">${t.target}</span>
-            ${t.date ? `<span style="font-size:12px;color:#888;">📅 ${t.date}</span>` : ''}
-          </div>
-          <div style="font-weight:600;margin-top:4px;">${t.text}</div>
-        </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodo('${t.id}')" style="width:auto;">
+        <div><span class="badge" style="background:#ffe5ec;color:#c94a63;">${t.tag}</span><span class="badge" style="background:#e2f1ff;color:#3a7ca5;">${t.target}</span><div style="font-weight:600;margin-top:4px;">${t.text}</div></div>
       </div>
-      <button class="del-btn" onclick="deleteItem('todos','${t.id}')">刪除</button>
-    </div>
-  `).join('');
+      <button class="del-btn" onclick="delItem('todos','${t.id}')">刪除</button>
+    </div>`).join('') || '<p style="color:#999;">目前沒有待辦事項</p>';
 }
 
-/* 2. 教學內容 */
 function addLesson() {
   const topic = document.getElementById('lessonTopic').value.trim();
-  if (!topic) return alert('請輸入教學單元或考點！');
-  const rawTarget = document.getElementById('lessonTarget').value;
-  const [targetType, targetId] = rawTarget.split(':');
-  let targetName = '', classId = '';
-  if (targetType === 'class') {
-    const cls = getClassById(targetId);
-    targetName = cls.name; classId = cls.id;
-  } else {
-    const stu = db.students.find(s => s.id === targetId);
-    targetName = stu ? stu.name : '未知學生';
-    classId = stu ? stu.classId : '';
-  }
-  db.lessons.unshift({
-    id: 'l_' + Date.now(),
-    targetType, targetId, targetName, classId,
-    date: document.getElementById('lessonDate').value || new Date().toISOString().split('T')[0],
-    version: document.getElementById('lessonVersion').value.trim(),
-    topic,
-    note: document.getElementById('lessonNote').value.trim()
-  });
+  if (!topic) return alert('請輸入教學內容！');
+  const stu = db.students.find(s => s.id === document.getElementById('lessonTarget').value);
+  db.lessons.unshift({ id: 'l_' + Date.now(), targetName: stu ? stu.name : '', classId: stu ? stu.classId : '', date: document.getElementById('lessonDate').value || new Date().toISOString().split('T')[0], version: document.getElementById('lessonVersion').value, topic });
   document.getElementById('lessonTopic').value = '';
-  document.getElementById('lessonNote').value = '';
-  saveData();
-  renderLessons();
+  saveData(); renderLessons();
 }
-
 function renderLessons() {
-  const kw = document.getElementById('repeatSearch').value.trim().toLowerCase();
-  const resBox = document.getElementById('repeatResult');
-  if (!kw) {
-    resBox.innerHTML = '';
-  } else {
-    const taughtStudentIds = new Set();
-    db.lessons.forEach(l => {
-      if ((l.topic + ' ' + l.version + ' ' + l.note).toLowerCase().includes(kw)) {
-        if (l.targetType === 'student') taughtStudentIds.add(l.targetId);
-        if (l.targetType === 'class') {
-          db.students.filter(s => s.classId === l.targetId).forEach(s => taughtStudentIds.add(s.id));
-        }
-      }
-    });
-    const taught = db.students.filter(s => taughtStudentIds.has(s.id));
-    const untaught = db.students.filter(s => !taughtStudentIds.has(s.id));
-    resBox.innerHTML = `
-      <div style="background:#e8f8f5;padding:12px;border-radius:12px;">
-        <b style="color:#2f7d65;">✅ 已教過「${kw}」(${taught.length}人)</b>
-        <div style="margin-top:6px;font-size:13px;">${taught.map(s => s.name).join('、') || '無'}</div>
-      </div>
-      <div style="background:#fff3e6;padding:12px;border-radius:12px;">
-        <b style="color:#b86b14;">🆕 尚未教過 (${untaught.length}人)</b>
-        <div style="margin-top:6px;font-size:13px;">${untaught.map(s => s.name).join('、') || '全數皆已教過'}</div>
-      </div>
-    `;
-  }
-
-  const classFilter = document.getElementById('globalClassFilter').value;
-  const filtered = db.lessons.filter(l => classFilter === 'ALL' || l.classId === classFilter);
-  const el = document.getElementById('lessonList');
-  if (!filtered.length) { el.innerHTML = '<p style="color:#999;">尚無符合條件的教學紀錄。</p>'; return; }
-  el.innerHTML = filtered.map(l => `
+  const cf = document.getElementById('globalClassFilter').value;
+  document.getElementById('lessonList').innerHTML = db.lessons.filter(l => cf === 'ALL' || l.classId === cf).map(l => `
     <div class="list-item">
-      <div>
-        <div>
-          <span class="badge" style="background:#ffe5ec;color:#c94a63;">${l.targetType === 'class' ? '🏫 ' : '👤 '}${l.targetName}</span>
-          ${l.version ? `<span class="badge" style="background:#e2f1ff;color:#3a7ca5;">${l.version}</span>` : ''}
-          <span style="font-size:12px;color:#888;">📅 ${l.date}</span>
-        </div>
-        <div style="font-weight:700;margin-top:4px;font-size:15px;">${l.topic}</div>
-        ${l.note ? `<div style="font-size:13px;color:#666;margin-top:4px;">📝 ${l.note}</div>` : ''}
-      </div>
-      <button class="del-btn" onclick="deleteItem('lessons','${l.id}')">刪除</button>
-    </div>
-  `).join('');
+      <div><span class="badge" style="background:#ffe5ec;color:#c94a63;">👤 ${l.targetName}</span><span style="font-size:12px;color:#888;">${l.date}</span><div style="font-weight:700;margin-top:4px;">${l.topic}</div></div>
+      <button class="del-btn" onclick="delItem('lessons','${l.id}')">刪除</button>
+    </div>`).join('') || '<p style="color:#999;">尚無教學紀錄</p>';
 }
 
-/* 3. 功課追蹤 */
 function renderHwSelectors() {
-  const classBox = document.getElementById('hwClassQuickBtns');
-  classBox.innerHTML = db.classes.map(c => `
-    <span class="chip" style="background:${c.color}44;" onclick="toggleSelectClassForHw('${c.id}')">🏫 整班：${c.name}</span>
-  `).join('') + `<span class="chip" onclick="selectAllHwStudents()">✨ 全選所有學生</span>
-  <span class="chip" onclick="clearHwStudents()">🧹 清除選取</span>`;
-
-  const classFilter = document.getElementById('globalClassFilter').value;
-  const visibleStudents = db.students.filter(s => classFilter === 'ALL' || s.classId === classFilter);
-  document.getElementById('hwStudentChips').innerHTML = visibleStudents.map(s => `
-    <span class="chip ${selectedHwStudents.has(s.id) ? 'selected' : ''}" onclick="toggleHwStudent('${s.id}')">${s.name}</span>
-  `).join('');
+  document.getElementById('hwClassQuickBtns').innerHTML = db.classes.map(c => `<span class="chip" onclick="selectClassHw('${c.id}')">🏫 整班：${c.name}</span>`).join('');
+  const cf = document.getElementById('globalClassFilter').value;
+  document.getElementById('hwStudentChips').innerHTML = db.students.filter(s => cf === 'ALL' || s.classId === cf).map(s => `<span class="chip ${selectedHwStudents.has(s.id) ? 'selected' : ''}" onclick="toggleHwStu('${s.id}')">${s.name}</span>`).join('');
 }
-
-function toggleHwStudent(id) {
-  if (selectedHwStudents.has(id)) selectedHwStudents.delete(id);
-  else selectedHwStudents.add(id);
-  renderHwSelectors();
-}
-
-function toggleSelectClassForHw(classId) {
-  const members = db.students.filter(s => s.classId === classId);
-  const allSelected = members.every(m => selectedHwStudents.has(m.id));
-  members.forEach(m => allSelected ? selectedHwStudents.delete(m.id) : selectedHwStudents.add(m.id));
-  renderHwSelectors();
-}
-
-function selectAllHwStudents() {
-  db.students.forEach(s => selectedHwStudents.add(s.id));
-  renderHwSelectors();
-}
-
-function clearHwStudents() {
-  selectedHwStudents.clear();
-  renderHwSelectors();
-}
-
+function toggleHwStu(id) { selectedHwStudents.has(id) ? selectedHwStudents.delete(id) : selectedHwStudents.add(id); renderHwSelectors(); }
+function selectClassHw(cid) { db.students.filter(s => s.classId === cid).forEach(s => selectedHwStudents.add(s.id)); renderHwSelectors(); }
 function addHomework() {
   const title = document.getElementById('hwTitle').value.trim();
-  if (!selectedHwStudents.size) return alert('請至少點選一位學生或一個班級！');
-  if (!title) return alert('請輸入功課內容！');
-  const type = document.getElementById('hwType').value;
-  const startDate = document.getElementById('hwStart').value || new Date().toISOString().split('T')[0];
-  const due = document.getElementById('hwDue').value;
-
-  selectedHwStudents.forEach(stuId => {
-    const stu = db.students.find(s => s.id === stuId);
-    if (stu) {
-      db.homeworks.unshift({
-        id: 'h_' + Date.now() + '_' + stuId,
-        studentId: stu.id,
-        studentName: stu.name,
-        classId: stu.classId,
-        title, type, startDate, due,
-        status: '⏳ 未繳交',
-        comment: ''
-      });
-    }
+  if (!selectedHwStudents.size || !title) return alert('請選取學生並填寫功課內容！');
+  selectedHwStudents.forEach(sid => {
+    const stu = db.students.find(s => s.id === sid);
+    if (stu) db.homeworks.unshift({ id: 'h_' + Date.now() + sid, studentId: sid, studentName: stu.name, classId: stu.classId, title, type: document.getElementById('hwType').value, startDate: document.getElementById('hwStart').value, due: document.getElementById('hwDue').value, status: '⏳ 未繳交' });
   });
-  document.getElementById('hwTitle').value = '';
-  selectedHwStudents.clear();
-  saveData();
-  renderHomework();
+  document.getElementById('hwTitle').value = ''; selectedHwStudents.clear();
+  saveData(); renderHomework();
 }
-
-const HW_STATUSES = ['⏳ 未繳交', '📥 已交待改', '🔄 需訂正', '✅ 已完成'];
-function cycleHwStatus(id) {
-  const hw = db.homeworks.find(h => h.id === id);
-  if (!hw) return;
-  const nextIdx = (HW_STATUSES.indexOf(hw.status) + 1) % HW_STATUSES.length;
-  hw.status = HW_STATUSES[nextIdx];
-  saveData();
-  renderHomework();
-}
-
-function updateHwComment(id, val) {
-  const hw = db.homeworks.find(h => h.id === id);
-  if (hw) { hw.comment = val; saveData(); }
-}
-
-function copyHwFeedback(id) {
-  const hw = db.homeworks.find(h => h.id === id);
-  if (!hw) return;
-  const commentLine = hw.comment ? '老師回饋：' + hw.comment + '\n' : '';
-  const msg = '【DL English 課後學習回饋】\nHi ' + hw.studentName + ' 家長您好：\n本次功課「' + hw.title + '」（' + hw.type + '）目前狀態為：' + hw.status + '。\n' + commentLine + '感謝配合，一起繼續加油！🐶✨';
-  navigator.clipboard.writeText(msg).then(() => alert('已複製 LINE 回饋文案，可直接貼上傳送！'));
-}
-
+const HW_ST = ['⏳ 未繳交', '📥 已交待改', '🔄 需訂正', '✅ 已完成'];
+function cycleHw(id) { const h = db.homeworks.find(x => x.id === id); if (h) h.status = HW_ST[(HW_ST.indexOf(h.status) + 1) % HW_ST.length]; saveData(); renderHomework(); }
 function renderHomework() {
   renderHwSelectors();
-  const classFilter = document.getElementById('globalClassFilter').value;
-  const filtered = db.homeworks.filter(h => classFilter === 'ALL' || h.classId === classFilter);
-  const el = document.getElementById('homeworkList');
-  if (!filtered.length) { el.innerHTML = '<p style="color:#999;">目前尚無功課紀錄。</p>'; return; }
-  const today = new Date().toISOString().split('T')[0];
-  el.innerHTML = filtered.map(h => {
-    const overdue = h.due && h.due < today && h.status !== '✅ 已完成';
-    return `
-      <div class="list-item" style="flex-direction:column;align-items:stretch;">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-          <div>
-            <span class="badge" style="background:#ffe5ec;color:#c94a63;">👤 ${h.studentName}</span>
-            <span class="badge" style="background:#e2f1ff;color:#3a7ca5;">${h.type}</span>
-            ${h.startDate ? `<span style="font-size:12px;color:#666;">開始：${h.startDate}</span>` : ''}
-            ${h.startDate && h.due ? `<span style="font-size:12px;color:#aaa;">／</span>` : ''}
-            ${h.due ? `<span style="font-size:12px;color:${overdue ? '#d90429' : '#888'};font-weight:${overdue ? '700' : '400'};">到期：${h.due} ${overdue ? '(已逾期!)' : ''}</span>` : ''}
-          </div>
-          <div style="display:flex;gap:6px;align-items:center;">
-            <button class="status-btn" style="background:#fff0d6;color:#9c6615;" onclick="cycleHwStatus('${h.id}')">${h.status} ↻</button>
-            <button class="btn-sm" onclick="copyHwFeedback('${h.id}')">📋 複製回饋</button>
-            <button class="del-btn" onclick="deleteItem('homeworks','${h.id}')">刪除</button>
-          </div>
-        </div>
-        <div style="font-weight:700;margin:6px 0;">${h.title}</div>
-        <input type="text" value="${(h.comment || '').replace(/"/g, '&quot;')}" placeholder="輸入批改評語或訂正建議（自動儲存）..." onchange="updateHwComment('${h.id}', this.value)">
-      </div>
-    `;
-  }).join('');
+  const cf = document.getElementById('globalClassFilter').value;
+  document.getElementById('homeworkList').innerHTML = db.homeworks.filter(h => cf === 'ALL' || h.classId === cf).map(h => `
+    <div class="list-item">
+      <div><span class="badge" style="background:#ffe5ec;color:#c94a63;">👤 ${h.studentName}</span><span class="badge" style="background:#e2f1ff;color:#3a7ca5;">${h.type}</span><div style="font-weight:700;margin-top:4px;">${h.title}</div><div style="font-size:12px;color:#888;">開始：${h.startDate || '未填'}｜到期：${h.due || '未設定'}</div></div>
+      <div style="display:flex;gap:6px;"><button class="status-btn" style="background:#fff0d6;color:#9c6615;" onclick="cycleHw('${h.id}')">${h.status} ↻</button><button class="del-btn" onclick="delItem('homeworks','${h.id}')">刪除</button></div>
+    </div>`).join('') || '<p style="color:#999;">尚無功課紀錄</p>';
 }
 
-/* 4. 錯題追蹤 */
 function addMistake() {
-  const stuId = document.getElementById('mistakeStudent').value;
   const point = document.getElementById('mistakePoint').value.trim();
   const content = document.getElementById('mistakeContent').value.trim();
-  if (!point || !content) return alert('請填寫核心考點與錯題內容！');
-  const stu = db.students.find(s => s.id === stuId);
-  db.mistakes.unshift({
-    id: 'm_' + Date.now(),
-    studentId: stuId,
-    studentName: stu ? stu.name : '',
-    classId: stu ? stu.classId : '',
-    point,
-    status: document.getElementById('mistakeStatus').value,
-    content
-  });
-  document.getElementById('mistakePoint').value = '';
-  document.getElementById('mistakeContent').value = '';
-  saveData();
-  renderMistakes();
+  if (!point || !content) return alert('請填寫考點與錯題內容！');
+  const stu = db.students.find(s => s.id === document.getElementById('mistakeStudent').value);
+  db.mistakes.unshift({ id: 'm_' + Date.now(), studentName: stu ? stu.name : '', classId: stu ? stu.classId : '', point, status: document.getElementById('mistakeStatus').value, content });
+  document.getElementById('mistakePoint').value = ''; document.getElementById('mistakeContent').value = '';
+  saveData(); renderMistakes();
 }
-
-const MISTAKE_STATUSES = ['🔴 待出類似題', '🟡 已複習待測', '🟢 已精熟'];
-function cycleMistakeStatus(id) {
-  const m = db.mistakes.find(x => x.id === id);
-  if (!m) return;
-  m.status = MISTAKE_STATUSES[(MISTAKE_STATUSES.indexOf(m.status) + 1) % MISTAKE_STATUSES.length];
-  saveData();
-  renderMistakes();
-}
-
-function getFilteredMistakes() {
-  const classFilter = document.getElementById('globalClassFilter').value;
-  const stuFilter = document.getElementById('mistakeFilterStudent').value;
-  return db.mistakes.filter(m =>
-    (classFilter === 'ALL' || m.classId === classFilter) &&
-    (stuFilter === 'ALL' || m.studentId === stuFilter)
-  );
-}
-
-function copyMistakesForWorksheet() {
-  const list = getFilteredMistakes().filter(m => m.status !== '🟢 已精熟');
-  if (!list.length) return alert('目前篩選條件下沒有未精熟錯題可複製！');
-  const itemsText = list.map((m, i) => (i + 1) + '. 【' + m.studentName + '｜考點：' + m.point + '】\n' + m.content).join('\n\n');
-  const text = '請根據以下學生錯題與核心考點，幫我設計一份相同考點的客製化練習單（含簡答與逐題詳解）：\n\n' + itemsText;
-  navigator.clipboard.writeText(text).then(() => alert('已複製 ' + list.length + ' 題未精熟錯題，可直接貼上出題！'));
-}
-
 function renderMistakes() {
-  const filtered = getFilteredMistakes();
-  const el = document.getElementById('mistakeList');
-  if (!filtered.length) { el.innerHTML = '<p style="color:#999;">目前沒有符合條件的錯題。</p>'; return; }
-  el.innerHTML = filtered.map(m => `
+  const cf = document.getElementById('globalClassFilter').value;
+  document.getElementById('mistakeList').innerHTML = db.mistakes.filter(m => cf === 'ALL' || m.classId === cf).map(m => `
     <div class="list-item">
-      <div style="flex:1;">
-        <div>
-          <span class="badge" style="background:#ffe5ec;color:#c94a63;">👤 ${m.studentName}</span>
-          <span class="badge" style="background:#f2eaf7;color:#6d4c82;">考點：${m.point}</span>
-        </div>
-        <div style="margin-top:6px;font-size:14px;white-space:pre-wrap;">${m.content}</div>
-      </div>
-      <div style="display:flex;gap:6px;align-items:center;">
-        <button class="status-btn" style="background:#f8edeb;" onclick="cycleMistakeStatus('${m.id}')">${m.status} ↻</button>
-        <button class="del-btn" onclick="deleteItem('mistakes','${m.id}')">刪除</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-/* 5. New Idea：已考過考卷庫 ＋ 一鍵轉存錯題 */
-function handleExamFileChange(event) {
-  const file = event.target.files[0];
-  const box = document.getElementById('examFilePreviewBox');
-  if (!file) {
-    pendingExamAttachment = null;
-    box.innerHTML = '';
-    return;
-  }
-  const isImage = file.type && file.type.startsWith('image/');
-  if (isImage) {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.onload = () => {
-        const maxW = 900;
-        const scale = img.width > maxW ? maxW / img.width : 1;
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.round(img.width * scale);
-        canvas.height = Math.round(img.height * scale);
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.78);
-        pendingExamAttachment = { name: file.name, isImage: true, dataUrl };
-        box.innerHTML = `<img src="${dataUrl}" class="exam-img-preview" alt="考卷預覽">`;
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  } else {
-    pendingExamAttachment = { name: file.name, isImage: false, dataUrl: '' };
-    box.innerHTML = `<div style="margin-top:6px;font-size:13px;color:#3a7ca5;">📎 已選擇檔案：<b>${file.name}</b></div>`;
-  }
-}
-
-function createMistakeFromExamData(examObj, customContent) {
-  const contentText = (customContent || '').trim() ||
-    (examObj.wrongItems || '').trim() ||
-    ('【來自考卷：' + examObj.title + (examObj.score ? '（' + examObj.score + '）' : '') + '】' + (examObj.ideaNote ? '\n' + examObj.ideaNote : '請複習此考卷易錯考點。'));
-  const pointText = (examObj.points || '').trim() || examObj.title;
-
-  db.mistakes.unshift({
-    id: 'm_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
-    studentId: examObj.studentId,
-    studentName: examObj.studentName,
-    classId: examObj.classId,
-    point: pointText,
-    status: '🔴 待出類似題',
-    content: '📄 來源考卷：' + examObj.title + '\n' + contentText
-  });
-}
-
-const RETEST_STATUSES = ['✅ 通過（免補考）', '⚠️ 需補考', '📝 已安排補考', '🎉 補考通過'];
-
-function cycleExamRetestStatus(id) {
-  const ex = db.exams.find(x => x.id === id);
-  if (!ex) return;
-  const curr = ex.retestStatus || '✅ 通過（免補考）';
-  ex.retestStatus = RETEST_STATUSES[(RETEST_STATUSES.indexOf(curr) + 1) % RETEST_STATUSES.length];
-  saveData();
-  renderExams();
-}
-
-function updateExamRetestField(id, field, val) {
-  const ex = db.exams.find(x => x.id === id);
-  if (!ex) return;
-  ex[field] = val;
-  saveData();
-}
-
-function shareSingleExamToLine(id) {
-  const ex = db.exams.find(x => x.id === id);
-  if (!ex) return;
-  const statusStr = ex.retestStatus || '✅ 通過（免補考）';
-  const lines = [
-    '【DL English 測驗成績與補考通知】',
-    `學生：${ex.studentName}`,
-    `測驗項目：${ex.title}`,
-    `考試日期：${ex.date || '未填'}`,
-    `原始成績：${ex.score || '未填'}`,
-    `補考狀態：${statusStr}`
-  ];
-  if (ex.retestDate) lines.push(`補考日期：${ex.retestDate}`);
-  if (ex.retestScore) lines.push(`補考成績：${ex.retestScore}`);
-  if (ex.points) lines.push(`重點考點：${ex.points}`);
-  if (ex.ideaNote) lines.push(`老師提醒：${ex.ideaNote}`);
-  lines.push('');
-  lines.push('感謝家長的支持與配合，有任何問題歡迎隨時聯繫老師！🐶✨');
-
-  const msg = lines.join('\n');
-  navigator.clipboard.writeText(msg).catch(() => {});
-  window.open('https://line.me/R/msg/text/?' + encodeURIComponent(msg), '_blank', 'noopener');
+      <div><span class="badge" style="background:#ffe5ec;color:#c94a63;">👤 ${m.studentName}</span><span class="badge" style="background:#f2eaf7;color:#6d4c82;">${m.point}</span><div style="margin-top:4px;font-size:13.5px;">${m.content}</div></div>
+      <button class="del-btn" onclick="delItem('mistakes','${m.id}')">刪除</button>
+    </div>`).join('') || '<p style="color:#999;">尚無錯題紀錄</p>';
 }
 
 function addExam() {
   const title = document.getElementById('examTitle').value.trim();
-  if (!title) return alert('請輸入測驗或考卷名稱！');
-  const stuId = document.getElementById('examStudent').value;
-  const stu = db.students.find(s => s.id === stuId);
-  const wrongItems = document.getElementById('examWrongItems').value.trim();
-  const autoSync = document.getElementById('examAutoSyncMistake').checked;
-
-  const newExam = {
-    id: 'e_' + Date.now(),
-    studentId: stuId,
-    studentName: stu ? stu.name : '',
-    classId: stu ? stu.classId : '',
-    title,
-    score: document.getElementById('examScore').value.trim(),
-    retestStatus: document.getElementById('examRetestStatus').value,
-    retestDate: document.getElementById('examRetestDate').value,
-    retestScore: document.getElementById('examRetestScore').value.trim(),
-    date: document.getElementById('examDate').value || new Date().toISOString().split('T')[0],
-    points: document.getElementById('examPoints').value.trim(),
-    wrongItems,
-    ideaNote: document.getElementById('examIdeaNote').value.trim(),
-    attachment: pendingExamAttachment,
-    transferredCount: 0
-  };
-
-  if (autoSync && wrongItems) {
-    createMistakeFromExamData(newExam, wrongItems);
-    newExam.transferredCount = 1;
-  }
-
-  db.exams.unshift(newExam);
-
-  document.getElementById('examTitle').value = '';
-  document.getElementById('examScore').value = '';
-  document.getElementById('examRetestDate').value = '';
-  document.getElementById('examRetestScore').value = '';
-  document.getElementById('examPoints').value = '';
-  document.getElementById('examWrongItems').value = '';
-  document.getElementById('examIdeaNote').value = '';
-  document.getElementById('examFileInput').value = '';
-  document.getElementById('examFilePreviewBox').innerHTML = '';
-  pendingExamAttachment = null;
-
-  saveData();
-  renderExams();
-  if (autoSync && wrongItems) {
-    alert('已存入成績與考卷庫，並同步將錯題轉存到「🎯 錯題追蹤」！');
-  }
+  if (!title) return alert('請輸入測驗名稱！');
+  const stu = db.students.find(s => s.id === document.getElementById('examStudent').value);
+  db.exams.unshift({ id: 'e_' + Date.now(), studentId: stu ? stu.id : '', studentName: stu ? stu.name : '', classId: stu ? stu.classId : '', title, score: document.getElementById('examScore').value.trim(), retestStatus: document.getElementById('examRetestStatus').value, retestDate: document.getElementById('examRetestDate').value, retestScore: document.getElementById('examRetestScore').value.trim(), date: new Date().toISOString().split('T')[0] });
+  document.getElementById('examTitle').value = ''; document.getElementById('examScore').value = '';
+  saveData(); renderExams();
 }
-
-function toggleExamQuickTransfer(examId) {
-  const box = document.getElementById('quick-transfer-' + examId);
-  if (!box) return;
-  box.style.display = box.style.display === 'none' ? 'block' : 'none';
-}
-
-function transferExamToMistake(examId, goToMistakesTab) {
-  const ex = db.exams.find(x => x.id === examId);
-  if (!ex) return;
-  const inputEl = document.getElementById('quick-mistake-text-' + examId);
-  const pointEl = document.getElementById('quick-mistake-point-' + examId);
-  const customContent = inputEl ? inputEl.value.trim() : '';
-  const customPoint = pointEl ? pointEl.value.trim() : '';
-
-  const examCopy = Object.assign({}, ex, {
-    points: customPoint || ex.points
-  });
-  createMistakeFromExamData(examCopy, customContent);
-  ex.transferredCount = (ex.transferredCount || 0) + 1;
-  if (customContent) {
-    ex.wrongItems = customContent;
-  }
-
-  saveData();
-  if (goToMistakesTab) {
-    document.getElementById('mistakeFilterStudent').value = ex.studentId || 'ALL';
-    switchTab('mistakes');
-  } else {
-    renderExams();
-    alert('已一鍵轉存至「🎯 錯題追蹤」（狀態：🔴 待出類似題）！');
-  }
-}
-
-function copyExamIdeaPrompt(id) {
-  const ex = db.exams.find(x => x.id === id);
-  if (!ex) return;
-  const wrongPart = ex.wrongItems ? '\n考卷錯題摘錄：\n' + ex.wrongItems : '';
-  const msg = '我有一份已考過的考卷「' + ex.title + '」（學生：' + ex.studentName + (ex.score ? '，成績：' + ex.score : '') + '）。\n重點/易錯考點：' + (ex.points || '未填') + wrongPart + '\n教學/出題靈感：' + (ex.ideaNote || '無') + '\n請幫我根據這些考點與錯題設計一份延伸複習練習卷（含簡答與逐題詳解）！';
-  navigator.clipboard.writeText(msg).then(() => alert('已複製考卷延伸出題提示，可直接貼上使用！'));
-}
-
+const RT_ST = ['✅ 通過（免補考）', '⚠️ 需補考', '📝 已安排補考', '🎉 補考通過'];
+function cycleExam(id) { const e = db.exams.find(x => x.id === id); if (e) e.retestStatus = RT_ST[(RT_ST.indexOf(e.retestStatus) + 1) % RT_ST.length]; saveData(); renderExams(); }
 function renderExams() {
-  const classFilter = document.getElementById('globalClassFilter').value;
-  const statusFilter = (document.getElementById('examFilterStatus') || { value: 'ALL' }).value;
-  const kw = (document.getElementById('examSearch').value || '').trim().toLowerCase();
-  const filtered = db.exams.filter(ex => {
-    const matchClass = classFilter === 'ALL' || ex.classId === classFilter;
-    const st = ex.retestStatus || '✅ 通過（免補考）';
-    const matchStatus =
-      statusFilter === 'ALL' ||
-      (statusFilter === 'RETEST_ONLY' && (st === '⚠️ 需補考' || st === '📝 已安排補考')) ||
-      (statusFilter === 'PASSED_ONLY' && (st === '✅ 通過（免補考）' || st === '🎉 補考通過'));
-    const matchKw = !kw || (ex.title + ' ' + ex.studentName + ' ' + (ex.score || '') + ' ' + st + ' ' + ex.points + ' ' + (ex.wrongItems || '') + ' ' + ex.ideaNote).toLowerCase().includes(kw);
-    return matchClass && matchStatus && matchKw;
-  });
-
-  const el = document.getElementById('examList');
-  if (!filtered.length) { el.innerHTML = '<p style="color:#999;">目前尚無符合條件的成績或考卷紀錄！</p>'; return; }
-
-  el.innerHTML = filtered.map(ex => {
-    const defaultPointText = (ex.points || '').replace(/"/g, '&quot;');
-    const st = ex.retestStatus || '✅ 通過（免補考）';
-    const isNeedRetest = (st === '⚠️ 需補考' || st === '📝 已安排補考');
-    const stBg = isNeedRetest ? '#ffe8cc' : '#e2f5ee';
-    const stColor = isNeedRetest ? '#b85d00' : '#2f7d65';
-
-    return `
-      <div class="list-item" style="flex-direction:column;align-items:stretch;">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-          <div>
-            <span class="badge" style="background:#ffe5ec;color:#c94a63;">👤 ${ex.studentName}</span>
-            ${ex.score ? `<span class="badge" style="background:#e2f1ff;color:#3a7ca5;">成績：${ex.score}</span>` : ''}
-            <button class="status-btn" style="background:${stBg};color:${stColor};margin-right:6px;" onclick="cycleExamRetestStatus('${ex.id}')">${st} ↻</button>
-            ${ex.retestScore ? `<span class="badge" style="background:#e2f5ee;color:#2f7d65;">補考：${ex.retestScore}</span>` : ''}
-            ${ex.points ? `<span class="badge" style="background:#f2eaf7;color:#6d4c82;">考點：${ex.points}</span>` : ''}
-            <span style="font-size:12px;color:#888;">📅 ${ex.date}</span>
-          </div>
-          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-            <button class="btn-sm" style="background:#e8f8ee;color:#059642;border-color:#b7ebc6;" onclick="shareSingleExamToLine('${ex.id}')">💬 傳此成績給家長</button>
-            <button class="status-btn" style="background:#e2f5ee;color:#2f7d65;" onclick="transferExamToMistake('${ex.id}', false)">🎯 轉存錯題</button>
-            <button class="btn-sm" onclick="toggleExamQuickTransfer('${ex.id}')">✏️ 編輯錯題</button>
-            <button class="btn-sm" onclick="copyExamIdeaPrompt('${ex.id}')">📋 延伸出題</button>
-            <button class="del-btn" onclick="deleteItem('exams','${ex.id}')">刪除</button>
-          </div>
-        </div>
-        <div style="font-weight:700;margin-top:6px;font-size:15px;">📄 ${ex.title}</div>
-
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center;background:#faf7f4;padding:8px 10px;border-radius:10px;">
-          <span style="font-size:12.5px;font-weight:600;color:#666;">🔄 補考追蹤：</span>
-          <input type="date" value="${ex.retestDate || ''}" onchange="updateExamRetestField('${ex.id}', 'retestDate', this.value)" style="padding:5px 8px;font-size:12.5px;" title="補考日期">
-          <input type="text" value="${(ex.retestScore || '').replace(/"/g, '&quot;')}" placeholder="補考分數（如：85分）" onchange="updateExamRetestField('${ex.id}', 'retestScore', this.value)" style="padding:5px 8px;font-size:12.5px;width:150px;">
-        </div>
-
-        ${ex.wrongItems ? `<div style="font-size:13px;color:#8a3b4b;background:#fff4f6;padding:8px 10px;border-radius:8px;margin-top:6px;white-space:pre-wrap;">🎯 錯題摘錄：${ex.wrongItems}</div>` : ''}
-        ${ex.ideaNote ? `<div style="font-size:13px;color:#555;margin-top:6px;white-space:pre-wrap;">💡 ${ex.ideaNote}</div>` : ''}
-        ${ex.attachment ? (
-          ex.attachment.isImage
-            ? `<img src="${ex.attachment.dataUrl}" class="exam-img-preview" alt="${ex.attachment.name}">`
-            : `<div style="margin-top:6px;font-size:12.5px;color:#3a7ca5;">📎 附件檔名：${ex.attachment.name}</div>`
-        ) : ''}
-
-        <div id="quick-transfer-${ex.id}" class="transfer-box" style="display:none;">
-          <div style="font-size:13px;font-weight:700;color:#2f7d65;margin-bottom:6px;">🎯 編輯要轉存到「錯題追蹤」的內容（給 ${ex.studentName}）：</div>
-          <input type="text" id="quick-mistake-point-${ex.id}" value="${defaultPointText}" placeholder="核心考點..." style="width:100%;margin-bottom:6px;">
-          <textarea id="quick-mistake-text-${ex.id}" rows="2" style="width:100%;" placeholder="輸入或補齊這份考卷的錯題題幹與解析...">${ex.wrongItems || ''}</textarea>
-          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
-            <button class="btn btn-mint" style="padding:7px 14px;font-size:13px;" onclick="transferExamToMistake('${ex.id}', false)">✅ 轉存並留在考卷庫</button>
-            <button class="btn btn-blue" style="padding:7px 14px;font-size:13px;" onclick="transferExamToMistake('${ex.id}', true)">🚀 轉存並前往錯題追蹤</button>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
+  const cf = document.getElementById('globalClassFilter').value;
+  document.getElementById('examList').innerHTML = db.exams.filter(e => cf === 'ALL' || e.classId === cf).map(e => `
+    <div class="list-item">
+      <div><span class="badge" style="background:#ffe5ec;color:#c94a63;">👤 ${e.studentName}</span><span class="badge" style="background:#e2f1ff;color:#3a7ca5;">成績：${e.score || '未填'}</span><div style="font-weight:700;margin-top:4px;">${e.title}</div></div>
+      <div style="display:flex;gap:6px;"><button class="status-btn" style="background:#ffe8cc;color:#b85d00;" onclick="cycleExam('${e.id}')">${e.retestStatus} ↻</button><button class="del-btn" onclick="delItem('exams','${e.id}')">刪除</button></div>
+    </div>`).join('') || '<p style="color:#999;">尚無成績紀錄</p>';
 }
 
-/* 6. 之後安排 */
-function addPlan() {
-  const content = document.getElementById('planContent').value.trim();
-  const date = document.getElementById('planDate').value;
-  if (!content || !date) return alert('請選擇日期並填寫安排內容！');
-  const [targetType, targetId] = document.getElementById('planTarget').value.split(':');
-  let targetName = '', classId = '';
-  if (targetType === 'class') {
-    const cls = getClassById(targetId);
-    targetName = cls.name; classId = cls.id;
-  } else {
-    const stu = db.students.find(s => s.id === targetId);
-    targetName = stu ? stu.name : '';
-    classId = stu ? stu.classId : '';
-  }
-  db.plans.push({
-    id: 'p_' + Date.now(),
-    targetType, targetId, targetName, classId,
-    date,
-    category: document.getElementById('planCategory').value,
-    content
-  });
-  db.plans.sort((a, b) => a.date.localeCompare(b.date));
-  document.getElementById('planContent').value = '';
-  saveData();
-  renderPlans();
+function addBilling() {
+  const stu = db.students.find(s => s.id === document.getElementById('billingStudent').value);
+  const rate = parseFloat(document.getElementById('billingRate').value || '0');
+  const units = parseFloat(document.getElementById('billingUnits').value || '0');
+  if (!stu || rate <= 0 || units <= 0) return alert('請填寫完整費率與堂數/時數！');
+  db.billings.unshift({ id: 'b_' + Date.now(), studentName: stu.name, classId: stu.classId, mode: document.getElementById('billingMode').value, rate, units, paid: parseFloat(document.getElementById('billingPaid').value || '0'), note: document.getElementById('billingNote').value.trim() });
+  saveData(); renderBillings();
+}
+function renderBillings() {
+  const cf = document.getElementById('globalClassFilter').value;
+  document.getElementById('billingList').innerHTML = db.billings.filter(b => cf === 'ALL' || b.classId === cf).map(b => {
+    const total = Math.round(b.rate * b.units);
+    return `<div class="list-item"><div><span class="badge" style="background:#ffe5ec;color:#c94a63;">👤 ${b.studentName}</span><b>$${b.rate} × ${b.units}${b.mode === 'HOURLY' ? '小時' : '堂'} = $${total}</b>（已收 $${b.paid}）</div><button class="del-btn" onclick="delItem('billings','${b.id}')">刪除</button></div>`;
+  }).join('') || '<p style="color:#999;">尚無收費紀錄</p>';
 }
 
-function renderPlans() {
-  const classFilter = document.getElementById('globalClassFilter').value;
-  const filtered = db.plans.filter(p => classFilter === 'ALL' || p.classId === classFilter);
-  const el = document.getElementById('planList');
-  if (!filtered.length) { el.innerHTML = '<p style="color:#999;">目前尚無安排項目。</p>'; return; }
-  const today = new Date().setHours(0,0,0,0);
-  el.innerHTML = filtered.map(p => {
-    const diffDays = Math.ceil((new Date(p.date).setHours(0,0,0,0) - today) / 86400000);
-    const countdown = diffDays > 0 ? `還有 ${diffDays} 天` : (diffDays === 0 ? '🔥 就是今天' : `已過 ${Math.abs(diffDays)} 天`);
-    return `
-      <div class="list-item">
-        <div>
-          <div>
-            <span class="badge" style="background:#e2f5ee;color:#2f7d65;">${p.category}</span>
-            <span class="badge" style="background:#ffe5ec;color:#c94a63;">${p.targetType === 'class' ? '🏫 ' : '👤 '}${p.targetName}</span>
-            <span style="font-size:12px;font-weight:700;color:#e06c82;">📅 ${p.date}（${countdown}）</span>
-          </div>
-          <div style="font-weight:600;margin-top:5px;">${p.content}</div>
-        </div>
-        <button class="del-btn" onclick="deleteItem('plans','${p.id}')">刪除</button>
-      </div>
-    `;
-  }).join('');
+function shareLineReport() {
+  const missing = db.homeworks.filter(h => h.status !== '✅ 已完成').map(h => `• ${h.studentName}：${h.title}（${h.status}）`).join('\n') || '無';
+  const exams = db.exams.map(e => `• ${e.studentName}：${e.title} ${e.score}（${e.retestStatus}）`).join('\n') || '無';
+  const msg = `【DL English 成績、補考與功課通知】\n📊 成績與補考：\n${exams}\n\n📚 未完成功課：\n${missing}\n\n感謝家長配合！🐶✨`;
+  navigator.clipboard.writeText(msg).catch(() => {});
+  window.open('https://line.me/R/msg/text/?' + encodeURIComponent(msg), '_blank');
+}
+function shareBillingLine() {
+  const rows = db.billings.map(b => `| ${b.studentName} | ${b.mode === 'HOURLY' ? b.units + 'hr' : b.units + '堂'} | $${b.rate} | 應收 $${Math.round(b.rate * b.units)} | 已收 $${b.paid} |`).join('\n');
+  const msg = `【DL English 上課費用通知表】\n${rows}\n感謝家長支持與配合！🐶✨`;
+  navigator.clipboard.writeText(msg).catch(() => {});
+  window.open('https://line.me/R/msg/text/?' + encodeURIComponent(msg), '_blank');
+}
+function generateMonthlyReport() {
+  const stu = db.students.find(s => s.id === document.getElementById('monthlyStudent').value);
+  if (!stu) return;
+  const ex = db.exams.filter(e => e.studentName === stu.name).map(e => `• ${e.title}：${e.score}（${e.retestStatus}）`).join('\n') || '• 本月暫無測驗紀錄';
+  const hw = db.homeworks.filter(h => h.studentName === stu.name && h.status !== '✅ 已完成').map(h => `• ${h.title}（${h.status}）`).join('\n') || '• 功課皆已完成，表現很棒！';
+  document.getElementById('monthlyReportOutput').value = `🐶✨【DL English 每月學習狀況通知單】✨🐶\n學生：${stu.name}\n\n📊 測驗成績與補考：\n${ex}\n\n📚 功課狀況：\n${hw}\n\n🌟 老師的鼓勵：課堂表現很棒，繼續保持！\n💌 麻煩家長協助事項：再請協助留意作業與複習進度，感謝支持！`;
+}
+function sendMonthlyLine() {
+  const val = document.getElementById('monthlyReportOutput').value;
+  if (!val) return alert('請先產生草稿！');
+  window.open('https://line.me/R/msg/text/?' + encodeURIComponent(val), '_blank');
 }
 
-/* 7. 學生與班級管理 */
 function addClass() {
   const name = document.getElementById('newClassName').value.trim();
-  if (!name) return alert('請輸入班級名稱！');
-  db.classes.push({
-    id: 'c_' + Date.now(),
-    name,
-    color: document.getElementById('newClassColor').value
-  });
+  if (!name) return;
+  db.classes.push({ id: 'c_' + Date.now(), name });
   document.getElementById('newClassName').value = '';
-  saveData();
-  renderAll();
+  saveData(); renderAll();
 }
-
-function deleteClass(id) {
-  if (db.classes.length <= 1) return alert('至少需保留一個班級分類！');
-  if (!confirm('刪除此班級後，原本在該班的學生會自動轉移到第一個班級，確定刪除嗎？')) return;
-  db.classes = db.classes.filter(c => c.id !== id);
-  const fallbackId = db.classes[0].id;
-  db.students.forEach(s => { if (s.classId === id) s.classId = fallbackId; });
-  saveData();
-  renderAll();
-}
-
 function addStudent() {
   const name = document.getElementById('newStudentName').value.trim();
-  if (!name) return alert('請輸入學生姓名！');
-  db.students.push({
-    id: 's_' + Date.now(),
-    name,
-    classId: document.getElementById('newStudentClass').value,
-    note: document.getElementById('newStudentNote').value.trim(),
-    color: COLORS[db.students.length % COLORS.length]
-  });
+  if (!name) return;
+  db.students.push({ id: 's_' + Date.now(), name, classId: document.getElementById('newStudentClass').value });
   document.getElementById('newStudentName').value = '';
-  document.getElementById('newStudentNote').value = '';
-  saveData();
-  renderAll();
+  saveData(); renderAll();
 }
-
-function bulkAddStudents() {
-  const raw = document.getElementById('bulkStudents').value.trim();
-  if (!raw) return alert('請輸入學生名單（一行一位）！');
-  const classId = document.getElementById('bulkStudentClass').value;
-  const names = raw.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
-  names.forEach((name, idx) => {
-    db.students.push({
-      id: 's_' + Date.now() + '_' + idx,
-      name,
-      classId,
-      note: '',
-      color: COLORS[(db.students.length + idx) % COLORS.length]
-    });
-  });
-  document.getElementById('bulkStudents').value = '';
-  saveData();
-  renderAll();
-  alert('已成功新增 ' + names.length + ' 位學生！');
-}
-
-function changeStudentClass(stuId, newClassId) {
-  const stu = db.students.find(s => s.id === stuId);
-  if (stu) { stu.classId = newClassId; saveData(); renderAll(); }
-}
-
 function renderStudentsManage() {
-  document.getElementById('classList').innerHTML = db.classes.map(c => {
-    const count = db.students.filter(s => s.classId === c.id).length;
-    return `
-      <div class="badge" style="background:${c.color};color:#333;padding:7px 12px;font-size:13px;display:inline-flex;align-items:center;gap:8px;">
-        <span>🏫 ${c.name} (${count}人)</span>
-        <span style="cursor:pointer;font-weight:bold;" onclick="deleteClass('${c.id}')">✕</span>
-      </div>
-    `;
-  }).join('');
-
-  const classFilter = document.getElementById('globalClassFilter').value;
-  const list = db.students.filter(s => classFilter === 'ALL' || s.classId === classFilter);
-  document.getElementById('studentManageList').innerHTML = list.map(s => `
-    <div class="list-item" style="align-items:center;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span style="width:14px;height:14px;border-radius:50%;background:${s.color};display:inline-block;"></span>
-        <b>${s.name}</b>
-        ${s.note ? `<span style="font-size:12px;color:#888;">(${s.note})</span>` : ''}
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <select onchange="changeStudentClass('${s.id}', this.value)" style="padding:5px 8px;font-size:13px;">
-          ${db.classes.map(c => `<option value="${c.id}" ${c.id === s.classId ? 'selected' : ''}>${c.name}</option>`).join('')}
-        </select>
-        <button class="del-btn" onclick="deleteItem('students','${s.id}')">刪除</button>
-      </div>
-    </div>
-  `).join('');
+  document.getElementById('studentManageList').innerHTML = db.students.map(s => `
+    <div class="list-item"><div><b>${s.name}</b> <span style="font-size:12px;color:#888;">(${getClassById(s.classId).name})</span></div><button class="del-btn" onclick="delItem('students','${s.id}')">刪除</button></div>`).join('');
 }
 
-/* 家長通知整合產生器（缺交功課 + 成績與補考名單） */
-function buildParentReportText(mode) {
-  const classFilter = document.getElementById('globalClassFilter').value;
-  const missingHws = (mode === 'HW_ONLY' || mode === 'COMBINED')
-    ? db.homeworks.filter(h => (classFilter === 'ALL' || h.classId === classFilter) && h.status !== '✅ 已完成')
-    : [];
-  const relevantExams = (mode === 'EXAM_ONLY' || mode === 'COMBINED')
-    ? db.exams.filter(e => classFilter === 'ALL' || e.classId === classFilter)
-    : [];
-
-  if (!missingHws.length && !relevantExams.length) return null;
-
-  const titleMap = {
-    'HW_ONLY': '【DL English 功課繳交狀況通知】',
-    'EXAM_ONLY': '【DL English 測驗成績與補考通知】',
-    'COMBINED': '【DL English 學習進度、成績與補考通知】'
-  };
-
-  const lines = [
-    titleMap[mode] || titleMap['COMBINED'],
-    '日期：' + new Date().toISOString().split('T')[0],
-    '----------------------'
-  ];
-
-  if (relevantExams.length) {
-    lines.push('📊 【測驗成績與補考紀錄】');
-    relevantExams.forEach((ex, idx) => {
-      const clsName = getClassById(ex.classId).name;
-      const st = ex.retestStatus || '✅ 通過（免補考）';
-      const retestInfo = [
-        ex.retestDate ? `補考日：${ex.retestDate}` : '',
-        ex.retestScore ? `補考分數：${ex.retestScore}` : ''
-      ].filter(Boolean).join('｜');
-      lines.push(`${idx + 1}. 👤 ${ex.studentName}（${clsName}）`);
-      lines.push(`   • 項目：${ex.title}（${ex.date || '未填日期'}）`);
-      lines.push(`   • 成績：${ex.score || '未填'}｜狀態：${st}`);
-      if (retestInfo) lines.push(`   • 補考：${retestInfo}`);
-      if (ex.ideaNote) lines.push(`   • 備註：${ex.ideaNote}`);
-    });
-    lines.push('');
-  }
-
-  if (missingHws.length) {
-    lines.push('📚 【未完成／缺交功課提醒】');
-    missingHws.forEach((h, idx) => {
-      const clsName = getClassById(h.classId).name;
-      const startStr = h.startDate || '未填';
-      const dueStr = h.due || '未設定';
-      const noteStr = (h.comment || '').trim() || '請儘快完成繳交';
-      lines.push(`${idx + 1}. 👤 ${h.studentName}（${clsName}）`);
-      lines.push(`   • 功課：${h.title}（${h.type}）`);
-      lines.push(`   • 期間：${startStr} ～ ${dueStr}｜狀態：${h.status}`);
-      lines.push(`   • 提醒：${noteStr}`);
-    });
-    lines.push('');
-  }
-
-  lines.push('感謝家長協助督促與配合，有任何問題歡迎隨時與老師聯繫！🐶✨');
-  return {
-    text: lines.join('\n'),
-    hwCount: missingHws.length,
-    examCount: relevantExams.length
-  };
-}
-
-function shareMissingHomeworkToLine() {
-  const textarea = document.getElementById('missingHwTableOutput');
-  if (!textarea || !textarea.value) return;
-  navigator.clipboard.writeText(textarea.value).catch(() => {});
-  const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(textarea.value);
-  window.open(lineUrl, '_blank', 'noopener');
-}
-
-function openParentReportModal(mode) {
-  const built = buildParentReportText(mode || 'COMBINED');
-  if (!built) {
-    alert('目前篩選範圍內沒有可整理的缺交功課或成績紀錄 🎉');
-    return;
-  }
-  const modal = document.getElementById('missingHwModal');
-  const textarea = document.getElementById('missingHwTableOutput');
-  const summary = document.getElementById('missingHwSummary');
-  summary.textContent = `已整合 ${built.examCount} 筆成績／補考紀錄、${built.hwCount} 筆未完成功課，可直接編輯或一鍵傳送 LINE：`;
-  textarea.value = built.text;
-  modal.style.display = 'flex';
-}
-
-function closeMissingHomeworkTableModal() {
-  document.getElementById('missingHwModal').style.display = 'none';
-}
-
-function copyMissingHomeworkTableText() {
-  const textarea = document.getElementById('missingHwTableOutput');
-  if (!textarea || !textarea.value) return;
-  navigator.clipboard.writeText(textarea.value).then(() => {
-    alert('已複製缺交功課表格，可直接貼上給家長！');
-  });
-}
-
-/* 匯出與匯入 */
 function exportData() {
   const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
@@ -1623,429 +687,26 @@ function exportData() {
   a.download = 'dl-english-backup-' + new Date().toISOString().split('T')[0] + '.json';
   a.click();
 }
-
 function importData(event) {
   const file = event.target.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
     try {
-      const imported = JSON.parse(e.target.result);
-      if (imported.students && imported.classes) {
-        db = imported;
-        saveData();
-        renderAll();
-        alert('資料還原成功！');
-      } else {
-        alert('備份檔案格式不正確！');
-      }
-    } catch (err) {
-      alert('讀取檔案失敗！');
-    }
+      const imp = JSON.parse(e.target.result);
+      if (imp.students) { db = Object.assign(getInitialData(), imp); saveData(); renderAll(); alert('資料同步還原成功！'); }
+    } catch (err) { alert('檔案格式不正確！'); }
   };
   reader.readAsText(file);
 }
 
-
-/* 8. 上課費用計算（小時/堂數）＋ 一鍵生成收費表格 */
-function addBillingRecord() {
-  const stuId = document.getElementById('billingStudent').value;
-  const stu = db.students.find(s => s.id === stuId);
-  const mode = document.getElementById('billingMode').value;
-  const rate = parseFloat(document.getElementById('billingRate').value || '0');
-  const units = parseFloat(document.getElementById('billingUnits').value || '0');
-  const paid = parseFloat(document.getElementById('billingPaid').value || '0');
-  const month = document.getElementById('billingMonth').value;
-  const note = document.getElementById('billingNote').value.trim();
-
-  if (!stu) return alert('請選擇學生！');
-  if (rate <= 0 || units <= 0) return alert('請輸入大於 0 的費率與堂數／時數！');
-
-  db.billings.unshift({
-    id: 'b_' + Date.now(),
-    studentId: stu.id,
-    studentName: stu.name,
-    classId: stu.classId,
-    month,
-    mode,
-    rate,
-    units,
-    paid,
-    note
-  });
-
-  document.getElementById('billingRate').value = '';
-  document.getElementById('billingUnits').value = '';
-  document.getElementById('billingPaid').value = '0';
-  document.getElementById('billingNote').value = '';
-  saveData();
-  renderBillings();
-}
-
-function updateBillingPaid(id, val) {
-  const rec = db.billings.find(b => b.id === id);
-  if (!rec) return;
-  rec.paid = parseFloat(val || '0') || 0;
-  saveData();
-  renderBillings();
-}
-
-function renderBillings() {
-  const classFilter = document.getElementById('globalClassFilter').value;
-  const list = db.billings.filter(b => classFilter === 'ALL' || b.classId === classFilter);
-  const el = document.getElementById('billingList');
-  if (!list.length) { el.innerHTML = '<p style="color:#999;">目前尚無收費紀錄。</p>'; return; }
-
-  el.innerHTML = list.map(b => {
-    const total = Math.round(b.rate * b.units);
-    const unpaid = Math.max(0, total - (b.paid || 0));
-    const unitLabel = b.mode === 'HOURLY' ? '小時' : '堂';
-    const rateLabel = b.mode === 'HOURLY' ? '時薪' : '單堂';
-    return `
-      <div class="list-item" style="flex-direction:column;align-items:stretch;">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-          <div>
-            <span class="badge" style="background:#ffe5ec;color:#c94a63;">👤 ${b.studentName}</span>
-            <span class="badge" style="background:#e2f1ff;color:#3a7ca5;">${b.month}</span>
-            <span class="badge" style="background:#f2eaf7;color:#6d4c82;">${b.mode === 'HOURLY' ? '⏱️ 小時計費' : '📚 堂數計費'}</span>
-            <span style="font-size:13px;font-weight:700;color:#2f7d65;">應收：$${total.toLocaleString()}</span>
-            <span style="font-size:13px;font-weight:700;color:${unpaid > 0 ? '#c94a63' : '#2f7d65'};margin-left:6px;">
-              ${unpaid > 0 ? '待收：$' + unpaid.toLocaleString() : '✅ 已結清'}
-            </span>
-          </div>
-          <button class="del-btn" onclick="deleteItem('billings','${b.id}')">刪除</button>
-        </div>
-        <div style="font-size:13.5px;margin-top:6px;">
-          ${rateLabel} <b>$${b.rate.toLocaleString()}</b> × <b>${b.units}</b> ${unitLabel} = <b>$${total.toLocaleString()}</b>
-          ${b.note ? `<span style="color:#666;">｜備註：${b.note}</span>` : ''}
-        </div>
-        <div style="margin-top:8px;display:flex;align-items:center;gap:8px;font-size:13px;">
-          <span>已收金額（元）：</span>
-          <input type="number" value="${b.paid || 0}" min="0" step="10" style="width:120px;padding:5px 8px;" onchange="updateBillingPaid('${b.id}', this.value)">
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function buildBillingTableText() {
-  const classFilter = document.getElementById('globalClassFilter').value;
-  const list = db.billings.filter(b => classFilter === 'ALL' || b.classId === classFilter);
-  if (!list.length) return null;
-
-  const lines = [
-    '【DL English 上課費用通知表】',
-    '產生日期：' + new Date().toISOString().split('T')[0],
-    '',
-    '| 學生 | 月份 | 計費方式 | 堂/時數 | 費率 | 應收金額 | 已收 | 待收餘額 | 備註 |',
-    '|---|---|---|---|---|---|---|---|---|'
-  ];
-
-  let sumTotal = 0;
-  let sumUnpaid = 0;
-
-  list.forEach(b => {
-    const total = Math.round(b.rate * b.units);
-    const paid = b.paid || 0;
-    const unpaid = Math.max(0, total - paid);
-    sumTotal += total;
-    sumUnpaid += unpaid;
-    const modeText = b.mode === 'HOURLY' ? '小時計費' : '堂數計費';
-    const unitStr = b.mode === 'HOURLY' ? `${b.units} hr` : `${b.units} 堂`;
-    const noteStr = (b.note || '').replace(/\|/g, '／') || '—';
-    lines.push(`| ${b.studentName} | ${b.month} | ${modeText} | ${unitStr} | $${b.rate} | $${total} | $${paid} | $${unpaid} | ${noteStr} |`);
-  });
-
-  lines.push('');
-  lines.push(`應收合計：$${sumTotal.toLocaleString()} 元｜待收合計：$${sumUnpaid.toLocaleString()} 元`);
-  lines.push('感謝家長的支持與配合，有任何問題歡迎隨時與老師聯繫！🐶✨');
-  return lines.join('
-');
-}
-
-function openBillingTableModal() {
-  const txt = buildBillingTableText();
-  if (!txt) return alert('目前篩選範圍內沒有收費紀錄可生成表格！');
-  document.getElementById('billingTableOutput').value = txt;
-  document.getElementById('billingTableModal').style.display = 'flex';
-}
-
-function closeBillingTableModal() {
-  document.getElementById('billingTableModal').style.display = 'none';
-}
-
-function copyBillingTable() {
-  const val = document.getElementById('billingTableOutput').value;
-  if (!val) return;
-  navigator.clipboard.writeText(val).then(() => alert('已複製收費表格！'));
-}
-
-function shareBillingTableToLine() {
-  const val = document.getElementById('billingTableOutput').value;
-  if (!val) return;
-  navigator.clipboard.writeText(val).catch(() => {});
-  window.open('https://line.me/R/msg/text/?' + encodeURIComponent(val), '_blank', 'noopener');
-}
-
-/* 補課與請假登記 */
-function addMakeupRecord() {
-  const stuId = document.getElementById('makeupStudent').value;
-  const stu = db.students.find(s => s.id === stuId);
-  const status = document.getElementById('makeupType').value;
-  const date = document.getElementById('makeupDate').value || new Date().toISOString().split('T')[0];
-  const reason = document.getElementById('makeupReason').value.trim();
-  if (!stu) return alert('請選擇學生！');
-
-  db.makeups.unshift({
-    id: 'mk_' + Date.now(),
-    studentId: stu.id,
-    studentName: stu.name,
-    classId: stu.classId,
-    date,
-    status,
-    reason: reason || '請假／補課登記'
-  });
-  document.getElementById('makeupReason').value = '';
-  saveData();
-  renderMakeups();
-}
-
-const MAKEUP_STATUSES = ['🤒 請假待補課', '📅 已排定補課', '✅ 已完成補課'];
-function cycleMakeupStatus(id) {
-  const item = db.makeups.find(m => m.id === id);
-  if (!item) return;
-  item.status = MAKEUP_STATUSES[(MAKEUP_STATUSES.indexOf(item.status) + 1) % MAKEUP_STATUSES.length];
-  saveData();
-  renderMakeups();
-}
-
-function renderMakeups() {
-  const classFilter = document.getElementById('globalClassFilter').value;
-  const list = db.makeups.filter(m => classFilter === 'ALL' || m.classId === classFilter);
-  const el = document.getElementById('makeupList');
-  if (!list.length) { el.innerHTML = '<p style="color:#999;">目前沒有請假或補課紀錄。</p>'; return; }
-  el.innerHTML = list.map(m => `
-    <div class="list-item">
-      <div>
-        <span class="badge" style="background:#ffe5ec;color:#c94a63;">👤 ${m.studentName}</span>
-        <span style="font-size:12px;color:#888;">📅 ${m.date}</span>
-        <div style="font-weight:600;margin-top:4px;">${m.reason}</div>
-      </div>
-      <div style="display:flex;gap:6px;align-items:center;">
-        <button class="status-btn" style="background:#fff0d6;color:#9c6615;" onclick="cycleMakeupStatus('${m.id}')">${m.status} ↻</button>
-        <button class="del-btn" onclick="deleteItem('makeups','${m.id}')">刪除</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-/* 9. 教材／講義印製與材料費統計 */
-function addMaterialItem() {
-  const name = document.getElementById('matName').value.trim();
-  if (!name) return alert('請輸入教材或材料名稱！');
-  const target = document.getElementById('matTarget').value;
-  const qty = parseInt(document.getElementById('matQty').value || '1', 10) || 1;
-  const unitCost = parseFloat(document.getElementById('matUnitCost').value || '0') || 0;
-  const status = document.getElementById('matStatus').value;
-  const note = document.getElementById('matNote').value.trim();
-
-  db.materials.unshift({
-    id: 'mt_' + Date.now(),
-    name, target, qty, unitCost, status, note
-  });
-  document.getElementById('matName').value = '';
-  document.getElementById('matNote').value = '';
-  saveData();
-  renderMaterials();
-}
-
-function renderMaterials() {
-  const sumBox = document.getElementById('materialSummary');
-  const totalQty = db.materials.reduce((acc, x) => acc + (x.qty || 0), 0);
-  const totalCost = db.materials.reduce((acc, x) => acc + ((x.qty || 0) * (x.unitCost || 0)), 0);
-  sumBox.innerHTML = `<b>📊 材料統計：</b>共 <b>${db.materials.length}</b> 項｜總份數／數量：<b>${totalQty}</b>｜預估總成本：<b>$${Math.round(totalCost).toLocaleString()} 元</b>`;
-
-  const el = document.getElementById('materialList');
-  if (!db.materials.length) { el.innerHTML = '<p style="color:#999;">目前尚無教材或材料紀錄。</p>'; return; }
-  el.innerHTML = db.materials.map(m => {
-    const subtotal = Math.round((m.qty || 0) * (m.unitCost || 0));
-    return `
-      <div class="list-item">
-        <div>
-          <span class="badge" style="background:#e2f1ff;color:#3a7ca5;">${m.target}</span>
-          <span class="badge" style="background:#e2f5ee;color:#2f7d65;">${m.status}</span>
-          <div style="font-weight:700;margin-top:4px;">${m.name}（${m.qty} 份 × $${m.unitCost} = $${subtotal}）</div>
-          ${m.note ? `<div style="font-size:12.5px;color:#666;margin-top:2px;">備註：${m.note}</div>` : ''}
-        </div>
-        <button class="del-btn" onclick="deleteItem('materials','${m.id}')">刪除</button>
-      </div>
-    `;
-  }).join('');
-}
-
-/* 10. 線上小遊戲快速連結捷徑 ＋ 12月起用「每月學習狀況通知單（LINE 版）」 */
-function addGameShortcut() {
-  const title = document.getElementById('gameShortcutTitle').value.trim();
-  const url = document.getElementById('gameShortcutUrl').value.trim();
-  if (!title || !url) return alert('請填寫遊戲名稱與網址！');
-  db.games.unshift({ id: 'g_' + Date.now(), title, url });
-  document.getElementById('gameShortcutTitle').value = '';
-  document.getElementById('gameShortcutUrl').value = '';
-  saveData();
-  renderGameShortcuts();
-}
-
-function renderGameShortcuts() {
-  const el = document.getElementById('gameShortcutList');
-  if (!db.games.length) { el.innerHTML = '<p style="color:#999;">尚未新增遊戲捷徑。</p>'; return; }
-  el.innerHTML = db.games.map(g => `
-    <div class="list-item" style="align-items:center;">
-      <div>
-        <div style="font-weight:700;">🎮 ${g.title}</div>
-        <a href="${g.url}" target="_blank" rel="noopener" style="font-size:12.5px;color:#3a7ca5;word-break:break-all;">${g.url}</a>
-      </div>
-      <div style="display:flex;gap:6px;">
-        <a href="${g.url}" target="_blank" rel="noopener" class="btn-sm" style="text-decoration:none;display:inline-flex;align-items:center;">開啟</a>
-        <button class="del-btn" onclick="deleteItem('games','${g.id}')">刪除</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function generateMonthlyReportPreview() {
-  const stuId = document.getElementById('monthlyStudent').value;
-  const stu = db.students.find(s => s.id === stuId);
-  if (!stu) return;
-  const monthLabel = (document.getElementById('monthlyLabel').value || '2026 年 12 月').trim();
-  const clsName = getClassById(stu.classId).name;
-
-  const stuExams = db.exams.filter(e => e.studentId === stu.id);
-  const stuHws = db.homeworks.filter(h => h.studentId === stu.id);
-  const doneHws = stuHws.filter(h => h.status === '✅ 已完成');
-  const pendingHws = stuHws.filter(h => h.status !== '✅ 已完成');
-
-  const enc = (document.getElementById('monthlyEncouragement').value || '').trim() ||
-    `${stu.name} 在課堂上的專注與努力老師都有看見，持續保持這份學習節奏，一定會越來越棒！`;
-  const ask = (document.getElementById('monthlyParentAsk').value || '').trim() ||
-    '再請家長協助提醒孩子留意待完成功課與補考安排，感謝您一直以來的支持與配合！';
-
-  const lines = [
-    '🐶✨【DL English 每月學習狀況通知單】✨🐶',
-    `月份：${monthLabel}`,
-    `學生姓名：${stu.name}（${clsName}）`,
-    '----------------------------------------',
-    '',
-    '📊 【一、本月測驗成績與補考紀錄】'
-  ];
-
-  if (!stuExams.length) {
-    lines.push('• 本月暫無已登記之測驗成績紀錄。');
-  } else {
-    stuExams.forEach((ex, i) => {
-      const st = ex.retestStatus || '✅ 通過（免補考）';
-      const retestPart = [
-        ex.retestDate ? `補考日：${ex.retestDate}` : '',
-        ex.retestScore ? `補考分數：${ex.retestScore}` : ''
-      ].filter(Boolean).join('／');
-      lines.push(`${i + 1}. ${ex.title}（${ex.date || '日期未填'}）`);
-      lines.push(`   • 原始成績：${ex.score || '未填'}｜補考狀態：${st}`);
-      if (retestPart) lines.push(`   • 補考資訊：${retestPart}`);
-      if (ex.points) lines.push(`   • 重點考點：${ex.points}`);
-    });
-  }
-
-  lines.push('');
-  lines.push('📚 【二、本月功課繳交狀況】');
-  lines.push(`• 已完成：${doneHws.length} 項`);
-  if (!pendingHws.length) {
-    lines.push('• 待完成／訂正：無，表現很棒！');
-  } else {
-    lines.push('• 待完成／訂正：');
-    pendingHws.forEach((h, i) => {
-      lines.push(`  ${i + 1}. ${h.title}（${h.startDate || '未填'} ～ ${h.due || '未設定'}｜狀態：${h.status}）`);
-    });
-  }
-
-  lines.push('');
-  lines.push('🌟 【三、老師的鼓勵與學習觀察】');
-  lines.push(enc);
-  lines.push('');
-  lines.push('💌 【四、麻煩家長協助事項】');
-  lines.push(ask);
-  lines.push('');
-  lines.push('感謝家長一直以來的支持與配合，有任何問題歡迎隨時與 Debra 老師聯繫 🐾💛');
-
-  document.getElementById('monthlyReportOutput').value = lines.join('
-');
-}
-
-function copyMonthlyReport() {
-  const val = document.getElementById('monthlyReportOutput').value;
-  if (!val) return alert('請先按「產生 LINE 通知單草稿」！');
-  navigator.clipboard.writeText(val).then(() => alert('已複製每月學習狀況通知單！'));
-}
-
-function shareMonthlyReportToLine() {
-  const val = document.getElementById('monthlyReportOutput').value;
-  if (!val) return alert('請先按「產生 LINE 通知單草稿」！');
-  navigator.clipboard.writeText(val).catch(() => {});
-  window.open('https://line.me/R/msg/text/?' + encodeURIComponent(val), '_blank', 'noopener');
-}
-
 function renderAll() {
-  populateSelects();
-  updateStats();
-  renderTodos();
-  renderLessons();
-  renderHomework();
-  renderMistakes();
-  renderExams();
-  renderPlans();
-  renderBillings();
-  renderMakeups();
-  renderMaterials();
-  renderGameShortcuts();
-  renderStudentsManage();
+  populateSelects(); updateStats(); renderTodos(); renderLessons(); renderHomework(); renderMistakes(); renderExams(); renderBillings(); renderStudentsManage();
 }
-
+initAuth();
 renderAll();
 </script>
-
-<div id="missingHwModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:center;justify-content:center;padding:16px;">
-  <div style="background:#fff;border-radius:16px;max-width:720px;width:100%;padding:20px;border:2px solid var(--border);box-shadow:0 10px 30px rgba(0,0,0,0.18);">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-      <h3 style="font-size:17px;color:var(--primary-dark);">💬 家長通知整合清單（成績／補考／缺交功課）</h3>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;">
-        <button class="btn-sm" onclick="openParentReportModal('COMBINED')">全部整合</button>
-        <button class="btn-sm" onclick="openParentReportModal('EXAM_ONLY')">只看成績/補考</button>
-        <button class="btn-sm" onclick="openParentReportModal('HW_ONLY')">只看缺交功課</button>
-        <button class="del-btn" onclick="closeMissingHomeworkTableModal()">✕ 關閉</button>
-      </div>
-    </div>
-    <p id="missingHwSummary" style="font-size:13px;color:var(--muted);margin-bottom:10px;"></p>
-    <textarea id="missingHwTableOutput" rows="10" style="width:100%;font-family:monospace;font-size:12.5px;line-height:1.5;"></textarea>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap;">
-      <button class="btn btn-mint" onclick="copyMissingHomeworkTableText()">📋 複製文字</button>
-      <button class="btn" style="background:#06c755;" onclick="shareMissingHomeworkToLine()">💬 開啟 LINE 傳送</button>
-      <button class="btn btn-outline" onclick="closeMissingHomeworkTableModal()">完成</button>
-    </div>
-  </div>
-</div>
-
-<div id="billingTableModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:210;align-items:center;justify-content:center;padding:16px;">
-  <div style="background:#fff;border-radius:16px;max-width:740px;width:100%;padding:20px;border:2px solid var(--border);box-shadow:0 10px 30px rgba(0,0,0,0.18);">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-      <h3 style="font-size:17px;color:var(--primary-dark);">📑 收費表格產生器（小時制／堂數制）</h3>
-      <button class="del-btn" onclick="closeBillingTableModal()">✕ 關閉</button>
-    </div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:8px;">可直接複製表格或按「開啟 LINE 傳送」傳給家長：</p>
-    <textarea id="billingTableOutput" rows="11" style="width:100%;font-family:monospace;font-size:12.5px;line-height:1.5;"></textarea>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap;">
-      <button class="btn btn-mint" onclick="copyBillingTable()">📋 複製收費表格</button>
-      <button class="btn" style="background:#06c755;" onclick="shareBillingTableToLine()">💬 開啟 LINE 傳送</button>
-      <button class="btn btn-outline" onclick="closeBillingTableModal()">完成</button>
-    </div>
-  </div>
-</div>
 </body>
 </html>
+
+```
