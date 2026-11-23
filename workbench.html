@@ -175,8 +175,9 @@
     <div class="mobile-sync-bar">
       <button class="btn-sm" style="flex:1;background:#fff0f3;" onclick="exportData()">📤 匯出備份（同步用）</button>
       <button class="btn-sm" style="flex:1;background:#e2f5ee;" onclick="document.getElementById('importFile').click()">📥 匯入還原（同步用）</button>
+      <button class="btn-sm" style="flex:1;background:#eef7ff;" onclick="pasteImportData()">📋 貼上還原</button>
     </div>
-    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    <input type="file" id="importFile" accept=".json,application/json,text/plain,*/*" style="display:none" onchange="importData(event)">
 
     <div class="topbar">
       <div class="stats">
@@ -684,10 +685,37 @@ function importData(event) {
   reader.onload = e => {
     try {
       const imp = JSON.parse(e.target.result);
-      if (imp.students) { db = Object.assign(getInitialData(), imp); saveData(); renderAll(); alert('資料同步還原成功！'); }
-    } catch (err) { alert('檔案格式不正確！'); }
+      if (imp && Array.isArray(imp.students)) {
+        db = Object.assign(getInitialData(), imp);
+        saveData();
+        renderAll();
+        alert('資料同步還原成功！');
+      } else {
+        alert('備份檔缺少 students 資料欄位！');
+      }
+    } catch (err) {
+      alert('檔案格式不正確：' + err.message);
+    }
+    event.target.value = '';
   };
   reader.readAsText(file);
+}
+function pasteImportData() {
+  const raw = prompt('請貼上備份 JSON 內容（以 { 開頭、} 結尾）：');
+  if (!raw || !raw.trim()) return;
+  try {
+    const imp = JSON.parse(raw.trim());
+    if (imp && Array.isArray(imp.students)) {
+      db = Object.assign(getInitialData(), imp);
+      saveData();
+      renderAll();
+      alert('資料同步還原成功！');
+    } else {
+      alert('備份內容缺少 students 資料欄位！');
+    }
+  } catch (err) {
+    alert('JSON 格式不正確：' + err.message);
+  }
 }
 
 function renderAll() {
