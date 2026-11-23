@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+html>
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
@@ -376,7 +376,7 @@
 </main>
 
 <script>
-const STORAGE_KEY = 'dl_english_workbench_v3';
+const STORAGE_KEY = 'dl_english_workbench_v4';
 const COLORS = ['#ffd6e0','#d8e2dc','#e2ece9','#fde4cf','#f1c0e8','#cfbaf0','#a3c4f3','#b9fbc0','#ffcfd2'];
 
 const DEFAULT_NAMES = [
@@ -722,11 +722,8 @@ function updateHwComment(id, val) {
 function copyHwFeedback(id) {
   const hw = db.homeworks.find(h => h.id === id);
   if (!hw) return;
-  const msg = `【DL English 課後學習回饋】
-Hi ${hw.studentName} 家長您好：
-本次功課「${hw.title}」（${hw.type}）目前狀態為：${hw.status}。
-${hw.comment ? '老師回饋：' + hw.comment + '
-' : ''}感謝配合，一起繼續加油！🐶✨`;
+  const commentLine = hw.comment ? '老師回饋：' + hw.comment + '\n' : '';
+  const msg = '【DL English 課後學習回饋】\nHi ' + hw.studentName + ' 家長您好：\n本次功課「' + hw.title + '」（' + hw.type + '）目前狀態為：' + hw.status + '。\n' + commentLine + '感謝配合，一起繼續加油！🐶✨';
   navigator.clipboard.writeText(msg).then(() => alert('已複製 LINE 回饋文案，可直接貼上傳送！'));
 }
 
@@ -803,14 +800,9 @@ function getFilteredMistakes() {
 function copyMistakesForWorksheet() {
   const list = getFilteredMistakes().filter(m => m.status !== '🟢 已精熟');
   if (!list.length) return alert('目前篩選條件下沒有未精熟錯題可複製！');
-  const text = '請根據以下學生錯題與核心考點，幫我設計一份相同考點的客製化練習單（含簡答與逐題詳解）：
-
-' +
-    list.map((m, i) => `${i + 1}. 【${m.studentName}｜考點：${m.point}】
-${m.content}`).join('
-
-');
-  navigator.clipboard.writeText(text).then(() => alert(`已複製 ${list.length} 題未精熟錯題，可直接貼上出題！`));
+  const itemsText = list.map((m, i) => (i + 1) + '. 【' + m.studentName + '｜考點：' + m.point + '】\n' + m.content).join('\n\n');
+  const text = '請根據以下學生錯題與核心考點，幫我設計一份相同考點的客製化練習單（含簡答與逐題詳解）：\n\n' + itemsText;
+  navigator.clipboard.writeText(text).then(() => alert('已複製 ' + list.length + ' 題未精熟錯題，可直接貼上出題！'));
 }
 
 function renderMistakes() {
@@ -931,9 +923,7 @@ function bulkAddStudents() {
   const raw = document.getElementById('bulkStudents').value.trim();
   if (!raw) return alert('請輸入學生名單（一行一位）！');
   const classId = document.getElementById('bulkStudentClass').value;
-  const names = raw.split(/
-?
-/).map(x => x.trim()).filter(Boolean);
+  const names = raw.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
   names.forEach((name, idx) => {
     db.students.push({
       id: 's_' + Date.now() + '_' + idx,
@@ -946,7 +936,7 @@ function bulkAddStudents() {
   document.getElementById('bulkStudents').value = '';
   saveData();
   renderAll();
-  alert(`已成功新增 ${names.length} 位學生！`);
+  alert('已成功新增 ' + names.length + ' 位學生！');
 }
 
 function changeStudentClass(stuId, newClassId) {
