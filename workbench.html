@@ -194,6 +194,13 @@
 
     <!-- 1. 應做事項 -->
     <section id="tab-todos" class="tab-section active">
+<div class="card" style="border:2px solid var(--primary);background:#fff9fa;">
+        <h2>
+          <span>📅 今日焦點（今天要注意的事）</span>
+          <span id="todayDateLabel" style="font-size:13px;color:var(--primary-dark);"></span>
+        </h2>
+        <div id="todayFocusList"></div>
+      </div>
       <div class="card">
         <h2>✅ 新增應做事項</h2>
         <div class="grid-3">
@@ -684,8 +691,41 @@ function importData(event) {
 }
 
 function renderAll() {
-  populateSelects(); updateStats(); renderTodos(); renderLessons(); renderHomework(); renderMistakes(); renderExams(); renderBillings(); renderStudentsManage();
+  populateSelects(); updateStats(); renderTodos(); renderTodayFocus();
 }
+
+  function renderTodayFocus() {
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const label = document.getElementById('todayDateLabel');
+  if (label) label.textContent = `今天：${today}`;
+
+  const cf = document.getElementById('globalClassFilter').value;
+  const matchClass = item => cf === 'ALL' || !item.classId || item.classId === cf;
+
+  const dueTodos = db.todos.filter(t => !t.done && t.date === today);
+  const dueHw = db.homeworks.filter(h => matchClass(h) && h.status !== '✅ 已完成' && (h.due === today || h.status === '🔄 需訂正'));
+  const retests = db.exams.filter(e => matchClass(e) && (e.retestStatus === '⚠️ 需補考' || e.retestStatus === '📝 已安排補考'));
+  const pendingMistakes = db.mistakes.filter(m => matchClass(m) && m.status === '🔴 待出類似題');
+  const unpaidFees = db.billings.filter(b => matchClass(b) && Math.round(b.rate * b.units) > (b.paid || 0));
+
+  const items = [
+    ...dueHw.map(h => `📚 <b>功課提醒</b>：${h.studentName} — ${h.title}（${h.status}${h.due === today ? '／今日到期' : ''}）`),
+    ...retests.map(e => `⚠️ <b>補考提醒</b>：${e.studentName} — ${e.title}（${e.retestStatus}${e.retestDate ? '／' + e.retestDate : ''}）`),
+    ...pendingMistakes.map(m => `🎯 <b>待出類似題</b>：${m.studentName} — ${m.point}`),
+    ...unpaidFees.map(b => {
+      const diff = Math.round(b.rate * b.units) - (b.paid || 0);
+      return `💰 <b>待收費提醒</b>：${b.studentName}（尚差 $${diff}）`;
+    }),
+    ...dueTodos.map(t => `🔔 <b>今日待辦</b>：${t.text}（${t.target}）`)
+  ];
+
+  const box = document.getElementById('todayFocusList');
+  if (box) {
+    box.innerHTML = items.length
+      ? items.map(txt => `<div class="list-item" style="background:#fff;margin-bottom:6px;"><div>${txt}</div></div>`).join('')
+      : '<p style="color:#888;font-size:14px;">今天沒有特別到期的功課、補考或待辦，步調很輕鬆！🐶✨</p>';
+  }
 initAuth();
 renderAll();
 </script>
