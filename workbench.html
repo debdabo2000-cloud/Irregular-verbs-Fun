@@ -1,278 +1,871 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DL English 教師工作台</title>
-<style>
-  :root {
-    --bg: #fdfaf6; --sidebar: #fff5f7; --card: #ffffff;
-    --primary: #ff8fa3; --primary-dark: #e06c82; --secondary: #a2d2ff;
-    --mint: #b8e0d2; --lavender: #cdb4db; --text: #4a4238;
-    --muted: #8c8275; --border: #f0e6dc;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
-  body { background: var(--bg); color: var(--text); min-height: 100vh; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DL English 教師工作台</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent: #0ea5e9;
+      --ok: #16a34a;
+      --warn: #d97706;
+      --danger: #dc2626;
+      --border: #e5e7eb;
+      --radius: 14px;
+    }
 
-  /* Login Overlay */
-  .login-screen {
-    position: fixed; inset: 0; z-index: 999;
-    background: linear-gradient(135deg, #fff5f7 0%, #fdfaf6 50%, #eef7ff 100%);
-    display: flex; align-items: center; justify-content: center; padding: 20px;
-  }
-  .login-card {
-    background: #fff; border: 2px solid #f3d5dc; border-radius: 24px;
-    padding: 32px 26px; max-width: 400px; width: 100%; text-align: center;
-    box-shadow: 0 12px 32px rgba(255,143,163,0.18);
-  }
-  .login-avatar {
-    width: 84px; height: 84px; border-radius: 50%; background: #fff0d6;
-    margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;
-    font-size: 44px; border: 4px solid var(--primary);
-  }
-  .login-btn {
-    width: 100%; padding: 14px; border-radius: 14px; border: none;
-    background: var(--primary); color: #fff; font-size: 16px; font-weight: 700;
-    cursor: pointer; margin-top: 16px; box-shadow: 0 6px 16px rgba(255,143,163,0.35);
-  }
-  .login-btn:hover { background: var(--primary-dark); }
+    * { box-sizing: border-box; }
 
-  /* Layout */
-  .app-wrap { display: flex; min-height: 100vh; }
-  .sidebar {
-    width: 235px; background: var(--sidebar); border-right: 2px solid var(--border);
-    padding: 18px 14px; display: flex; flex-direction: column; justify-content: space-between;
-    position: sticky; top: 0; height: 100vh; flex-shrink: 0;
-  }
-  .brand { text-align: center; padding-bottom: 14px; border-bottom: 1px dashed #f3d5dc; }
-  .cookie-avatar {
-    width: 56px; height: 56px; border-radius: 50%; background: #fff0d6;
-    margin: 0 auto 6px; display: flex; align-items: center; justify-content: center;
-    font-size: 28px; border: 3px solid var(--primary);
-  }
-  .brand h1 { font-size: 17px; color: var(--primary-dark); }
-  .brand p { font-size: 12px; color: var(--muted); }
-  .nav { margin-top: 12px; display: flex; flex-direction: column; gap: 5px; flex: 1; overflow-y: auto; }
-  .nav-btn {
-    border: none; background: transparent; padding: 10px 12px; border-radius: 12px;
-    text-align: left; font-size: 14px; font-weight: 600; color: var(--text);
-    cursor: pointer; display: flex; align-items: center; gap: 8px;
-  }
-  .nav-btn:hover { background: #ffe5ec; }
-  .nav-btn.active { background: var(--primary); color: #fff; }
-  .backup-box { display: flex; gap: 6px; padding-top: 10px; border-top: 1px dashed #f3d5dc; }
-  .btn-sm {
-    padding: 7px 10px; border-radius: 10px; border: 1px solid var(--border);
-    background: #fff; font-size: 12px; cursor: pointer; font-weight: 600; color: var(--text);
-  }
-  .main { flex: 1; padding: 20px; max-width: 1150px; overflow-x: hidden; }
-  .topbar {
-    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
-    gap: 10px; margin-bottom: 16px; background: var(--card); padding: 12px 16px;
-    border-radius: 16px; border: 1px solid var(--border);
-  }
-  .stats { display: flex; flex-wrap: wrap; gap: 8px; }
-  .stat-pill { padding: 5px 11px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
-  .pill-pink { background: #ffe5ec; color: #c94a63; }
-  .pill-blue { background: #e2f1ff; color: #3a7ca5; }
-  .pill-mint { background: #e2f5ee; color: #2f7d65; }
-  .pill-lav { background: #f2eaf7; color: #6d4c82; }
-  .tab-section { display: none; }
-  .tab-section.active { display: block; }
-  .card {
-    background: var(--card); border-radius: 16px; padding: 16px;
-    border: 1px solid var(--border); margin-bottom: 16px;
-  }
-  .card h2 { font-size: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
-  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
-  select, input, textarea {
-    padding: 9px 11px; border-radius: 10px; border: 1px solid #e2d8ce;
-    background: #fff; font-size: 14px; color: var(--text); width: 100%;
-  }
-  .btn {
-    padding: 9px 15px; border-radius: 10px; border: none; background: var(--primary);
-    color: #fff; font-weight: 600; font-size: 14px; cursor: pointer; width: auto;
-  }
-  .btn-mint { background: #52b788; }
-  .btn-blue { background: #5fa8d3; }
-  .del-btn { background: #f8edeb; color: #b55d5d; border: none; padding: 5px 9px; border-radius: 8px; cursor: pointer; font-size: 12px; }
-  .status-btn { padding: 5px 10px; border-radius: 8px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; }
-  .list-item {
-    padding: 12px; border-radius: 12px; border: 1px solid var(--border);
-    background: #fffdfb; margin-bottom: 9px; display: flex; justify-content: space-between;
-    align-items: flex-start; gap: 10px; flex-wrap: wrap;
-  }
-  .list-item.done { opacity: 0.55; text-decoration: line-through; }
-  .badge { display: inline-block; padding: 3px 8px; border-radius: 8px; font-size: 12px; font-weight: 600; margin-right: 5px; }
-  .chip-group { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
-  .chip { padding: 5px 11px; border-radius: 16px; border: 1px solid #dfd5cb; background: #fff; font-size: 13px; cursor: pointer; }
-  .chip.selected { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 600; }
-  .mobile-sync-bar { display: none; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+    }
 
-  @media (max-width: 768px) {
-    .app-wrap { flex-direction: column; }
-    .sidebar { width: 100%; height: auto; position: sticky; top: 0; z-index: 50; padding: 10px 12px; }
-    .brand { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; }
-    .brand-left { display: flex; align-items: center; gap: 8px; text-align: left; }
-    .cookie-avatar { width: 36px; height: 36px; font-size: 18px; margin: 0; }
-    .nav { flex-direction: row; overflow-x: auto; margin-top: 8px; padding-bottom: 4px; }
-    .nav-btn { white-space: nowrap; padding: 7px 11px; font-size: 13px; }
-    .backup-box { display: none; }
-    .mobile-sync-bar { display: flex; }
-    .main { padding: 12px; }
-  }
-</style>
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+    }
+
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      background: #dbeafe;
+      color: var(--primary);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    button, select, input, textarea {
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--ink);
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.15s ease;
+    }
+
+    button:hover { background: #f3f4f6; }
+
+    button.primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    button.primary:hover { background: var(--primary-hover); }
+
+    button.danger {
+      color: var(--danger);
+      border-color: #fecaca;
+      background: #fef2f2;
+    }
+
+    button.danger:hover { background: #fee2e2; }
+
+    main {
+      max-width: 1120px;
+      margin: 18px auto 48px;
+      padding: 0 16px;
+    }
+
+    .class-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+
+    select, input[type="text"], input[type="number"], input[type="date"], textarea {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .tab-btn {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      font-weight: 600;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .panel {
+      display: none;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .panel.active { display: block; }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.15rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .list-item {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      background: #fafbfd;
+    }
+
+    .done {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 0.92rem;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 8px 6px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 700;
+      background: #f9fafb;
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    .summary-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 12px;
+      font-weight: 600;
+    }
+
+    .line-output {
+      width: 100%;
+      min-height: 170px;
+      margin-top: 10px;
+      font-size: 0.92rem;
+    }
+
+    /* Modal for Paste Restore / Lock */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+
+    .modal-backdrop.show { display: flex; }
+
+    .modal {
+      width: 100%;
+      max-width: 560px;
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .muted { color: var(--muted); font-size: 0.88rem; }
+  </style>
 </head>
 <body>
-
-<div id="loginScreen" class="login-screen">
-  <div class="login-card">
-    <div class="login-avatar">🐶</div>
-    <h2 style="color:var(--primary-dark);font-size:21px;">DL English 教師工作台</h2>
-    <p style="font-size:13px;color:var(--muted);margin-top:6px;">歡迎回來，Debra 老師！點擊下方按鈕一鍵進入</p>
-    <div id="pinInputWrap" style="display:none;margin-top:14px;">
-      <input type="password" id="loginPinInput" maxlength="4" placeholder="請輸入 4 位數 PIN 碼" style="text-align:center;letter-spacing:4px;font-size:16px;">
-    </div>
-    <button class="login-btn" onclick="quickLogin()">🐶 Debra 老師一鍵快速登入</button>
-    <label style="display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:13px;color:var(--muted);cursor:pointer;">
-      <input type="checkbox" id="rememberLogin" checked style="width:auto;"> 記住登入狀態（下次自動進入）
-    </label>
-  </div>
-</div>
-
-<div class="app-wrap">
-  <aside class="sidebar">
-    <div>
+  <header>
+    <div class="header-inner">
       <div class="brand">
-        <div class="brand-left">
-          <div class="cookie-avatar">🐶</div>
-          <div>
-            <h1>DL English</h1>
-            <p>Cookie 教師工作台</p>
+        <span>🐾 DL English 教師工作台</span>
+        <span class="badge">手機／桌機同步版</span>
+      </div>
+      <div class="toolbar">
+        <button id="btnExportJson" type="button">💾 匯出 JSON</button>
+        <button id="btnOpenRestore" type="button">📋 貼上還原</button>
+        <button id="btnLockToggle" type="button">🔒 鎖定／密碼</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="class-bar">
+      <label for="classSelect"><strong>目前班級：</strong></label>
+      <select id="classSelect"></select>
+      <input id="newClassName" type="text" placeholder="新班級名稱（例：國小高年級 A 班）" />
+      <button id="btnAddClass" class="primary" type="button">新增班級</button>
+      <button id="btnDeleteClass" class="danger" type="button">刪除目前班級</button>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="todo" type="button">應做事項／作業</button>
+      <button class="tab-btn" data-tab="students" type="button">學生名冊與收費</button>
+      <button class="tab-btn" data-tab="records" type="button">教學與成績／補考</button>
+      <button class="tab-btn" data-tab="report" type="button">LINE 回報產生器</button>
+    </div>
+
+    <!-- Tab 1: Todos & Homework -->
+    <section id="panel-todo" class="panel active">
+      <h2>應做事項與作業追蹤</h2>
+      <div class="form-row">
+        <input id="todoTitle" type="text" placeholder="輸入待辦事項或作業內容..." style="flex: 1; min-width: 200px;" />
+        <input id="todoDue" type="date" />
+        <button id="btnAddTodo" class="primary" type="button">新增項目</button>
+      </div>
+      <div id="todoList"></div>
+    </section>
+
+    <!-- Tab 2: Students & Fee Calculation -->
+    <section id="panel-students" class="panel">
+      <h2>學生名冊與收費計算</h2>
+      <div class="form-row">
+        <input id="stuName" type="text" placeholder="學生姓名" />
+        <input id="stuRate" type="number" min="0" step="50" placeholder="單堂／月費金額 (元)" />
+        <input id="stuSessions" type="number" min="0" step="1" placeholder="堂數／期數" />
+        <input id="stuDiscount" type="number" min="0" step="10" placeholder="折讓／優惠 (元)" />
+        <button id="btnAddStudent" class="primary" type="button">新增學生</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>姓名</th>
+              <th>單價</th>
+              <th>堂數</th>
+              <th>折讓</th>
+              <th>應收金額</th>
+              <th>已繳</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="studentTableBody"></tbody>
+        </table>
+      </div>
+      <div id="feeSummary" class="summary-box"></div>
+    </section>
+
+    <!-- Tab 3: Teaching Log, Mistakes, Exams & Retests -->
+    <section id="panel-records" class="panel">
+      <h2>教學紀錄、錯題與考試／補考追蹤</h2>
+      <div class="grid-2">
+        <div>
+          <h3 style="margin: 0 0 8px; font-size: 1rem;">課堂／錯題紀錄</h3>
+          <div class="form-row">
+            <input id="logDate" type="date" />
+            <input id="logTopic" type="text" placeholder="單元／文法或單字重點" style="flex: 1;" />
           </div>
+          <div class="form-row">
+            <input id="logMistake" type="text" placeholder="常見錯題或需加強提醒" style="flex: 1;" />
+            <button id="btnAddLog" class="primary" type="button">儲存紀錄</button>
+          </div>
+          <div id="logList"></div>
         </div>
-        <button class="btn-sm" onclick="lockWorkbench()">🔒 鎖定</button>
-      </div>
-      <nav class="nav">
-        <button class="nav-btn active" data-tab="todos" onclick="switchTab('todos')">✅ 應做事項</button>
-        <button class="nav-btn" data-tab="lessons" onclick="switchTab('lessons')">📖 教學內容</button>
-        <button class="nav-btn" data-tab="homework" onclick="switchTab('homework')">📚 功課追蹤</button>
-        <button class="nav-btn" data-tab="mistakes" onclick="switchTab('mistakes')">🎯 錯題追蹤</button>
-        <button class="nav-btn" data-tab="exams" onclick="switchTab('exams')">📊 成績與補考</button>
-        <button class="nav-btn" data-tab="fees" onclick="switchTab('fees')">💰 收費與補課</button>
-        <button class="nav-btn" data-tab="games" onclick="switchTab('games')">🎮 遊戲與月報</button>
-        <button class="nav-btn" data-tab="students" onclick="switchTab('students')">⚙️ 名單/安全</button>
-      </nav>
-    </div>
-    <div class="backup-box">
-      <button class="btn-sm" style="flex:1;" onclick="exportData()">📤 匯出備份</button>
-      <button class="btn-sm" style="flex:1;" onclick="document.getElementById('importFile').click()">📥 匯入還原</button>
-    </div>
-  </aside>
 
-  <main class="main">
-    <div class="mobile-sync-bar">
-      <button class="btn-sm" style="flex:1;background:#fff0f3;" onclick="exportData()">📤 匯出備份（同步用）</button>
-      <button class="btn-sm" style="flex:1;background:#e2f5ee;" onclick="document.getElementById('importFile').click()">📥 匯入還原（同步用）</button>
-      <button class="btn-sm" style="flex:1;background:#eef7ff;" onclick="pasteImportData()">📋 貼上還原</button>
-    </div>
-    <input type="file" id="importFile" accept=".json,application/json,text/plain,*/*" style="display:none" onchange="importData(event)">
-
-    <div class="topbar">
-      <div class="stats">
-        <span class="stat-pill pill-pink" onclick="switchTab('todos')">待辦：<b id="statTodos">0</b></span>
-        <span class="stat-pill pill-blue" onclick="switchTab('homework')">功課未完成：<b id="statHw">0</b></span>
-        <span class="stat-pill pill-mint" onclick="switchTab('mistakes')">待出類似題：<b id="statMistakes">0</b></span>
-        <span class="stat-pill pill-lav" onclick="switchTab('exams')">成績/考卷庫：<b id="statExams">0</b></span>
-        <span class="stat-pill" style="background:#ffe8cc;color:#b85d00;" onclick="switchTab('exams')">待補考：<b id="statRetest">0</b></span>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <span style="font-size:13px;font-weight:600;white-space:nowrap;">🔍 班級：</span>
-        <select id="globalClassFilter" onchange="renderAll()" style="width:auto;"></select>
-      </div>
-    </div>
-
-    <!-- 1. 應做事項 -->
-    <section id="tab-todos" class="tab-section active">
-      <div class="card" style="border:2px solid var(--primary);background:#fff9fa;">
-        <h2>
-          <span>📅 今日焦點（今天要注意的事）</span>
-          <span id="todayDateLabel" style="font-size:13px;color:var(--primary-dark);"></span>
-        </h2>
-        <div id="todayFocusList"></div>
-      </div>
-      <div class="card">
-        <h2>✅ 新增應做事項</h2>
-        <div class="grid-3">
-          <input type="text" id="todoText" placeholder="例如：印製 Sunny 相關連接詞練習單...">
-          <select id="todoTag">
-            <option value="📄 印製教材/考卷">📄 印製教材/考卷</option>
-            <option value="🎯 出錯題練習單">🎯 出錯題練習單</option>
-            <option value="🎙️ 口說作業回饋">🎙️ 口說作業回饋</option>
-            <option value="💬 家長溝通">💬 家長溝通</option>
-          </select>
-          <select id="todoTarget"></select>
+        <div>
+          <h3 style="margin: 0 0 8px; font-size: 1rem;">考試與補考紀錄</h3>
+          <div class="form-row">
+            <input id="examStu" type="text" placeholder="學生姓名" />
+            <input id="examName" type="text" placeholder="測驗名稱（例：U1 單字測驗）" />
+          </div>
+          <div class="form-row">
+            <input id="examScore" type="number" min="0" max="100" placeholder="初考分數" />
+            <input id="examRetest" type="text" placeholder="補考分數／狀態" />
+            <button id="btnAddExam" class="primary" type="button">新增成績</button>
+          </div>
+          <div id="examList"></div>
         </div>
-        <div style="margin-top:10px;display:flex;gap:8px;align-items:center;">
-          <input type="date" id="todoDate" style="width:auto;">
-          <button class="btn" onclick="addTodo()">＋ 加入待辦</button>
-        </div>
-      </div>
-      <div class="card">
-        <h2>📋 待辦任務清單</h2>
-        <div id="todoList"></div>
       </div>
     </section>
 
-    <!-- 2. 教學內容 -->
-    <section id="tab-lessons" class="tab-section">
-      <div class="card">
-        <h2>📖 登錄課堂教學內容</h2>
-        <div class="grid-3">
-          <select id="lessonTarget"></select>
-          <input type="date" id="lessonDate">
-          <input type="text" id="lessonVersion" placeholder="版本/教材（如：翰林國三、GEPT初級）">
-        </div>
-        <div style="margin-top:10px;">
-          <input type="text" id="lessonTopic" placeholder="教學單元 / 文法考點 / 使用遊戲">
-        </div>
-        <button class="btn" style="margin-top:10px;" onclick="addLesson()">＋ 儲存教學紀錄</button>
+    <!-- Tab 4: LINE Report Generator -->
+    <section id="panel-report" class="panel">
+      <h2>LINE 課後／月報回報產生器</h2>
+      <div class="form-row">
+        <button id="btnGenerateReport" class="primary" type="button">✨ 產生目前班級回報文字</button>
+        <button id="btnCopyReport" type="button">📋 複製回報文字</button>
       </div>
-      <div class="card">
-        <h2>🗂️ 歷史教學紀錄</h2>
-        <div id="lessonList"></div>
-      </div>
+      <textarea id="reportOutput" class="line-output" placeholder="點選上方按鈕產生回報內容..."></textarea>
     </section>
+  </main>
 
-    <!-- 3. 功課追蹤 -->
-    <section id="tab-homework" class="tab-section">
-      <div class="card">
-        <h2>📚 派發新功課</h2>
-        <div id="hwClassQuickBtns" class="chip-group"></div>
-        <div id="hwStudentChips" class="chip-group"></div>
-        <div class="grid-2" style="margin-top:10px;">
-          <input type="text" id="hwTitle" placeholder="功課內容（如：錄音15秒朗讀、單字遊戲Unit 3）">
-          <select id="hwType">
-            <option value="🎙️ 口說錄音">🎙️ 口說錄音</option>
-            <option value="🎮 線上單字/文法遊戲">🎮 線上單字/文法遊戲</option>
-            <option value="📝 文法/閱讀練習單">📝 文法/閱讀練習單</option>
-            <option value="✍️ 考卷錯題訂正">✍️ 考卷錯題訂正</option>
-          </select>
-        </div>
-        <div class="grid-2" style="margin-top:10px;">
-          <label style="font-size:13px;font-weight:600;">🚀 開始時間：<input type="date" id="hwStart"></label>
-          <label style="font-size:13px;font-weight:600;">⏰ 到期時間：<input type="date" id="hwDue"></label>
-        </div>
-        <button class="btn" style="margin-top:10px;" onclick="addHomework()">＋ 派發功課</button>
+  <!-- Paste Restore Modal -->
+  <div id="restoreModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal">
+      <h2 style="margin-top: 0;">📋 貼上 JSON 還原資料</h2>
+      <p class="muted">請將先前匯出或複製的 JSON 資料貼入下方並按「確認還原」，目前瀏覽器資料將被覆蓋。</p>
+      <textarea id="restoreTextarea" style="width: 100%; min-height: 180px;" placeholder='{"classes":[...]}'></textarea>
+      <div class="form-row" style="justify-content: flex-end; margin-top: 12px; margin-bottom: 0;">
+        <button id="btnCancelRestore" type="button">取消</button>
+        <button id="btnConfirmRestore" class="primary" type="button">確認還原</button>
       </div>
-      <div class="card">
-        <h2>
-          <span>📊 功課繳交追蹤</span>
-          <button class="btn" style="background:#06c755;font-size:13px;" onclick="shareLineReport()">💬 缺交+成績補考傳 LINE</button>
-        </h2>
-        <div id="homeworkList"></div>
-      </div>
-    </section>
+    </div>
+  </div>
 
-    <!-- 
+  <!-- Lock / Password Modal -->
+  <div id="lockModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal">
+      <h2 id="lockModalTitle" style="margin-top: 0;">🔒 工作台密碼設定／解鎖</h2>
+      <p id="lockModalDesc" class="muted">可設定登入密碼保護工作台；若尚未設定密碼，輸入新密碼即可啟用。</p>
+      <input id="lockPasswordInput" type="password" placeholder="輸入密碼" style="width: 100%; margin-bottom: 12px;" />
+      <div class="form-row" style="justify-content: flex-end; margin-bottom: 0;">
+        <button id="btnClearPassword" class="danger" type="button">清除密碼</button>
+        <button id="btnCancelLock" type="button">關閉</button>
+        <button id="btnSubmitLock" class="primary" type="button">確認</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "dl_english_workbench_v1";
+    const PASS_KEY = "dl_english_workbench_pass_v1";
+    let isLockedSession = false;
+
+    const defaultState = {
+      activeClassId: "class-1",
+      classes: [
+        {
+          id: "class-1",
+          name: "示範班級（國小英文）",
+          todos: [
+            { id: "t1", title: "批改本週單字聽寫與作業", due: "", done: false }
+          ],
+          students: [
+            { id: "s1", name: "王小明", rate: 600, sessions: 4, discount: 0, paid: true }
+          ],
+          logs: [
+            { id: "l1", date: "", topic: "現在簡單式第三人稱單數 -s", mistake: "忘記在動詞後加 -s" }
+          ],
+          exams: [
+            { id: "e1", student: "王小明", exam: "單字小考", score: 85, retest: "免補考" }
+          ]
+        }
+      ]
+    };
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(defaultState);
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed.classes) || parsed.classes.length === 0) {
+          return structuredClone(defaultState);
+        }
+        return parsed;
+      } catch {
+        return structuredClone(defaultState);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function getCurrentClass() {
+      return state.classes.find((c) => c.id === state.activeClassId) || state.classes[0];
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function renderAll() {
+      const classSelect = document.getElementById("classSelect");
+      classSelect.innerHTML = state.classes
+        .map((c) => `<option value="${escapeHtml(c.id)}" ${c.id === getCurrentClass().id ? "selected" : ""}>${escapeHtml(c.name)}</option>`)
+        .join("");
+
+      const cls = getCurrentClass();
+      renderTodos(cls);
+      renderStudents(cls);
+      renderLogs(cls);
+      renderExams(cls);
+      saveState();
+    }
+
+    function renderTodos(cls) {
+      const el = document.getElementById("todoList");
+      if (!cls.todos.length) {
+        el.innerHTML = `<p class="muted">目前沒有應做事項。</p>`;
+        return;
+      }
+      el.innerHTML = cls.todos
+        .map((t) => `
+          <div class="list-item">
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1;">
+              <input type="checkbox" ${t.done ? "checked" : ""} onchange="toggleTodo('${t.id}')" />
+              <span class="${t.done ? "done" : ""}">${escapeHtml(t.title)}</span>
+              ${t.due ? `<span class="muted">（期限：${escapeHtml(t.due)}）</span>` : ""}
+            </label>
+            <button class="danger" type="button" onclick="deleteTodo('${t.id}')">刪除</button>
+          </div>
+        `)
+        .join("");
+    }
+
+    function renderStudents(cls) {
+      const tbody = document.getElementById("studentTableBody");
+      let totalReceivable = 0;
+      let totalPaid = 0;
+
+      tbody.innerHTML = cls.students
+        .map((s) => {
+          const amount = Math.max(0, (Number(s.rate) || 0) * (Number(s.sessions) || 0) - (Number(s.discount) || 0));
+          totalReceivable += amount;
+          if (s.paid) totalPaid += amount;
+          return `
+            <tr>
+              <td>${escapeHtml(s.name)}</td>
+              <td>$${Number(s.rate) || 0}</td>
+              <td>${Number(s.sessions) || 0}</td>
+              <td>-$${Number(s.discount) || 0}</td>
+              <td><strong>$${amount}</strong></td>
+              <td>
+                <input type="checkbox" ${s.paid ? "checked" : ""} onchange="togglePaid('${s.id}')" />
+                <span>${s.paid ? "已繳" : "未繳"}</span>
+              </td>
+              <td><button class="danger" type="button" onclick="deleteStudent('${s.id}')">移除</button></td>
+            </tr>
+          `;
+        })
+        .join("");
+
+      document.getElementById("feeSummary").textContent =
+        `本班應收總計：$${totalReceivable}｜已收金額：$${totalPaid}｜待收金額：$${Math.max(0, totalReceivable - totalPaid)}`;
+    }
+
+    function renderLogs(cls) {
+      const el = document.getElementById("logList");
+      if (!cls.logs.length) {
+        el.innerHTML = `<p class="muted">尚無教學或錯題紀錄。</p>`;
+        return;
+      }
+      el.innerHTML = cls.logs
+        .map((l) => `
+          <div class="list-item">
+            <div>
+              <div><strong>${escapeHtml(l.topic || "未填單元")}</strong> ${l.date ? `<span class="muted">(${escapeHtml(l.date)})</span>` : ""}</div>
+              ${l.mistake ? `<div class="muted">錯題／提醒：${escapeHtml(l.mistake)}</div>` : ""}
+            </div>
+            <button class="danger" type="button" onclick="deleteLog('${l.id}')">刪除</button>
+          </div>
+        `)
+        .join("");
+    }
+
+    function renderExams(cls) {
+      const el = document.getElementById("examList");
+      if (!cls.exams.length) {
+        el.innerHTML = `<p class="muted">尚無考試或補考紀錄。</p>`;
+        return;
+      }
+      el.innerHTML = cls.exams
+        .map((e) => `
+          <div class="list-item">
+            <div>
+              <strong>${escapeHtml(e.student)}</strong> — ${escapeHtml(e.exam)}：<strong>${escapeHtml(e.score)} 分</strong>
+              <span class="muted">（補考：${escapeHtml(e.retest || "無")}）</span>
+            </div>
+            <button class="danger" type="button" onclick="deleteExam('${e.id}')">刪除</button>
+          </div>
+        `)
+        .join("");
+    }
+
+    // Class handlers
+    document.getElementById("classSelect").addEventListener("change", (e) => {
+      state.activeClassId = e.target.value;
+      renderAll();
+    });
+
+    document.getElementById("btnAddClass").addEventListener("click", () => {
+      const input = document.getElementById("newClassName");
+      const name = input.value.trim();
+      if (!name) return;
+      const newCls = {
+        id: "class-" + Date.now(),
+        name,
+        todos: [],
+        students: [],
+        logs: [],
+        exams: []
+      };
+      state.classes.push(newCls);
+      state.activeClassId = newCls.id;
+      input.value = "";
+      renderAll();
+    });
+
+    document.getElementById("btnDeleteClass").addEventListener("click", () => {
+      if (state.classes.length <= 1) {
+        alert("至少需保留一個班級。");
+        return;
+      }
+      const cls = getCurrentClass();
+      if (!confirm(`確定要刪除「${cls.name}」嗎？`)) return;
+      state.classes = state.classes.filter((c) => c.id !== cls.id);
+      state.activeClassId = state.classes[0].id;
+      renderAll();
+    });
+
+    // Tab switching
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("panel-" + btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    // Todo actions
+    document.getElementById("btnAddTodo").addEventListener("click", () => {
+      const titleEl = document.getElementById("todoTitle");
+      const dueEl = document.getElementById("todoDue");
+      if (!titleEl.value.trim()) return;
+      getCurrentClass().todos.unshift({
+        id: "t-" + Date.now(),
+        title: titleEl.value.trim(),
+        due: dueEl.value,
+        done: false
+      });
+      titleEl.value = "";
+      dueEl.value = "";
+      renderAll();
+    });
+
+    window.toggleTodo = (id) => {
+      const item = getCurrentClass().todos.find((t) => t.id === id);
+      if (item) { item.done = !item.done; renderAll(); }
+    };
+
+    window.deleteTodo = (id) => {
+      const cls = getCurrentClass();
+      cls.todos = cls.todos.filter((t) => t.id !== id);
+      renderAll();
+    };
+
+    // Student & fee actions
+    document.getElementById("btnAddStudent").addEventListener("click", () => {
+      const nameEl = document.getElementById("stuName");
+      const rateEl = document.getElementById("stuRate");
+      const sessEl = document.getElementById("stuSessions");
+      const discEl = document.getElementById("stuDiscount");
+      if (!nameEl.value.trim()) return;
+      getCurrentClass().students.push({
+        id: "s-" + Date.now(),
+        name: nameEl.value.trim(),
+        rate: Number(rateEl.value) || 0,
+        sessions: Number(sessEl.value) || 0,
+        discount: Number(discEl.value) || 0,
+        paid: false
+      });
+      nameEl.value = "";
+      rateEl.value = "";
+      sessEl.value = "";
+      discEl.value = "";
+      renderAll();
+    });
+
+    window.togglePaid = (id) => {
+      const s = getCurrentClass().students.find((x) => x.id === id);
+      if (s) { s.paid = !s.paid; renderAll(); }
+    };
+
+    window.deleteStudent = (id) => {
+      const cls = getCurrentClass();
+      cls.students = cls.students.filter((x) => x.id !== id);
+      renderAll();
+    };
+
+    // Log & exam actions
+    document.getElementById("btnAddLog").addEventListener("click", () => {
+      const dateEl = document.getElementById("logDate");
+      const topicEl = document.getElementById("logTopic");
+      const mistakeEl = document.getElementById("logMistake");
+      if (!topicEl.value.trim() && !mistakeEl.value.trim()) return;
+      getCurrentClass().logs.unshift({
+        id: "l-" + Date.now(),
+        date: dateEl.value,
+        topic: topicEl.value.trim(),
+        mistake: mistakeEl.value.trim()
+      });
+      topicEl.value = "";
+      mistakeEl.value = "";
+      renderAll();
+    });
+
+    window.deleteLog = (id) => {
+      const cls = getCurrentClass();
+      cls.logs = cls.logs.filter((x) => x.id !== id);
+      renderAll();
+    };
+
+    document.getElementById("btnAddExam").addEventListener("click", () => {
+      const stuEl = document.getElementById("examStu");
+      const nameEl = document.getElementById("examName");
+      const scoreEl = document.getElementById("examScore");
+      const retestEl = document.getElementById("examRetest");
+      if (!stuEl.value.trim() || !nameEl.value.trim()) return;
+      getCurrentClass().exams.unshift({
+        id: "e-" + Date.now(),
+        student: stuEl.value.trim(),
+        exam: nameEl.value.trim(),
+        score: scoreEl.value,
+        retest: retestEl.value.trim()
+      });
+      stuEl.value = "";
+      nameEl.value = "";
+      scoreEl.value = "";
+      retestEl.value = "";
+      renderAll();
+    });
+
+    window.deleteExam = (id) => {
+      const cls = getCurrentClass();
+      cls.exams = cls.exams.filter((x) => x.id !== id);
+      renderAll();
+    };
+
+    // LINE Report
+    document.getElementById("btnGenerateReport").addEventListener("click", () => {
+      const cls = getCurrentClass();
+      const lines = [`【DL English 課堂回報｜${cls.name}】`, ""];
+
+      if (cls.logs.length) {
+        lines.push("📘 教學與重點紀錄：");
+        cls.logs.slice(0, 5).forEach((l) => {
+          lines.push(`• ${l.date ? l.date + " " : ""}${l.topic || ""}${l.mistake ? "（提醒：" + l.mistake + "）" : ""}`);
+        });
+        lines.push("");
+      }
+
+      if (cls.exams.length) {
+        lines.push("📝 測驗與補考狀況：");
+        cls.exams.slice(0, 8).forEach((e) => {
+          lines.push(`• ${e.student}｜${e.exam}：${e.score} 分（補考：${e.retest || "無"}）`);
+        });
+        lines.push("");
+      }
+
+      const pendingTodos = cls.todos.filter((t) => !t.done);
+      if (pendingTodos.length) {
+        lines.push("📌 後續作業／待辦：");
+        pendingTodos.forEach((t) => lines.push(`• ${t.title}${t.due ? "（" + t.due + "）" : ""}`));
+      }
+
+      document.getElementById("reportOutput").value = lines.join("\n").trim();
+    });
+
+    document.getElementById("btnCopyReport").addEventListener("click", async () => {
+      const text = document.getElementById("reportOutput").value;
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("已複製回報文字，可直接貼到 LINE！");
+      } catch {
+        alert("請手動選取文字框內容複製。");
+      }
+    });
+
+    // Export JSON & Paste Restore
+    document.getElementById("btnExportJson").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `dl-english-workbench-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    const restoreModal = document.getElementById("restoreModal");
+    document.getElementById("btnOpenRestore").addEventListener("click", () => {
+      document.getElementById("restoreTextarea").value = "";
+      restoreModal.classList.add("show");
+    });
+    document.getElementById("btnCancelRestore").addEventListener("click", () => {
+      restoreModal.classList.remove("show");
+    });
+    document.getElementById("btnConfirmRestore").addEventListener("click", () => {
+      try {
+        const raw = document.getElementById("restoreTextarea").value.trim();
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed.classes) || parsed.classes.length === 0) {
+          throw new Error("格式不符");
+        }
+        state = parsed;
+        if (!state.classes.some((c) => c.id === state.activeClassId)) {
+          state.activeClassId = state.classes[0].id;
+        }
+        renderAll();
+        restoreModal.classList.remove("show");
+        alert("資料已成功還原！");
+      } catch {
+        alert("JSON 格式無效，請確認貼上的內容是否完整。");
+      }
+    });
+
+    // Password Lock
+    const lockModal = document.getElementById("lockModal");
+    function openLockModal(requireUnlock = false) {
+      isLockedSession = requireUnlock;
+      const savedPass = localStorage.getItem(PASS_KEY);
+      document.getElementById("lockPasswordInput").value = "";
+      document.getElementById("lockModalTitle").textContent = requireUnlock
+        ? "🔒 工作台已鎖定，請輸入密碼"
+        : (savedPass ? "🔑 輸入密碼解鎖或變更" : "🔒 設定工作台密碼");
+      document.getElementById("btnCancelLock").style.display = requireUnlock ? "none" : "inline-block";
+      lockModal.classList.add("show");
+    }
+
+    document.getElementById("btnLockToggle").addEventListener("click", () => {
+      const savedPass = localStorage.getItem(PASS_KEY);
+      if (savedPass) {
+        openLockModal(true);
+      } else {
+        openLockModal(false);
+      }
+    });
+
+    document.getElementById("btnCancelLock").addEventListener("click", () => {
+      lockModal.classList.remove("show");
+    });
+
+    document.getElementById("btnSubmitLock").addEventListener("click", () => {
+      const inputVal = document.getElementById("lockPasswordInput").value;
+      const savedPass = localStorage.getItem(PASS_KEY);
+      if (!inputVal) {
+        alert("請輸入密碼。");
+        return;
+      }
+      if (!savedPass) {
+        localStorage.setItem(PASS_KEY, inputVal);
+        lockModal.classList.remove("show");
+        alert("密碼已設定。");
+      } else if (inputVal === savedPass) {
+        isLockedSession = false;
+        lockModal.classList.remove("show");
+      } else {
+        alert("密碼錯誤。");
+      }
+    });
+
+    document.getElementById("btnClearPassword").addEventListener("click", () => {
+      const savedPass = localStorage.getItem(PASS_KEY);
+      const inputVal = document.getElementById("lockPasswordInput").value;
+      if (savedPass && inputVal !== savedPass) {
+        alert("請先輸入正確的原密碼才能清除。");
+        return;
+      }
+      localStorage.removeItem(PASS_KEY);
+      isLockedSession = false;
+      lockModal.classList.remove("show");
+      alert("已清除密碼。");
+    });
+
+    renderAll();
+    if (localStorage.getItem(PASS_KEY)) {
+      openLockModal(true);
+    }
+  </script>
+</body>
+</html>
