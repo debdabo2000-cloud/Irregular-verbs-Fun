@@ -6,18 +6,18 @@
   <title>DL English 教師工作台</title>
   <style>
     :root {
-      --bg: #f6f8fb;
+      --bg: #f5f7fb;
       --card: #ffffff;
-      --ink: #1f2937;
-      --muted: #6b7280;
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --accent: #0ea5e9;
+      --ink: #1e293b;
+      --muted: #64748b;
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --soft: #eff6ff;
+      --border: #e2e8f0;
       --ok: #16a34a;
       --warn: #d97706;
       --danger: #dc2626;
-      --border: #e5e7eb;
-      --radius: 14px;
+      --radius: 16px;
     }
 
     * { box-sizing: border-box; }
@@ -27,21 +27,22 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
       background: var(--bg);
       color: var(--ink);
-      line-height: 1.5;
+      line-height: 1.55;
+      padding-bottom: 56px;
     }
 
-    header {
+    .topbar {
       position: sticky;
       top: 0;
-      z-index: 20;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(8px);
+      z-index: 30;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
       padding: 12px 16px;
     }
 
-    .header-inner {
-      max-width: 1120px;
+    .topbar-inner {
+      max-width: 1080px;
       margin: 0 auto;
       display: flex;
       flex-wrap: wrap;
@@ -50,28 +51,18 @@
       gap: 10px;
     }
 
-    .brand {
+    .title-group {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
+      font-weight: 800;
     }
 
-    .badge {
-      font-size: 0.75rem;
-      background: #dbeafe;
-      color: var(--primary);
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-weight: 600;
-    }
-
-    .toolbar {
+    .actions {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      align-items: center;
     }
 
     button, select, input, textarea {
@@ -83,789 +74,786 @@
       border: 1px solid var(--border);
       background: var(--card);
       color: var(--ink);
-      padding: 8px 12px;
-      border-radius: 10px;
-      cursor: pointer;
+      padding: 9px 14px;
+      border-radius: 12px;
       font-weight: 600;
+      cursor: pointer;
       transition: 0.15s ease;
     }
 
-    button:hover { background: #f3f4f6; }
+    button:hover { background: #f1f5f9; }
 
     button.primary {
       background: var(--primary);
-      color: #fff;
       border-color: var(--primary);
+      color: #fff;
     }
 
-    button.primary:hover { background: var(--primary-hover); }
+    button.primary:hover { background: var(--primary-dark); }
 
     button.danger {
-      color: var(--danger);
-      border-color: #fecaca;
       background: #fef2f2;
+      border-color: #fecaca;
+      color: var(--danger);
     }
 
     button.danger:hover { background: #fee2e2; }
 
-    main {
-      max-width: 1120px;
-      margin: 18px auto 48px;
+    .container {
+      max-width: 1080px;
+      margin: 16px auto 0;
       padding: 0 16px;
     }
 
-    .class-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
+    .filter-card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 12px 14px;
+      padding: 14px 16px;
       margin-bottom: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
     }
 
     select, input[type="text"], input[type="number"], input[type="date"], textarea {
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 8px 10px;
+      border-radius: 12px;
+      padding: 9px 12px;
       background: #fff;
       color: var(--ink);
     }
 
-    .tabs {
+    .nav-pills {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       margin-bottom: 14px;
     }
 
-    .tab-btn {
-      padding: 8px 14px;
+    .pill {
       border-radius: 999px;
+      padding: 8px 15px;
+      font-size: 0.9rem;
       background: var(--card);
       border: 1px solid var(--border);
-      font-weight: 600;
     }
 
-    .tab-btn.active {
+    .pill.active {
       background: var(--primary);
-      color: #fff;
       border-color: var(--primary);
+      color: #fff;
     }
 
-    .panel {
+    .section-card {
       display: none;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      padding: 18px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
     }
 
-    .panel.active { display: block; }
+    .section-card.active { display: block; }
 
-    h2 {
-      margin: 0 0 12px;
-      font-size: 1.15rem;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 14px;
-    }
-
-    .form-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .list-item {
+    .section-head {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      margin-bottom: 8px;
-      background: #fafbfd;
+      gap: 8px;
+      margin-bottom: 14px;
     }
 
-    .done {
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+
+    .row-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .item-box {
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .item-main { flex: 1; min-width: 220px; }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin-top: 4px;
+    }
+
+    .pre-text {
+      white-space: pre-wrap;
+      margin-top: 6px;
+      font-size: 0.92rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+
+    .done-text {
       text-decoration: line-through;
       color: var(--muted);
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-      font-size: 0.92rem;
+    .chip-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
-    th, td {
-      border-bottom: 1px solid var(--border);
-      padding: 8px 6px;
-      text-align: left;
-      vertical-align: middle;
-    }
-
-    th {
-      color: var(--muted);
-      font-weight: 700;
-      background: #f9fafb;
-    }
-
-    .table-wrap { overflow-x: auto; }
-
-    .summary-box {
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
+    .student-chip {
+      border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 12px 14px;
-      margin-top: 12px;
+      padding: 8px 12px;
       font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .line-output {
-      width: 100%;
-      min-height: 170px;
-      margin-top: 10px;
-      font-size: 0.92rem;
-    }
-
-    /* Modal for Paste Restore / Lock */
-    .modal-backdrop {
+    .modal-bg {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.5);
+      background: rgba(15, 23, 42, 0.55);
       display: none;
       align-items: center;
       justify-content: center;
       padding: 16px;
-      z-index: 50;
+      z-index: 60;
     }
 
-    .modal-backdrop.show { display: flex; }
+    .modal-bg.open { display: flex; }
 
-    .modal {
+    .modal-box {
       width: 100%;
-      max-width: 560px;
+      max-width: 600px;
       background: var(--card);
       border-radius: var(--radius);
-      padding: 18px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25);
     }
 
-    .muted { color: var(--muted); font-size: 0.88rem; }
+    .status-msg {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: var(--danger);
+      min-height: 20px;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div class="header-inner">
-      <div class="brand">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="title-group">
         <span>🐾 DL English 教師工作台</span>
-        <span class="badge">手機／桌機同步版</span>
       </div>
-      <div class="toolbar">
-        <button id="btnExportJson" type="button">💾 匯出 JSON</button>
-        <button id="btnOpenRestore" type="button">📋 貼上還原</button>
-        <button id="btnLockToggle" type="button">🔒 鎖定／密碼</button>
+      <div class="actions">
+        <button id="btnExport" type="button">💾 匯出備份</button>
+        <button id="btnRestoreOpen" class="primary" type="button">📋 貼上還原</button>
+        <button id="btnPinBtn" type="button">🔑 PIN 鎖定</button>
       </div>
     </div>
   </header>
 
-  <main>
-    <div class="class-bar">
-      <label for="classSelect"><strong>目前班級：</strong></label>
-      <select id="classSelect"></select>
-      <input id="newClassName" type="text" placeholder="新班級名稱（例：國小高年級 A 班）" />
-      <button id="btnAddClass" class="primary" type="button">新增班級</button>
-      <button id="btnDeleteClass" class="danger" type="button">刪除目前班級</button>
+  <main class="container">
+    <div class="filter-card">
+      <label for="classFilter"><strong>班級篩選：</strong></label>
+      <select id="classFilter"></select>
+      <input id="newClassInput" type="text" placeholder="新增班級名稱..." />
+      <button id="btnAddClass" type="button">+ 新增班級</button>
     </div>
 
-    <div class="tabs" role="tablist">
-      <button class="tab-btn active" data-tab="todo" type="button">應做事項／作業</button>
-      <button class="tab-btn" data-tab="students" type="button">學生名冊與收費</button>
-      <button class="tab-btn" data-tab="records" type="button">教學與成績／補考</button>
-      <button class="tab-btn" data-tab="report" type="button">LINE 回報產生器</button>
-    </div>
+    <nav class="nav-pills" id="navPills">
+      <button class="pill active" data-tab="todos" type="button">📌 待辦事項</button>
+      <button class="pill" data-tab="students" type="button">👩‍🎓 學生名冊</button>
+      <button class="pill" data-tab="lessons" type="button">📘 上課紀錄</button>
+      <button class="pill" data-tab="homeworks" type="button">📝 作業追蹤</button>
+      <button class="pill" data-tab="mistakes" type="button">🎯 錯題本</button>
+      <button class="pill" data-tab="more" type="button">📦 補考／備課／講義／遊戲</button>
+    </nav>
 
-    <!-- Tab 1: Todos & Homework -->
-    <section id="panel-todo" class="panel active">
-      <h2>應做事項與作業追蹤</h2>
-      <div class="form-row">
-        <input id="todoTitle" type="text" placeholder="輸入待辦事項或作業內容..." style="flex: 1; min-width: 200px;" />
-        <input id="todoDue" type="date" />
-        <button id="btnAddTodo" class="primary" type="button">新增項目</button>
+    <!-- Todos -->
+    <section id="tab-todos" class="section-card active">
+      <div class="section-head">
+        <h2>待辦事項</h2>
       </div>
-      <div id="todoList"></div>
+      <div class="row-form">
+        <input id="todoText" type="text" placeholder="待辦內容..." style="flex:1; min-width:180px;" />
+        <input id="todoTarget" type="text" placeholder="對象／備課標籤" />
+        <input id="todoDate" type="date" />
+        <button id="btnAddTodo" class="primary" type="button">新增</button>
+      </div>
+      <div id="todoContainer"></div>
     </section>
 
-    <!-- Tab 2: Students & Fee Calculation -->
-    <section id="panel-students" class="panel">
-      <h2>學生名冊與收費計算</h2>
-      <div class="form-row">
-        <input id="stuName" type="text" placeholder="學生姓名" />
-        <input id="stuRate" type="number" min="0" step="50" placeholder="單堂／月費金額 (元)" />
-        <input id="stuSessions" type="number" min="0" step="1" placeholder="堂數／期數" />
-        <input id="stuDiscount" type="number" min="0" step="10" placeholder="折讓／優惠 (元)" />
+    <!-- Students -->
+    <section id="tab-students" class="section-card">
+      <div class="section-head">
+        <h2>學生名冊</h2>
+      </div>
+      <div class="row-form">
+        <input id="stuNameInput" type="text" placeholder="學生姓名" />
+        <select id="stuClassSelect"></select>
         <button id="btnAddStudent" class="primary" type="button">新增學生</button>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>姓名</th>
-              <th>單價</th>
-              <th>堂數</th>
-              <th>折讓</th>
-              <th>應收金額</th>
-              <th>已繳</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody id="studentTableBody"></tbody>
-        </table>
-      </div>
-      <div id="feeSummary" class="summary-box"></div>
+      <div id="studentContainer" class="chip-grid"></div>
     </section>
 
-    <!-- Tab 3: Teaching Log, Mistakes, Exams & Retests -->
-    <section id="panel-records" class="panel">
-      <h2>教學紀錄、錯題與考試／補考追蹤</h2>
-      <div class="grid-2">
-        <div>
-          <h3 style="margin: 0 0 8px; font-size: 1rem;">課堂／錯題紀錄</h3>
-          <div class="form-row">
-            <input id="logDate" type="date" />
-            <input id="logTopic" type="text" placeholder="單元／文法或單字重點" style="flex: 1;" />
-          </div>
-          <div class="form-row">
-            <input id="logMistake" type="text" placeholder="常見錯題或需加強提醒" style="flex: 1;" />
-            <button id="btnAddLog" class="primary" type="button">儲存紀錄</button>
-          </div>
-          <div id="logList"></div>
-        </div>
-
-        <div>
-          <h3 style="margin: 0 0 8px; font-size: 1rem;">考試與補考紀錄</h3>
-          <div class="form-row">
-            <input id="examStu" type="text" placeholder="學生姓名" />
-            <input id="examName" type="text" placeholder="測驗名稱（例：U1 單字測驗）" />
-          </div>
-          <div class="form-row">
-            <input id="examScore" type="number" min="0" max="100" placeholder="初考分數" />
-            <input id="examRetest" type="text" placeholder="補考分數／狀態" />
-            <button id="btnAddExam" class="primary" type="button">新增成績</button>
-          </div>
-          <div id="examList"></div>
-        </div>
+    <!-- Lessons -->
+    <section id="tab-lessons" class="section-card">
+      <div class="section-head">
+        <h2>上課紀錄</h2>
       </div>
+      <div class="row-form">
+        <input id="lessonTarget" type="text" placeholder="學生或班級名稱" />
+        <input id="lessonDate" type="date" />
+        <input id="lessonVersion" type="text" placeholder="版本／教材" />
+        <input id="lessonTopic" type="text" placeholder="上課進度／重點" style="flex:1; min-width:180px;" />
+        <button id="btnAddLesson" class="primary" type="button">新增紀錄</button>
+      </div>
+      <div id="lessonContainer"></div>
     </section>
 
-    <!-- Tab 4: LINE Report Generator -->
-    <section id="panel-report" class="panel">
-      <h2>LINE 課後／月報回報產生器</h2>
-      <div class="form-row">
-        <button id="btnGenerateReport" class="primary" type="button">✨ 產生目前班級回報文字</button>
-        <button id="btnCopyReport" type="button">📋 複製回報文字</button>
+    <!-- Homeworks -->
+    <section id="tab-homeworks" class="section-card">
+      <div class="section-head">
+        <h2>作業追蹤</h2>
       </div>
-      <textarea id="reportOutput" class="line-output" placeholder="點選上方按鈕產生回報內容..."></textarea>
+      <div class="row-form">
+        <input id="hwStudent" type="text" placeholder="學生姓名" />
+        <input id="hwTitle" type="text" placeholder="作業名稱" />
+        <input id="hwType" type="text" placeholder="作業類型" />
+        <input id="hwDue" type="date" />
+        <button id="btnAddHw" class="primary" type="button">新增作業</button>
+      </div>
+      <div id="homeworkContainer"></div>
+    </section>
+
+    <!-- Mistakes -->
+    <section id="tab-mistakes" class="section-card">
+      <div class="section-head">
+        <h2>錯題本</h2>
+      </div>
+      <div class="row-form">
+        <input id="msStudent" type="text" placeholder="學生姓名" />
+        <input id="msPoint" type="text" placeholder="考點／冊次" />
+        <textarea id="msContent" rows="2" placeholder="題目與錯題說明..." style="flex:1; min-width:220px;"></textarea>
+        <button id="btnAddMs" class="primary" type="button">新增錯題</button>
+      </div>
+      <div id="mistakeContainer"></div>
+    </section>
+
+    <!-- More: Plans, Makeups, Materials, Games -->
+    <section id="tab-more" class="section-card">
+      <div class="section-head">
+        <h2>下堂預排、補考、講義與遊戲連結</h2>
+      </div>
+      <div id="moreContainer"></div>
     </section>
   </main>
 
-  <!-- Paste Restore Modal -->
-  <div id="restoreModal" class="modal-backdrop" aria-hidden="true">
-    <div class="modal">
-      <h2 style="margin-top: 0;">📋 貼上 JSON 還原資料</h2>
-      <p class="muted">請將先前匯出或複製的 JSON 資料貼入下方並按「確認還原」，目前瀏覽器資料將被覆蓋。</p>
-      <textarea id="restoreTextarea" style="width: 100%; min-height: 180px;" placeholder='{"classes":[...]}'></textarea>
-      <div class="form-row" style="justify-content: flex-end; margin-top: 12px; margin-bottom: 0;">
-        <button id="btnCancelRestore" type="button">取消</button>
-        <button id="btnConfirmRestore" class="primary" type="button">確認還原</button>
+  <!-- Restore Modal -->
+  <div id="restoreModal" class="modal-bg" aria-hidden="true">
+    <div class="modal-box">
+      <h2 style="margin-top:0;">📋 貼上 JSON 還原資料</h2>
+      <p class="meta">貼上完整 JSON（以 <code>{</code> 開頭、<code>}</code> 結尾）後按「確認還原」。</p>
+      <textarea id="restoreInput" rows="10" style="width:100%;" placeholder='{"pin":"0113","classes":[...]}'></textarea>
+      <div id="restoreStatus" class="status-msg"></div>
+      <div class="row-form" style="justify-content:flex-end; margin-top:10px; margin-bottom:0;">
+        <button id="btnRestoreCancel" type="button">取消</button>
+        <button id="btnRestoreConfirm" class="primary" type="button">確認還原</button>
       </div>
     </div>
   </div>
 
-  <!-- Lock / Password Modal -->
-  <div id="lockModal" class="modal-backdrop" aria-hidden="true">
-    <div class="modal">
-      <h2 id="lockModalTitle" style="margin-top: 0;">🔒 工作台密碼設定／解鎖</h2>
-      <p id="lockModalDesc" class="muted">可設定登入密碼保護工作台；若尚未設定密碼，輸入新密碼即可啟用。</p>
-      <input id="lockPasswordInput" type="password" placeholder="輸入密碼" style="width: 100%; margin-bottom: 12px;" />
-      <div class="form-row" style="justify-content: flex-end; margin-bottom: 0;">
-        <button id="btnClearPassword" class="danger" type="button">清除密碼</button>
-        <button id="btnCancelLock" type="button">關閉</button>
-        <button id="btnSubmitLock" class="primary" type="button">確認</button>
+  <!-- PIN Modal -->
+  <div id="pinModal" class="modal-bg" aria-hidden="true">
+    <div class="modal-box">
+      <h2 id="pinTitle" style="margin-top:0;">🔑 PIN 碼管理</h2>
+      <p id="pinDesc" class="meta">目前 PIN 碼可於此設定或解除。</p>
+      <input id="pinInput" type="password" placeholder="輸入 PIN 碼" style="width:100%; margin-bottom:10px;" />
+      <div id="pinStatus" class="status-msg"></div>
+      <div class="row-form" style="justify-content:flex-end; margin-bottom:0;">
+        <button id="btnPinClear" class="danger" type="button">清除 PIN</button>
+        <button id="btnPinClose" type="button">關閉</button>
+        <button id="btnPinSave" class="primary" type="button">確認</button>
       </div>
     </div>
   </div>
 
   <script>
     const STORAGE_KEY = "dl_english_workbench_v1";
-    const PASS_KEY = "dl_english_workbench_pass_v1";
-    let isLockedSession = false;
+    const LEGACY_KEY = "dl_workbench_data";
+    let selectedClassId = "ALL";
 
-    const defaultState = {
-      activeClassId: "class-1",
-      classes: [
-        {
-          id: "class-1",
-          name: "示範班級（國小英文）",
-          todos: [
-            { id: "t1", title: "批改本週單字聽寫與作業", due: "", done: false }
-          ],
-          students: [
-            { id: "s1", name: "王小明", rate: 600, sessions: 4, discount: 0, paid: true }
-          ],
-          logs: [
-            { id: "l1", date: "", topic: "現在簡單式第三人稱單數 -s", mistake: "忘記在動詞後加 -s" }
-          ],
-          exams: [
-            { id: "e1", student: "王小明", exam: "單字小考", score: 85, retest: "免補考" }
-          ]
-        }
-      ]
-    };
+    const emptyData = () => ({
+      pin: "",
+      classes: [{ id: "c_tutor", name: "個別家教 (1對1)", color: "#ffd6e0" }],
+      students: [],
+      todos: [],
+      lessons: [],
+      homeworks: [],
+      mistakes: [],
+      exams: [],
+      billings: [],
+      plans: [],
+      makeups: [],
+      materials: [],
+      games: []
+    });
 
-    let state = loadState();
+    function normalizeData(raw) {
+      const base = emptyData();
+      if (!raw || typeof raw !== "object") return base;
+      const merged = {
+        ...base,
+        ...raw,
+        pin: typeof raw.pin === "string" ? raw.pin : "",
+        classes: Array.isArray(raw.classes) && raw.classes.length ? raw.classes : base.classes,
+        students: Array.isArray(raw.students) ? raw.students : [],
+        todos: Array.isArray(raw.todos) ? raw.todos : [],
+        lessons: Array.isArray(raw.lessons) ? raw.lessons : [],
+        homeworks: Array.isArray(raw.homeworks) ? raw.homeworks : [],
+        mistakes: Array.isArray(raw.mistakes) ? raw.mistakes : [],
+        exams: Array.isArray(raw.exams) ? raw.exams : [],
+        billings: Array.isArray(raw.billings) ? raw.billings : [],
+        plans: Array.isArray(raw.plans) ? raw.plans : [],
+        makeups: Array.isArray(raw.makeups) ? raw.makeups : [],
+        materials: Array.isArray(raw.materials) ? raw.materials : [],
+        games: Array.isArray(raw.games) ? raw.games : []
+      };
+      return merged;
+    }
 
-    function loadState() {
+    function loadData() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return structuredClone(defaultState);
-        const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed.classes) || parsed.classes.length === 0) {
-          return structuredClone(defaultState);
-        }
-        return parsed;
+        const str = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_KEY);
+        if (!str) return emptyData();
+        return normalizeData(JSON.parse(str));
       } catch {
-        return structuredClone(defaultState);
+        return emptyData();
       }
     }
 
-    function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    let db = loadData();
+
+    function saveData() {
+      const json = JSON.stringify(db, null, 2);
+      localStorage.setItem(STORAGE_KEY, json);
+      localStorage.setItem(LEGACY_KEY, json);
     }
 
-    function getCurrentClass() {
-      return state.classes.find((c) => c.id === state.activeClassId) || state.classes[0];
+    function esc(v) {
+      return String(v ?? "")
+        .replaceAll("&", "&")
+        .replaceAll("<", "<")
+        .replaceAll(">", ">")
+        .replaceAll('"', """);
     }
 
-    function escapeHtml(str) {
-      return String(str ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
+    function byClass(list) {
+      if (selectedClassId === "ALL") return list;
+      return list.filter((x) => !x.classId || x.classId === selectedClassId);
+    }
+
+    function renderClassSelects() {
+      const filterEl = document.getElementById("classFilter");
+      const stuClsEl = document.getElementById("stuClassSelect");
+
+      filterEl.innerHTML =
+        `<option value="ALL" ${selectedClassId === "ALL" ? "selected" : ""}>全部班級</option>` +
+        db.classes.map((c) => `<option value="${esc(c.id)}" ${selectedClassId === c.id ? "selected" : ""}>${esc(c.name)}</option>`).join("");
+
+      stuClsEl.innerHTML = db.classes
+        .map((c) => `<option value="${esc(c.id)}">${esc(c.name)}</option>`)
+        .join("");
+    }
+
+    function renderTodos() {
+      const el = document.getElementById("todoContainer");
+      const items = db.todos;
+      if (!items.length) {
+        el.innerHTML = `<p class="meta">目前沒有待辦事項。</p>`;
+        return;
+      }
+      el.innerHTML = items
+        .map((t) => `
+          <div class="item-box">
+            <div class="item-main">
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="checkbox" ${t.done ? "checked" : ""} onchange="toggleTodo('${esc(t.id)}')" />
+                <strong class="${t.done ? "done-text" : ""}">${esc(t.text || t.title || "")}</strong>
+              </label>
+              <div class="meta">
+                ${t.tag ? `標籤：${esc(t.tag)} · ` : ""}
+                ${t.target ? `對象：${esc(t.target)} · ` : ""}
+                ${t.date ? `日期：${esc(t.date)}` : ""}
+              </div>
+            </div>
+            <button class="danger" type="button" onclick="delItem('todos', '${esc(t.id)}')">刪除</button>
+          </div>
+        `)
+        .join("");
+    }
+
+    function renderStudents() {
+      const el = document.getElementById("studentContainer");
+      const list = byClass(db.students);
+      if (!list.length) {
+        el.innerHTML = `<p class="meta">此篩選條件下沒有學生。</p>`;
+        return;
+      }
+      const clsMap = Object.fromEntries(db.classes.map((c) => [c.id, c.name]));
+      el.innerHTML = list
+        .map((s) => `
+          <div class="student-chip" style="background:${esc(s.color || "#f8fafc")}">
+            <span>${esc(s.name)}</span>
+            <span class="meta" style="margin:0;">(${esc(clsMap[s.classId] || "")})</span>
+            <button class="danger" style="padding:4px 8px; font-size:0.8rem;" type="button" onclick="delItem('students', '${esc(s.id)}')">×</button>
+          </div>
+        `)
+        .join("");
+    }
+
+    function renderLessons() {
+      const el = document.getElementById("lessonContainer");
+      const list = byClass(db.lessons);
+      if (!list.length) {
+        el.innerHTML = `<p class="meta">尚無上課紀錄。</p>`;
+        return;
+      }
+      el.innerHTML = list
+        .map((l) => `
+          <div class="item-box">
+            <div class="item-main">
+              <strong>${esc(l.targetName || "")}</strong>
+              <span class="meta">${esc(l.date || "")} ${l.version ? `· ${esc(l.version)}` : ""}</span>
+              <div class="pre-text">${esc(l.topic || "")}</div>
+            </div>
+            <button class="danger" type="button" onclick="delItem('lessons', '${esc(l.id)}')">刪除</button>
+          </div>
+        `)
+        .join("");
+    }
+
+    function renderHomeworks() {
+      const el = document.getElementById("homeworkContainer");
+      const list = byClass(db.homeworks);
+      if (!list.length) {
+        el.innerHTML = `<p class="meta">尚無作業紀錄。</p>`;
+        return;
+      }
+      el.innerHTML = list
+        .map((h) => `
+          <div class="item-box">
+            <div class="item-main">
+              <strong>${esc(h.studentName || "")}</strong> — ${esc(h.title || "")}
+              <div class="meta">
+                ${h.type ? `${esc(h.type)} · ` : ""}
+                ${h.due ? `期限：${esc(h.due)} · ` : ""}
+                狀態：${esc(h.status || "⏳ 未繳交")}
+              </div>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button type="button" onclick="cycleHwStatus('${esc(h.id)}')">切換狀態</button>
+              <button class="danger" type="button" onclick="delItem('homeworks', '${esc(h.id)}')">刪除</button>
+            </div>
+          </div>
+        `)
+        .join("");
+    }
+
+    function renderMistakes() {
+      const el = document.getElementById("mistakeContainer");
+      const list = byClass(db.mistakes);
+      if (!list.length) {
+        el.innerHTML = `<p class="meta">尚無錯題紀錄。</p>`;
+        return;
+      }
+      el.innerHTML = list
+        .map((m) => `
+          <div class="item-box">
+            <div class="item-main">
+              <strong>${esc(m.studentName || "")}</strong>
+              <span class="meta">${m.point ? `· ${esc(m.point)}` : ""} ${m.status ? `· ${esc(m.status)}` : ""}</span>
+              <div class="pre-text">${esc(m.content || "")}</div>
+            </div>
+            <button class="danger" type="button" onclick="delItem('mistakes', '${esc(m.id)}')">刪除</button>
+          </div>
+        `)
+        .join("");
+    }
+
+    function renderMore() {
+      const el = document.getElementById("moreContainer");
+      const parts = [];
+
+      if (db.plans.length) {
+        parts.push(`<h3 style="margin:0 0 8px;">📅 下次上課預排</h3>` + db.plans.map((p) =>
+          `<div class="item-box"><div class="item-main"><strong>${esc(p.targetName || "")}</strong> <span class="meta">(${esc(p.date || "")})</span><div>${esc(p.content || "")}</div></div></div>`
+        ).join(""));
+      }
+
+      if (db.makeups.length) {
+        parts.push(`<h3 style="margin:14px 0 8px;">🤒 補課紀錄</h3>` + db.makeups.map((mk) =>
+          `<div class="item-box"><div class="item-main"><strong>${esc(mk.studentName || "")}</strong> · ${esc(mk.status || "")} <span class="meta">(${esc(mk.date || "")})</span><div>${esc(mk.reason || "")}</div></div></div>`
+        ).join(""));
+      }
+
+      if (db.materials.length) {
+        parts.push(`<h3 style="margin:14px 0 8px;">📄 講義／教材</h3>` + db.materials.map((mt) =>
+          `<div class="item-box"><div class="item-main"><strong>${esc(mt.name || "")}</strong> · ${esc(mt.target || "")} <span class="meta">(${esc(mt.qty ?? 1)} 份 · ${esc(mt.status || "")})</span></div></div>`
+        ).join(""));
+      }
+
+      if (db.games.length) {
+        parts.push(`<h3 style="margin:14px 0 8px;">🎮 互動遊戲連結</h3>` + db.games.map((g) =>
+          `<div class="item-box"><div class="item-main"><strong>${esc(g.title || "")}</strong> — <a href="${esc(g.url || "#")}" target="_blank" rel="noopener noreferrer">${esc(g.url || "")}</a></div></div>`
+        ).join(""));
+      }
+
+      el.innerHTML = parts.length ? parts.join("") : `<p class="meta">目前沒有額外預排、補考、講義或遊戲資料。</p>`;
     }
 
     function renderAll() {
-      const classSelect = document.getElementById("classSelect");
-      classSelect.innerHTML = state.classes
-        .map((c) => `<option value="${escapeHtml(c.id)}" ${c.id === getCurrentClass().id ? "selected" : ""}>${escapeHtml(c.name)}</option>`)
-        .join("");
-
-      const cls = getCurrentClass();
-      renderTodos(cls);
-      renderStudents(cls);
-      renderLogs(cls);
-      renderExams(cls);
-      saveState();
+      renderClassSelects();
+      renderTodos();
+      renderStudents();
+      renderLessons();
+      renderHomeworks();
+      renderMistakes();
+      renderMore();
+      saveData();
     }
 
-    function renderTodos(cls) {
-      const el = document.getElementById("todoList");
-      if (!cls.todos.length) {
-        el.innerHTML = `<p class="muted">目前沒有應做事項。</p>`;
-        return;
-      }
-      el.innerHTML = cls.todos
-        .map((t) => `
-          <div class="list-item">
-            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1;">
-              <input type="checkbox" ${t.done ? "checked" : ""} onchange="toggleTodo('${t.id}')" />
-              <span class="${t.done ? "done" : ""}">${escapeHtml(t.title)}</span>
-              ${t.due ? `<span class="muted">（期限：${escapeHtml(t.due)}）</span>` : ""}
-            </label>
-            <button class="danger" type="button" onclick="deleteTodo('${t.id}')">刪除</button>
-          </div>
-        `)
-        .join("");
-    }
+    // Mutations
+    window.toggleTodo = (id) => {
+      const t = db.todos.find((x) => x.id === id);
+      if (t) { t.done = !t.done; renderAll(); }
+    };
 
-    function renderStudents(cls) {
-      const tbody = document.getElementById("studentTableBody");
-      let totalReceivable = 0;
-      let totalPaid = 0;
+    window.cycleHwStatus = (id) => {
+      const order = ["⏳ 未繳交", "✅ 已繳交", "🔄 訂正中"];
+      const h = db.homeworks.find((x) => x.id === id);
+      if (!h) return;
+      const idx = order.indexOf(h.status);
+      h.status = order[(idx + 1) % order.length];
+      renderAll();
+    };
 
-      tbody.innerHTML = cls.students
-        .map((s) => {
-          const amount = Math.max(0, (Number(s.rate) || 0) * (Number(s.sessions) || 0) - (Number(s.discount) || 0));
-          totalReceivable += amount;
-          if (s.paid) totalPaid += amount;
-          return `
-            <tr>
-              <td>${escapeHtml(s.name)}</td>
-              <td>$${Number(s.rate) || 0}</td>
-              <td>${Number(s.sessions) || 0}</td>
-              <td>-$${Number(s.discount) || 0}</td>
-              <td><strong>$${amount}</strong></td>
-              <td>
-                <input type="checkbox" ${s.paid ? "checked" : ""} onchange="togglePaid('${s.id}')" />
-                <span>${s.paid ? "已繳" : "未繳"}</span>
-              </td>
-              <td><button class="danger" type="button" onclick="deleteStudent('${s.id}')">移除</button></td>
-            </tr>
-          `;
-        })
-        .join("");
+    window.delItem = (collection, id) => {
+      if (!Array.isArray(db[collection])) return;
+      db[collection] = db[collection].filter((x) => x.id !== id);
+      renderAll();
+    };
 
-      document.getElementById("feeSummary").textContent =
-        `本班應收總計：$${totalReceivable}｜已收金額：$${totalPaid}｜待收金額：$${Math.max(0, totalReceivable - totalPaid)}`;
-    }
-
-    function renderLogs(cls) {
-      const el = document.getElementById("logList");
-      if (!cls.logs.length) {
-        el.innerHTML = `<p class="muted">尚無教學或錯題紀錄。</p>`;
-        return;
-      }
-      el.innerHTML = cls.logs
-        .map((l) => `
-          <div class="list-item">
-            <div>
-              <div><strong>${escapeHtml(l.topic || "未填單元")}</strong> ${l.date ? `<span class="muted">(${escapeHtml(l.date)})</span>` : ""}</div>
-              ${l.mistake ? `<div class="muted">錯題／提醒：${escapeHtml(l.mistake)}</div>` : ""}
-            </div>
-            <button class="danger" type="button" onclick="deleteLog('${l.id}')">刪除</button>
-          </div>
-        `)
-        .join("");
-    }
-
-    function renderExams(cls) {
-      const el = document.getElementById("examList");
-      if (!cls.exams.length) {
-        el.innerHTML = `<p class="muted">尚無考試或補考紀錄。</p>`;
-        return;
-      }
-      el.innerHTML = cls.exams
-        .map((e) => `
-          <div class="list-item">
-            <div>
-              <strong>${escapeHtml(e.student)}</strong> — ${escapeHtml(e.exam)}：<strong>${escapeHtml(e.score)} 分</strong>
-              <span class="muted">（補考：${escapeHtml(e.retest || "無")}）</span>
-            </div>
-            <button class="danger" type="button" onclick="deleteExam('${e.id}')">刪除</button>
-          </div>
-        `)
-        .join("");
-    }
-
-    // Class handlers
-    document.getElementById("classSelect").addEventListener("change", (e) => {
-      state.activeClassId = e.target.value;
+    document.getElementById("classFilter").addEventListener("change", (e) => {
+      selectedClassId = e.target.value;
       renderAll();
     });
 
     document.getElementById("btnAddClass").addEventListener("click", () => {
-      const input = document.getElementById("newClassName");
+      const input = document.getElementById("newClassInput");
       const name = input.value.trim();
       if (!name) return;
-      const newCls = {
-        id: "class-" + Date.now(),
-        name,
-        todos: [],
-        students: [],
-        logs: [],
-        exams: []
-      };
-      state.classes.push(newCls);
-      state.activeClassId = newCls.id;
+      const id = "c_" + Date.now();
+      db.classes.push({ id, name, color: "#dbeafe" });
+      selectedClassId = id;
       input.value = "";
       renderAll();
     });
 
-    document.getElementById("btnDeleteClass").addEventListener("click", () => {
-      if (state.classes.length <= 1) {
-        alert("至少需保留一個班級。");
-        return;
-      }
-      const cls = getCurrentClass();
-      if (!confirm(`確定要刪除「${cls.name}」嗎？`)) return;
-      state.classes = state.classes.filter((c) => c.id !== cls.id);
-      state.activeClassId = state.classes[0].id;
+    document.querySelectorAll(".pill").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".pill").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".section-card").forEach((s) => s.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    document.getElementById("btnAddTodo").addEventListener("click", () => {
+      const textEl = document.getElementById("todoText");
+      const targetEl = document.getElementById("todoTarget");
+      const dateEl = document.getElementById("todoDate");
+      if (!textEl.value.trim()) return;
+      db.todos.unshift({
+        id: "t_" + Date.now(),
+        text: textEl.value.trim(),
+        tag: "",
+        target: targetEl.value.trim(),
+        date: dateEl.value,
+        done: false
+      });
+      textEl.value = "";
+      targetEl.value = "";
+      dateEl.value = "";
       renderAll();
     });
 
-    // Tab switching
-    document.querySelectorAll(".tab-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
-        document.querySelectorAll(".panel").forEach((p) => p.classList.remove("active"));
-        btn.classList.add("active");
-        document.getElementById("panel-" + btn.dataset.tab).classList.add("active");
+    document.getElementById("btnAddStudent").addEventListener("click", () => {
+      const nameEl = document.getElementById("stuNameInput");
+      const clsEl = document.getElementById("stuClassSelect");
+      if (!nameEl.value.trim()) return;
+      db.students.push({
+        id: "s_" + Date.now(),
+        name: nameEl.value.trim(),
+        classId: clsEl.value,
+        note: "",
+        color: "#e0f2fe"
       });
+      nameEl.value = "";
+      renderAll();
     });
 
-    // Todo actions
-    document.getElementById("btnAddTodo").addEventListener("click", () => {
-      const titleEl = document.getElementById("todoTitle");
-      const dueEl = document.getElementById("todoDue");
-      if (!titleEl.value.trim()) return;
-      getCurrentClass().todos.unshift({
-        id: "t-" + Date.now(),
-        title: titleEl.value.trim(),
-        due: dueEl.value,
-        done: false
+    document.getElementById("btnAddLesson").addEventListener("click", () => {
+      const targetEl = document.getElementById("lessonTarget");
+      const dateEl = document.getElementById("lessonDate");
+      const verEl = document.getElementById("lessonVersion");
+      const topicEl = document.getElementById("lessonTopic");
+      if (!targetEl.value.trim() && !topicEl.value.trim()) return;
+      db.lessons.unshift({
+        id: "l_" + Date.now(),
+        targetName: targetEl.value.trim(),
+        classId: selectedClassId === "ALL" ? db.classes[0].id : selectedClassId,
+        date: dateEl.value,
+        version: verEl.value.trim(),
+        topic: topicEl.value.trim()
       });
+      targetEl.value = "";
+      verEl.value = "";
+      topicEl.value = "";
+      renderAll();
+    });
+
+    document.getElementById("btnAddHw").addEventListener("click", () => {
+      const stuEl = document.getElementById("hwStudent");
+      const titleEl = document.getElementById("hwTitle");
+      const typeEl = document.getElementById("hwType");
+      const dueEl = document.getElementById("hwDue");
+      if (!stuEl.value.trim() || !titleEl.value.trim()) return;
+      db.homeworks.unshift({
+        id: "h_" + Date.now(),
+        studentName: stuEl.value.trim(),
+        classId: selectedClassId === "ALL" ? db.classes[0].id : selectedClassId,
+        title: titleEl.value.trim(),
+        type: typeEl.value.trim(),
+        due: dueEl.value,
+        status: "⏳ 未繳交"
+      });
+      stuEl.value = "";
       titleEl.value = "";
+      typeEl.value = "";
       dueEl.value = "";
       renderAll();
     });
 
-    window.toggleTodo = (id) => {
-      const item = getCurrentClass().todos.find((t) => t.id === id);
-      if (item) { item.done = !item.done; renderAll(); }
-    };
-
-    window.deleteTodo = (id) => {
-      const cls = getCurrentClass();
-      cls.todos = cls.todos.filter((t) => t.id !== id);
-      renderAll();
-    };
-
-    // Student & fee actions
-    document.getElementById("btnAddStudent").addEventListener("click", () => {
-      const nameEl = document.getElementById("stuName");
-      const rateEl = document.getElementById("stuRate");
-      const sessEl = document.getElementById("stuSessions");
-      const discEl = document.getElementById("stuDiscount");
-      if (!nameEl.value.trim()) return;
-      getCurrentClass().students.push({
-        id: "s-" + Date.now(),
-        name: nameEl.value.trim(),
-        rate: Number(rateEl.value) || 0,
-        sessions: Number(sessEl.value) || 0,
-        discount: Number(discEl.value) || 0,
-        paid: false
-      });
-      nameEl.value = "";
-      rateEl.value = "";
-      sessEl.value = "";
-      discEl.value = "";
-      renderAll();
-    });
-
-    window.togglePaid = (id) => {
-      const s = getCurrentClass().students.find((x) => x.id === id);
-      if (s) { s.paid = !s.paid; renderAll(); }
-    };
-
-    window.deleteStudent = (id) => {
-      const cls = getCurrentClass();
-      cls.students = cls.students.filter((x) => x.id !== id);
-      renderAll();
-    };
-
-    // Log & exam actions
-    document.getElementById("btnAddLog").addEventListener("click", () => {
-      const dateEl = document.getElementById("logDate");
-      const topicEl = document.getElementById("logTopic");
-      const mistakeEl = document.getElementById("logMistake");
-      if (!topicEl.value.trim() && !mistakeEl.value.trim()) return;
-      getCurrentClass().logs.unshift({
-        id: "l-" + Date.now(),
-        date: dateEl.value,
-        topic: topicEl.value.trim(),
-        mistake: mistakeEl.value.trim()
-      });
-      topicEl.value = "";
-      mistakeEl.value = "";
-      renderAll();
-    });
-
-    window.deleteLog = (id) => {
-      const cls = getCurrentClass();
-      cls.logs = cls.logs.filter((x) => x.id !== id);
-      renderAll();
-    };
-
-    document.getElementById("btnAddExam").addEventListener("click", () => {
-      const stuEl = document.getElementById("examStu");
-      const nameEl = document.getElementById("examName");
-      const scoreEl = document.getElementById("examScore");
-      const retestEl = document.getElementById("examRetest");
-      if (!stuEl.value.trim() || !nameEl.value.trim()) return;
-      getCurrentClass().exams.unshift({
-        id: "e-" + Date.now(),
-        student: stuEl.value.trim(),
-        exam: nameEl.value.trim(),
-        score: scoreEl.value,
-        retest: retestEl.value.trim()
+    document.getElementById("btnAddMs").addEventListener("click", () => {
+      const stuEl = document.getElementById("msStudent");
+      const ptEl = document.getElementById("msPoint");
+      const ctEl = document.getElementById("msContent");
+      if (!ctEl.value.trim()) return;
+      db.mistakes.unshift({
+        id: "m_" + Date.now(),
+        studentName: stuEl.value.trim(),
+        classId: selectedClassId === "ALL" ? db.classes[0].id : selectedClassId,
+        point: ptEl.value.trim(),
+        status: "🔴 待出類似題",
+        content: ctEl.value.trim()
       });
       stuEl.value = "";
-      nameEl.value = "";
-      scoreEl.value = "";
-      retestEl.value = "";
+      ptEl.value = "";
+      ctEl.value = "";
       renderAll();
     });
 
-    window.deleteExam = (id) => {
-      const cls = getCurrentClass();
-      cls.exams = cls.exams.filter((x) => x.id !== id);
-      renderAll();
-    };
-
-    // LINE Report
-    document.getElementById("btnGenerateReport").addEventListener("click", () => {
-      const cls = getCurrentClass();
-      const lines = [`【DL English 課堂回報｜${cls.name}】`, ""];
-
-      if (cls.logs.length) {
-        lines.push("📘 教學與重點紀錄：");
-        cls.logs.slice(0, 5).forEach((l) => {
-          lines.push(`• ${l.date ? l.date + " " : ""}${l.topic || ""}${l.mistake ? "（提醒：" + l.mistake + "）" : ""}`);
-        });
-        lines.push("");
-      }
-
-      if (cls.exams.length) {
-        lines.push("📝 測驗與補考狀況：");
-        cls.exams.slice(0, 8).forEach((e) => {
-          lines.push(`• ${e.student}｜${e.exam}：${e.score} 分（補考：${e.retest || "無"}）`);
-        });
-        lines.push("");
-      }
-
-      const pendingTodos = cls.todos.filter((t) => !t.done);
-      if (pendingTodos.length) {
-        lines.push("📌 後續作業／待辦：");
-        pendingTodos.forEach((t) => lines.push(`• ${t.title}${t.due ? "（" + t.due + "）" : ""}`));
-      }
-
-      document.getElementById("reportOutput").value = lines.join("\n").trim();
-    });
-
-    document.getElementById("btnCopyReport").addEventListener("click", async () => {
-      const text = document.getElementById("reportOutput").value;
-      if (!text) return;
-      try {
-        await navigator.clipboard.writeText(text);
-        alert("已複製回報文字，可直接貼到 LINE！");
-      } catch {
-        alert("請手動選取文字框內容複製。");
-      }
-    });
-
-    // Export JSON & Paste Restore
-    document.getElementById("btnExportJson").addEventListener("click", () => {
-      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    // Export & Restore
+    document.getElementById("btnExport").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `dl-english-workbench-${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `dl-english-backup-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
     });
 
     const restoreModal = document.getElementById("restoreModal");
-    document.getElementById("btnOpenRestore").addEventListener("click", () => {
-      document.getElementById("restoreTextarea").value = "";
-      restoreModal.classList.add("show");
+    document.getElementById("btnRestoreOpen").addEventListener("click", () => {
+      document.getElementById("restoreInput").value = "";
+      document.getElementById("restoreStatus").textContent = "";
+      restoreModal.classList.add("open");
     });
-    document.getElementById("btnCancelRestore").addEventListener("click", () => {
-      restoreModal.classList.remove("show");
+    document.getElementById("btnRestoreCancel").addEventListener("click", () => {
+      restoreModal.classList.remove("open");
     });
-    document.getElementById("btnConfirmRestore").addEventListener("click", () => {
+    document.getElementById("btnRestoreConfirm").addEventListener("click", () => {
+      const statusEl = document.getElementById("restoreStatus");
       try {
-        const raw = document.getElementById("restoreTextarea").value.trim();
+        const raw = document.getElementById("restoreInput").value.trim();
         const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed.classes) || parsed.classes.length === 0) {
-          throw new Error("格式不符");
+        if (!parsed || typeof parsed !== "object") {
+          statusEl.textContent = "JSON 內容必須是物件（{ ... }）。";
+          return;
         }
-        state = parsed;
-        if (!state.classes.some((c) => c.id === state.activeClassId)) {
-          state.activeClassId = state.classes[0].id;
-        }
+        db = normalizeData(parsed);
+        selectedClassId = "ALL";
         renderAll();
-        restoreModal.classList.remove("show");
-        alert("資料已成功還原！");
-      } catch {
-        alert("JSON 格式無效，請確認貼上的內容是否完整。");
+        restoreModal.classList.remove("open");
+      } catch (err) {
+        statusEl.textContent = "解析失敗：" + (err && err.message ? err.message : "請檢查是否完整複製前後括號與引號");
       }
     });
 
-    // Password Lock
-    const lockModal = document.getElementById("lockModal");
-    function openLockModal(requireUnlock = false) {
-      isLockedSession = requireUnlock;
-      const savedPass = localStorage.getItem(PASS_KEY);
-      document.getElementById("lockPasswordInput").value = "";
-      document.getElementById("lockModalTitle").textContent = requireUnlock
-        ? "🔒 工作台已鎖定，請輸入密碼"
-        : (savedPass ? "🔑 輸入密碼解鎖或變更" : "🔒 設定工作台密碼");
-      document.getElementById("btnCancelLock").style.display = requireUnlock ? "none" : "inline-block";
-      lockModal.classList.add("show");
-    }
-
-    document.getElementById("btnLockToggle").addEventListener("click", () => {
-      const savedPass = localStorage.getItem(PASS_KEY);
-      if (savedPass) {
-        openLockModal(true);
-      } else {
-        openLockModal(false);
-      }
+    // PIN
+    const pinModal = document.getElementById("pinModal");
+    document.getElementById("btnPinBtn").addEventListener("click", () => {
+      document.getElementById("pinInput").value = "";
+      document.getElementById("pinStatus").textContent = "";
+      document.getElementById("pinDesc").textContent = db.pin
+        ? "目前已設定 PIN 碼；輸入新 PIN 碼可更新，或按「清除 PIN」。"
+        : "尚未設定 PIN 碼；輸入新 PIN 碼即可儲存。";
+      pinModal.classList.add("open");
     });
-
-    document.getElementById("btnCancelLock").addEventListener("click", () => {
-      lockModal.classList.remove("show");
+    document.getElementById("btnPinClose").addEventListener("click", () => {
+      pinModal.classList.remove("open");
     });
-
-    document.getElementById("btnSubmitLock").addEventListener("click", () => {
-      const inputVal = document.getElementById("lockPasswordInput").value;
-      const savedPass = localStorage.getItem(PASS_KEY);
-      if (!inputVal) {
-        alert("請輸入密碼。");
+    document.getElementById("btnPinSave").addEventListener("click", () => {
+      const val = document.getElementById("pinInput").value.trim();
+      if (!val) {
+        document.getElementById("pinStatus").textContent = "請先輸入 PIN 碼。";
         return;
       }
-      if (!savedPass) {
-        localStorage.setItem(PASS_KEY, inputVal);
-        lockModal.classList.remove("show");
-        alert("密碼已設定。");
-      } else if (inputVal === savedPass) {
-        isLockedSession = false;
-        lockModal.classList.remove("show");
-      } else {
-        alert("密碼錯誤。");
-      }
+      db.pin = val;
+      saveData();
+      pinModal.classList.remove("open");
     });
-
-    document.getElementById("btnClearPassword").addEventListener("click", () => {
-      const savedPass = localStorage.getItem(PASS_KEY);
-      const inputVal = document.getElementById("lockPasswordInput").value;
-      if (savedPass && inputVal !== savedPass) {
-        alert("請先輸入正確的原密碼才能清除。");
-        return;
-      }
-      localStorage.removeItem(PASS_KEY);
-      isLockedSession = false;
-      lockModal.classList.remove("show");
-      alert("已清除密碼。");
+    document.getElementById("btnPinClear").addEventListener("click", () => {
+      db.pin = "";
+      saveData();
+      pinModal.classList.remove("open");
     });
 
     renderAll();
-    if (localStorage.getItem(PASS_KEY)) {
-      openLockModal(true);
-    }
   </script>
 </body>
 </html>
