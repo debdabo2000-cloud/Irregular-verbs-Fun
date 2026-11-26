@@ -174,6 +174,7 @@
         <button class="nav-btn" data-tab="exams" onclick="switchTab('exams')">📊 成績與補考</button>
         <button class="nav-btn" data-tab="fees" onclick="switchTab('fees')">💰 收費與補課</button>
         <button class="nav-btn" data-tab="games" onclick="switchTab('games')">🎮 遊戲與月報</button>
+        <button class="nav-btn" data-tab="vocabulary" onclick="switchTab('vocabulary')">📝 單字追蹤</button>
         <button class="nav-btn" data-tab="students" onclick="switchTab('students')">⚙️ 名單/安全</button>
       </nav>
     </div>
@@ -380,6 +381,52 @@
     </section>
 
     <!-- 8. 名單/安全 -->
+    <section id="tab-vocabulary" class="tab-section">
+      <div class="card">
+        <h2>單字清單與學習進度</h2>
+        <p>資料儲存在這個瀏覽器。可透過工作台的備份功能匯出。</p>
+        <div class="grid-3">
+          <label>班級<select id="vocabClass"></select></label>
+          <label>單字清單<select id="vocabList"></select></label>
+          <label>查看進度<select id="vocabStudent"></select></label>
+        </div>
+        <p id="vocabSummary" role="status"></p>
+        <button type="button" class="btn" id="vocabQuiz" hidden>開始學生測驗</button>
+        <button type="button" class="btn btn-blue" id="vocabEdit" hidden>編輯匯入的清單</button>
+        <label>篩選單字<select id="vocabFilter">
+          <option value="all">全部單字</option>
+          <option value="unfinished">尚未全數記熟</option>
+          <option value="memorized">已全數記熟</option>
+        </select></label>
+        <div id="vocabResults"></div>
+      </div>
+
+      <div class="card">
+        <h2>指派現有單字</h2>
+        <form id="vocabAssign">
+          <label>遊戲章節<select id="vocabCatalog" required></select></label>
+          <button class="btn" type="submit">指派給選取的班級</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>從照片匯入單字</h2>
+        <form id="vocabImport">
+          <p id="vocabEditing" hidden></p>
+          <label>單字清單名稱<input id="vocabName" required maxlength="100" placeholder="例：第三課生字"></label>
+          <label>單字照片<input id="vocabPhoto" type="file" accept="image/*"></label>
+          <img id="vocabPhotoPreview" alt="待匯入的單字照片" style="max-width: 100%; max-height: 280px;" hidden>
+          <button class="btn btn-blue" type="button" id="vocabScan">辨識照片</button>
+          <p>每行一筆。請檢查辨識結果並修正。格式為「單字 | 中文」或「原形 | 過去式 | 過去分詞 | 中文」。</p>
+          <label>辨識結果或手動輸入<textarea id="vocabText" rows="7" required placeholder="apple | 蘋果&#10;go | went | gone | 去"></textarea></label>
+          <p id="vocabImportStatus" role="status"></p>
+          <ul id="vocabPreview"></ul>
+          <button class="btn btn-mint" type="submit" id="vocabSave">儲存並指派給選取的班級</button>
+          <button class="btn btn-blue" type="button" id="vocabCancelEdit" hidden>取消編輯</button>
+        </form>
+      </div>
+    </section>
+
     <section id="tab-students" class="tab-section">
       <div class="card">
         <h2>🏫 班級管理</h2>
@@ -426,9 +473,11 @@
   </div>
 </div>
 
+<script src="vocabulary-catalog.js"></script>
+<script src="vocabulary-progress.js"></script>
+<script src="vocabulary-workbench.js"></script>
 <script>
-const STORAGE_KEY = 'dl_english_workbench_v1';
-const LEGACY_KEY = 'dl_workbench_data';
+const { storageKey: STORAGE_KEY } = VocabularyProgress;
 const AUTH_KEY = 'dl_workbench_unlocked';
 
 const defaultDB = () => ({
@@ -446,6 +495,8 @@ const defaultDB = () => ({
   plans: [],
   makeups: [],
   materials: [],
+  vocabularyLists: [],
+  vocabularyProgress: {},
   games: [
     { id: 'g1', title: "DL's 單字搶救大作戰", url: 'https://debdabo2000-cloud.github.io/Irregular-verbs-Fun/' }
   ]
@@ -469,23 +520,23 @@ function normalizeDB(raw) {
     plans: Array.isArray(raw.plans) ? raw.plans : [],
     makeups: Array.isArray(raw.makeups) ? raw.makeups : [],
     materials: Array.isArray(raw.materials) ? raw.materials : [],
+    vocabularyLists: Array.isArray(raw.vocabularyLists) ? raw.vocabularyLists : [],
+    vocabularyProgress: raw.vocabularyProgress && typeof raw.vocabularyProgress === 'object' && !Array.isArray(raw.vocabularyProgress)
+      ? raw.vocabularyProgress : {},
     games: Array.isArray(raw.games) ? raw.games : base.games
   };
 }
 
 let db = (() => {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_KEY);
-    return saved ? normalizeDB(JSON.parse(saved)) : defaultDB();
+    return normalizeDB(VocabularyProgress.readDB());
   } catch {
     return defaultDB();
   }
 })();
 
 function saveDB() {
-  const str = JSON.stringify(db);
-  localStorage.setItem(STORAGE_KEY, str);
-  localStorage.setItem(LEGACY_KEY, str);
+  VocabularyProgress.writeDB(db);
 }
 
 function initAuth() {
@@ -744,6 +795,7 @@ function renderAll() {
   renderExams();
   renderFeesAndMakeups();
   renderGamesAndManage();
+  VocabularyWorkbench.render();
   saveDB();
 }
 
@@ -1019,8 +1071,28 @@ function confirmPasteRestore() {
   }
 }
 
+VocabularyWorkbench.init();
 initAuth();
 renderAll();
+if (location.hash === '#vocabulary') {
+  switchTab('vocabulary');
+  VocabularyWorkbench.restoreSelection();
+}
+
+function refreshVocabularyProgress() {
+  try {
+    db.vocabularyProgress = normalizeDB(VocabularyProgress.readDB()).vocabularyProgress;
+    VocabularyWorkbench.render();
+  } catch {
+    // Keep the current view if local storage is unavailable.
+  }
+}
+window.addEventListener('storage', event => {
+  if (event.key === STORAGE_KEY) refreshVocabularyProgress();
+});
+window.addEventListener('pageshow', event => {
+  if (event.persisted) refreshVocabularyProgress();
+});
 </script>
 </body>
 </html>
