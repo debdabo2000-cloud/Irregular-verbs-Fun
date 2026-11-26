@@ -109,6 +109,11 @@
     .chip-group { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
     .chip { padding: 5px 11px; border-radius: 16px; border: 1px solid #dfd5cb; background: #fff; font-size: 13px; cursor: pointer; }
     .chip.selected { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 600; }
+    #tab-class-notes label { display: grid; gap: 5px; align-content: start; }
+    #tab-class-notes .notes-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    #tab-class-notes .notes-record { display: grid; gap: 8px; }
+    #tab-class-notes .notes-record textarea { resize: vertical; }
+    #tab-class-notes .notes-preview { max-width: 100%; max-height: 420px; object-fit: contain; }
     .mobile-sync-bar { display: none; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
 
     /* Modal */
@@ -174,6 +179,7 @@
         <button class="nav-btn" data-tab="exams" onclick="switchTab('exams')">📊 成績與補考</button>
         <button class="nav-btn" data-tab="fees" onclick="switchTab('fees')">💰 收費與補課</button>
         <button class="nav-btn" data-tab="games" onclick="switchTab('games')">🎮 遊戲與月報</button>
+        <button class="nav-btn" data-tab="class-notes" onclick="switchTab('class-notes')">📷 課堂筆記匯入</button>
         <button class="nav-btn" data-tab="vocabulary" onclick="switchTab('vocabulary')">📝 單字追蹤</button>
         <button class="nav-btn" data-tab="students" onclick="switchTab('students')">⚙️ 名單/安全</button>
       </nav>
@@ -381,6 +387,37 @@
     </section>
 
     <!-- 8. 名單/安全 -->
+    <section id="tab-class-notes" class="tab-section">
+      <div class="card">
+        <h2>課堂筆記匯入</h2>
+        <p>拍下或選取一張筆記照片，核對辨識文字後產生待確認的紀錄。</p>
+        <div class="grid-2">
+          <label>筆記照片<input id="notesPhoto" type="file" accept="image/*"></label>
+          <label>筆記年份（只有月日時使用）<input id="notesYear" type="number" min="1900" max="2100" placeholder="例：2026"></label>
+        </div>
+        <img id="notesImage" class="notes-preview" alt="待辨識的課堂筆記照片" hidden>
+        <div class="notes-actions">
+          <button id="notesScan" type="button" class="btn btn-blue">辨識筆記照片</button>
+        </div>
+        <p id="notesScanStatus" role="status"></p>
+        <label>筆記文字<textarea id="notesText" rows="8" placeholder="11/23&#10;教學：Unit 3 pp. 24–26&#10;功課：Workbook p. 18&#10;下次準備：列印單字卡"></textarea></label>
+        <p>可直接貼上文字。建議每行一項，保留原本的日期與姓名。手寫辨識可能漏字，請對照原圖。</p>
+        <div class="notes-actions">
+          <button id="notesGenerate" type="button" class="btn">產生待確認紀錄</button>
+        </div>
+      </div>
+      <form id="notesReview" class="card" hidden>
+        <h2>確認並儲存紀錄</h2>
+        <p>請核對每筆內容、分類及對象。可刪除不需匯入的項目，日期不明可留白。</p>
+        <div id="notesRows"></div>
+        <div class="notes-actions">
+          <button id="notesAdd" type="button" class="btn btn-blue">新增一筆</button>
+          <button id="notesSave" type="submit" class="btn btn-mint">儲存已勾選紀錄</button>
+        </div>
+      </form>
+      <p id="notesSaveStatus" role="status" tabindex="-1"></p>
+    </section>
+
     <section id="tab-vocabulary" class="tab-section">
       <div class="card">
         <h2>單字清單與學習進度</h2>
@@ -475,7 +512,9 @@
 
 <script src="vocabulary-catalog.js"></script>
 <script src="vocabulary-progress.js"></script>
+<script src="workbench-ocr.js"></script>
 <script src="vocabulary-workbench.js"></script>
+<script src="class-notes.js"></script>
 <script>
 const { storageKey: STORAGE_KEY } = VocabularyProgress;
 const AUTH_KEY = 'dl_workbench_unlocked';
@@ -784,7 +823,7 @@ function renderGamesAndManage() {
   document.getElementById('setPinInput').value = db.pin || '';
 }
 
-function renderAll() {
+function renderAll(persist = true) {
   fillClassSelects();
   renderStats();
   renderTodayFocus();
@@ -796,7 +835,7 @@ function renderAll() {
   renderFeesAndMakeups();
   renderGamesAndManage();
   VocabularyWorkbench.render();
-  saveDB();
+  if (persist) saveDB();
 }
 
 // Actions
@@ -1072,8 +1111,10 @@ function confirmPasteRestore() {
 }
 
 VocabularyWorkbench.init();
+ClassNotes.init();
 initAuth();
 renderAll();
+if (location.hash === '#class-notes') switchTab('class-notes');
 if (location.hash === '#vocabulary') {
   switchTab('vocabulary');
   VocabularyWorkbench.restoreSelection();

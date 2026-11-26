@@ -139,22 +139,6 @@ const VocabularyWorkbench = (() => {
     return words;
   }
 
-  function loadOCR() {
-    if (window.Tesseract) return Promise.resolve(window.Tesseract);
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/tesseract.min.js';
-      script.integrity = 'sha384-r1ru3tcf6FhnCFR4B7pIFG+BhFF9LlFtz/P1y4pblWn3AGs9y3lBx5SKLNf4+rED';
-      script.crossOrigin = 'anonymous';
-      script.onload = () => resolve(window.Tesseract);
-      script.onerror = () => {
-        script.remove();
-        reject(new Error('OCR failed to load'));
-      };
-      document.head.append(script);
-    });
-  }
-
   async function scanPhoto() {
     const photo = get('Photo').files[0];
     if (!photo) {
@@ -164,25 +148,17 @@ const VocabularyWorkbench = (() => {
     const controls = ['Scan', 'Photo', 'Save', 'Text', 'Edit', 'CancelEdit'].map(get);
     controls.forEach(control => control.disabled = true);
     get('ImportStatus').textContent = '正在載入英文及繁體中文辨識工具…';
-    let worker;
     try {
-      const ocr = await loadOCR();
-      worker = await ocr.createWorker(['eng', 'chi_tra'], 1, {
-        logger: ({ status, progress }) => {
-          if (status === 'recognizing text') {
-            get('ImportStatus').textContent = `辨識照片中 ${Math.round(progress * 100)}%`;
-          }
-        }
+      const text = await WorkbenchOCR.read(photo, percent => {
+        get('ImportStatus').textContent = `辨識照片中 ${percent}%`;
       });
-      const { data } = await worker.recognize(photo);
-      get('Text').value = data.text.trim();
+      get('Text').value = text;
       preview();
-      if (!data.text.trim()) get('ImportStatus').textContent = '沒有辨識到文字，請試試清晰的照片或手動輸入。';
+      if (!text) get('ImportStatus').textContent = '沒有辨識到文字，請試試清晰的照片或手動輸入。';
     } catch {
       get('ImportStatus').textContent = '辨識失敗。請確認網路連線、試另一張照片，或手動輸入。';
     } finally {
       controls.forEach(control => control.disabled = false);
-      if (worker) await worker.terminate();
     }
   }
 
