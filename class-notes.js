@@ -25,6 +25,8 @@ const ClassNotes = (() => {
   function classify(line) {
     line = line.replace(/(?<=\p{Script=Han})\s+(?=\p{Script=Han})/gu, '');
     const done = /已\s*(?:準備|備妥|印好|完成備課)|\b(?:already prepared|printed and ready)\b/i.test(line);
+    if (/^(?:功課|作業|homework|h\s*w)\s*:/i.test(line)) return { kind: 'homeworks' };
+    if (/^(?:教學|上課內容|課程|lesson)\s*:/i.test(line)) return { kind: 'lessons' };
     if (done || /下\s*次|下堂|待準備|要準備|備課|待辦|列印|影印|^準備|\b(?:prepare|print|to-do|next class)\b/i.test(line)) {
       return { kind: 'todos', done };
     }
