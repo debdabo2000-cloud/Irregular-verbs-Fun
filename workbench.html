@@ -179,6 +179,7 @@
         <button class="nav-btn" data-tab="exams" onclick="switchTab('exams')">📊 成績與補考</button>
         <button class="nav-btn" data-tab="fees" onclick="switchTab('fees')">💰 收費與補課</button>
         <button class="nav-btn" data-tab="games" onclick="switchTab('games')">🎮 遊戲與月報</button>
+        <button class="nav-btn" data-tab="sync" onclick="switchTab('sync')">☁️ 裝置同步</button>
         <button class="nav-btn" data-tab="class-notes" onclick="switchTab('class-notes')">📷 課堂筆記匯入</button>
         <button class="nav-btn" data-tab="vocabulary" onclick="switchTab('vocabulary')">📝 單字追蹤</button>
         <button class="nav-btn" data-tab="students" onclick="switchTab('students')">⚙️ 名單/安全</button>
@@ -387,6 +388,33 @@
     </section>
 
     <!-- 8. 名單/安全 -->
+    <section id="tab-sync" class="tab-section">
+      <div class="card">
+        <h2>手機與電腦同步</h2>
+        <p id="syncStatus" role="status">同步服務尚未連接。你仍可用工作台的備份功能轉移紀錄。</p>
+        <form id="syncLogin" hidden>
+          <label for="syncEmail">電子郵件</label>
+          <input id="syncEmail" type="email" required autocomplete="email">
+          <button id="syncSend" class="btn" type="submit">寄送登入連結</button>
+        </form>
+        <div id="syncConnected" hidden>
+          <p id="syncAccount"></p>
+          <button id="syncNow" class="btn" type="button">立即同步</button>
+          <button id="syncLogout" class="btn btn-blue" type="button">登出此裝置</button>
+          <div id="syncPreview" hidden>
+            <label id="syncChoice" hidden>同一欄位有不同版本
+              <select id="syncPreference">
+                <option value="">請選擇</option>
+                <option value="local">保留此裝置版本</option>
+                <option value="remote">保留雲端版本</option>
+              </select>
+            </label>
+            <button id="syncConfirm" class="btn btn-mint" type="button">確認合併並同步</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="tab-class-notes" class="tab-section">
       <div class="card">
         <h2>課堂筆記匯入</h2>
@@ -515,6 +543,8 @@
 <script src="workbench-ocr.js"></script>
 <script src="vocabulary-workbench.js"></script>
 <script src="class-notes.js"></script>
+<script src="workbench-sync-config.js"></script>
+<script src="workbench-sync.js"></script>
 <script>
 const { storageKey: STORAGE_KEY } = VocabularyProgress;
 const AUTH_KEY = 'dl_workbench_unlocked';
@@ -1114,25 +1144,27 @@ VocabularyWorkbench.init();
 ClassNotes.init();
 initAuth();
 renderAll();
+if (location.hash === '#sync' || new URLSearchParams(location.search).has('sync')) switchTab('sync');
+WorkbenchSync.init();
 if (location.hash === '#class-notes') switchTab('class-notes');
 if (location.hash === '#vocabulary') {
   switchTab('vocabulary');
   VocabularyWorkbench.restoreSelection();
 }
 
-function refreshVocabularyProgress() {
+function refreshWorkbenchData() {
   try {
-    db.vocabularyProgress = normalizeDB(VocabularyProgress.readDB()).vocabularyProgress;
-    VocabularyWorkbench.render();
+    db = normalizeDB(VocabularyProgress.readDB());
+    renderAll(false);
   } catch {
     // Keep the current view if local storage is unavailable.
   }
 }
 window.addEventListener('storage', event => {
-  if (event.key === STORAGE_KEY) refreshVocabularyProgress();
+  if (event.key === STORAGE_KEY) refreshWorkbenchData();
 });
 window.addEventListener('pageshow', event => {
-  if (event.persisted) refreshVocabularyProgress();
+  if (event.persisted) refreshWorkbenchData();
 });
 </script>
 </body>

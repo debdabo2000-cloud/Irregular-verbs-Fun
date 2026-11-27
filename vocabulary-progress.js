@@ -19,8 +19,10 @@ const VocabularyProgress = (() => {
 
   function writeDB(db) {
     const serialized = JSON.stringify(db);
+    const changed = localStorage.getItem(storageKey) !== serialized;
     localStorage.setItem(storageKey, serialized);
     localStorage.setItem(legacyKey, serialized);
+    if (changed && typeof window !== 'undefined') window.dispatchEvent(new Event('workbench-data-saved'));
   }
 
   function loadQuiz() {
