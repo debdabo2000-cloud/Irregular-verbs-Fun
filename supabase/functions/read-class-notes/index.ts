@@ -106,7 +106,14 @@ Deno.serve(async request => {
       }),
       signal: AbortSignal.timeout(65000),
     });
-    if ([401, 403, 429].includes(ai.status)) return response(503, { error: "ai_quota_or_key" });
+    if (ai.status === 401) return response(503, { error: "ai_key" });
+    if (ai.status === 403) return response(503, { error: "ai_permission" });
+    if (ai.status === 429) {
+      const failure = await ai.json().catch(() => null);
+      const code = failure?.error?.code;
+      return response(503, { error: ["insufficient_quota", "billing_hard_limit_reached"].includes(code)
+        ? "ai_quota" : "ai_rate_limit" });
+    }
     if (!ai.ok) return response(502, { error: "ai_failed" });
     const result = await ai.json();
     const text = result.output?.flatMap((item: { content?: { type: string; text?: string }[] }) =>

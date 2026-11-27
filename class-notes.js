@@ -279,13 +279,22 @@ const ClassNotes = (() => {
         signal: AbortSignal.timeout(75000),
       });
       if (!result.ok) {
+        const details = await result.json().catch(() => ({}));
+        const causes = {
+          configuration: 'Supabase 缺少 AI 設定。請確認已儲存 OPENAI_API_KEY 和 NOTES_AI_ALLOWED_EMAIL。',
+          ai_quota_or_key: 'OpenAI 拒絕了這次辨識請求。請檢查 API 帳戶的額度、計費及金鑰權限。',
+          ai_key: 'OpenAI 無法驗證 API 金鑰。請在 Supabase Secrets 更新 OPENAI_API_KEY。',
+          ai_quota: 'OpenAI API 可用額度不足。請查看 OpenAI Platform 的 API 計費。',
+          ai_permission: '這把 OpenAI API 金鑰無法使用辨識所需的 API 或模型。',
+          ai_rate_limit: 'OpenAI 暫時限制請求頻率。請稍後再試一次。',
+        };
         const messages = {
           401: '登入已失效。請到「裝置同步」重新登入。',
           403: '這個帳號尚未開放 AI 辨識。',
           404: 'AI 辨識服務尚未部署。',
           503: 'AI 辨識服務尚未設定，或暫時無法處理照片。',
         };
-        get('ScanStatus').textContent = messages[result.status] || 'AI 辨識失敗。請稍後再試，或貼上文字。';
+        get('ScanStatus').textContent = Object.hasOwn(causes, details?.error) ? causes[details.error] : messages[result.status] || 'AI 辨識失敗。請稍後再試，或貼上文字。';
         return;
       }
       const { rows } = await result.json();
