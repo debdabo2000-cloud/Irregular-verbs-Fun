@@ -644,7 +644,20 @@ function switchTab(tab) {
 }
 
 function esc(s) {
-  return String(s ?? '').replaceAll('&', '&').replaceAll('<', '<').replaceAll('>', '>').replaceAll('"', '"');
+  return String(s ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+}
+
+function jsArg(value) {
+  return esc(JSON.stringify(value));
+}
+
+function gameLink(value) {
+  try {
+    const url = new URL(value, location.href);
+    return ['https:', 'http:'].includes(url.protocol) ? esc(url.href) : '#';
+  } catch {
+    return '#';
+  }
 }
 
 function fillClassSelects() {
@@ -700,8 +713,8 @@ function renderTodos() {
         <div style="font-size:12px;color:#888;">日期：${esc(t.date || '未指定')}</div>
       </div>
       <div style="display:flex;gap:6px;">
-        <button class="status-btn" style="background:#e2f5ee;color:#2f7d65;" onclick="toggleTodo('${esc(t.id)}')">${t.done ? '↩ 復原' : '✔ 完成'}</button>
-        <button class="del-btn" onclick="delItem('todos','${esc(t.id)}')">刪除</button>
+        <button class="status-btn" style="background:#e2f5ee;color:#2f7d65;" onclick="toggleTodo(${jsArg(t.id)})">${t.done ? '↩ 復原' : '✔ 完成'}</button>
+        <button class="del-btn" onclick="delItem('todos',${jsArg(t.id)})">刪除</button>
       </div>
     </div>
   `).join('') || '<p style="color:#888;font-size:14px;">目前沒有應做事項。</p>';
@@ -713,7 +726,7 @@ function renderTodos() {
         <span style="font-size:12px;color:#888;">${esc(p.date || '')}</span>
         <div style="margin-top:4px;">${esc(p.content)}</div>
       </div>
-      <button class="del-btn" onclick="delItem('plans','${esc(p.id)}')">刪除</button>
+      <button class="del-btn" onclick="delItem('plans',${jsArg(p.id)})">刪除</button>
     </div>
   `).join('');
 }
@@ -730,7 +743,7 @@ function renderLessons() {
           ${l.version ? `<span class="badge" style="background:#e2f1ff;color:#3a7ca5;">${esc(l.version)}</span>` : ''}
           <div style="font-weight:700;margin-top:4px;">${esc(l.topic)}</div>
         </div>
-        <button class="del-btn" onclick="delItem('lessons','${esc(l.id)}')">刪除</button>
+        <button class="del-btn" onclick="delItem('lessons',${jsArg(l.id)})">刪除</button>
       </div>
     `).join('') || '<p style="color:#888;font-size:14px;">尚無教學紀錄。</p>';
 }
@@ -749,8 +762,8 @@ function renderHomework() {
           <div style="font-size:12px;color:#888;">開始：${esc(h.startDate || '未填')}｜到期：${esc(h.due || '未設定')}</div>
         </div>
         <div style="display:flex;gap:6px;">
-          <button class="status-btn" style="background:#fff0d6;color:#9c6615;" onclick="cycleHw('${esc(h.id)}')">${esc(h.status)} ↻</button>
-          <button class="del-btn" onclick="delItem('homeworks','${esc(h.id)}')">刪除</button>
+          <button class="status-btn" style="background:#fff0d6;color:#9c6615;" onclick="cycleHw(${jsArg(h.id)})">${esc(h.status)} ↻</button>
+          <button class="del-btn" onclick="delItem('homeworks',${jsArg(h.id)})">刪除</button>
         </div>
       </div>
     `).join('') || '<p style="color:#888;font-size:14px;">尚無功課紀錄。</p>';
@@ -768,8 +781,8 @@ function renderMistakes() {
           <pre style="white-space:pre-wrap;font-family:inherit;margin-top:6px;font-size:13px;background:#fff;padding:8px;border-radius:8px;border:1px solid #f0e6dc;">${esc(m.content)}</pre>
         </div>
         <div style="display:flex;gap:6px;">
-          <button class="status-btn" style="background:#ffe8cc;color:#b85d00;" onclick="toggleMistake('${esc(m.id)}')">${esc(m.status)}</button>
-          <button class="del-btn" onclick="delItem('mistakes','${esc(m.id)}')">刪除</button>
+          <button class="status-btn" style="background:#ffe8cc;color:#b85d00;" onclick="toggleMistake(${jsArg(m.id)})">${esc(m.status)}</button>
+          <button class="del-btn" onclick="delItem('mistakes',${jsArg(m.id)})">刪除</button>
         </div>
       </div>
     `).join('') || '<p style="color:#888;font-size:14px;">尚無錯題紀錄。</p>';
@@ -788,8 +801,8 @@ function renderExams() {
           <div style="font-size:12px;color:#888;">日期：${esc(e.date || '')}</div>
         </div>
         <div style="display:flex;gap:6px;">
-          <button class="status-btn" style="background:#e2f5ee;color:#2f7d65;" onclick="cycleExam('${esc(e.id)}')">${esc(e.status)} ↻</button>
-          <button class="del-btn" onclick="delItem('exams','${esc(e.id)}')">刪除</button>
+          <button class="status-btn" style="background:#e2f5ee;color:#2f7d65;" onclick="cycleExam(${jsArg(e.id)})">${esc(e.status)} ↻</button>
+          <button class="del-btn" onclick="delItem('exams',${jsArg(e.id)})">刪除</button>
         </div>
       </div>
     `).join('') || '<p style="color:#888;font-size:14px;">尚無測驗成績紀錄。</p>';
@@ -803,8 +816,8 @@ function renderFeesAndMakeups() {
         <div style="font-size:12px;color:#888;">${esc(b.note || '')}</div>
       </div>
       <div style="display:flex;gap:6px;">
-        <button class="status-btn" style="background:${b.paid ? '#e2f5ee' : '#ffe5ec'};color:${b.paid ? '#2f7d65' : '#c94a63'};" onclick="togglePaid('${esc(b.id)}')">${b.paid ? '✅ 已繳費' : '⏳ 未繳費'}</button>
-        <button class="del-btn" onclick="delItem('billings','${esc(b.id)}')">刪除</button>
+        <button class="status-btn" style="background:${b.paid ? '#e2f5ee' : '#ffe5ec'};color:${b.paid ? '#2f7d65' : '#c94a63'};" onclick="togglePaid(${jsArg(b.id)})">${b.paid ? '✅ 已繳費' : '⏳ 未繳費'}</button>
+        <button class="del-btn" onclick="delItem('billings',${jsArg(b.id)})">刪除</button>
       </div>
     </div>
   `).join('') || '<p style="color:#888;font-size:14px;">尚無收費紀錄。</p>';
@@ -817,8 +830,8 @@ function renderFeesAndMakeups() {
         <div style="font-size:13px;margin-top:3px;">${esc(mk.reason || '')}</div>
       </div>
       <div style="display:flex;gap:6px;">
-        <button class="status-btn" style="background:#e2f5ee;color:#2f7d65;" onclick="toggleMakeup('${esc(mk.id)}')">切換完成</button>
-        <button class="del-btn" onclick="delItem('makeups','${esc(mk.id)}')">刪除</button>
+        <button class="status-btn" style="background:#e2f5ee;color:#2f7d65;" onclick="toggleMakeup(${jsArg(mk.id)})">切換完成</button>
+        <button class="del-btn" onclick="delItem('makeups',${jsArg(mk.id)})">刪除</button>
       </div>
     </div>
   `).join('') || '<p style="color:#888;font-size:14px;">尚無請假／補課紀錄。</p>';
@@ -829,16 +842,16 @@ function renderGamesAndManage() {
     <div class="list-item">
       <div>
         <strong>${esc(g.title)}</strong>
-        <div style="font-size:13px;margin-top:3px;"><a href="${esc(g.url)}" target="_blank" rel="noopener noreferrer">${esc(g.url)}</a></div>
+        <div style="font-size:13px;margin-top:3px;"><a href="${gameLink(g.url)}" target="_blank" rel="noopener noreferrer">${esc(g.url)}</a></div>
       </div>
-      <button class="del-btn" onclick="delItem('games','${esc(g.id)}')">刪除</button>
+      <button class="del-btn" onclick="delItem('games',${jsArg(g.id)})">刪除</button>
     </div>
   `).join('');
 
   document.getElementById('classManageList').innerHTML = db.classes.map(c => `
     <span class="chip" style="background:${esc(c.color || '#fff')};">
       ${esc(c.name)}
-      ${c.id !== 'c_tutor' ? `<b style="margin-left:6px;color:#b55d5d;" onclick="delClass('${esc(c.id)}')">×</b>` : ''}
+      ${c.id !== 'c_tutor' ? `<b style="margin-left:6px;color:#b55d5d;" onclick="delClass(${jsArg(c.id)})">×</b>` : ''}
     </span>
   `).join('');
 
@@ -846,7 +859,7 @@ function renderGamesAndManage() {
   document.getElementById('studentManageList').innerHTML = db.students.map(s => `
     <span class="chip" style="background:${esc(s.color || '#fff')};">
       ${esc(s.name)}（${esc(clsMap[s.classId] || '')}）
-      <b style="margin-left:6px;color:#b55d5d;" onclick="delItem('students','${esc(s.id)}')">×</b>
+      <b style="margin-left:6px;color:#b55d5d;" onclick="delItem('students',${jsArg(s.id)})">×</b>
     </span>
   `).join('');
 
