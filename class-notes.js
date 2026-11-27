@@ -292,9 +292,13 @@ const ClassNotes = (() => {
           401: '登入已失效。請到「裝置同步」重新登入。',
           403: '這個帳號尚未開放 AI 辨識。',
           404: 'AI 辨識服務尚未部署。',
-          503: 'AI 辨識服務尚未設定，或暫時無法處理照片。',
+          503: '辨識服務暫時無法回應。',
         };
-        get('ScanStatus').textContent = Object.hasOwn(causes, details?.error) ? causes[details.error] : messages[result.status] || 'AI 辨識失敗。請稍後再試，或貼上文字。';
+        const reason = details?.error ?? details?.code;
+        const code = typeof reason === 'string' && /^[a-z0-9_]{1,64}$/i.test(reason) ? reason : '';
+        const message = Object.hasOwn(causes, code) ? causes[code]
+          : messages[result.status] || 'AI 辨識失敗。請稍後再試，或貼上文字。';
+        get('ScanStatus').textContent = `${message}（HTTP ${result.status}${code ? ' · ' + code : ''}）`;
         return;
       }
       const { rows } = await result.json();
