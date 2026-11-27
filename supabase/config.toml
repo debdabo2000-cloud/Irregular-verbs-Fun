@@ -1,0 +1,3 @@
+[functions.read-class-notes]
+# The function validates Supabase Auth tokens and the permitted account itself.
+verify_jwt = false

@@ -425,8 +425,10 @@
         </div>
         <img id="notesImage" class="notes-preview" alt="待辨識的課堂筆記照片" hidden>
         <div class="notes-actions">
-          <button id="notesScan" type="button" class="btn btn-blue">辨識筆記照片</button>
+          <button id="notesScan" type="button" class="btn btn-blue">在此裝置辨識</button>
+          <button id="notesAIScan" type="button" class="btn">AI 辨識手寫</button>
         </div>
+        <p>按下「AI 辨識手寫」會將選取的照片傳送至 OpenAI，先產生可修改的草稿。</p>
         <p id="notesScanStatus" role="status"></p>
         <label>筆記文字<textarea id="notesText" rows="8" placeholder="11/23&#10;教學：Unit 3 pp. 24–26&#10;功課：Workbook p. 18&#10;下次準備：列印單字卡"></textarea></label>
         <p>可直接貼上文字。建議每行一項，保留原本的日期與姓名。手寫辨識可能漏字，請對照原圖。</p>

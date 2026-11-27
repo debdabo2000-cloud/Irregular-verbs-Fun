@@ -248,5 +248,10 @@ const WorkbenchSync = (() => {
     }
   }
 
-  return { init };
+  async function accessToken() {
+    const result = await client?.auth.getSession();
+    return result?.data.session?.access_token || '';
+  }
+
+  return { init, accessToken };
 })();

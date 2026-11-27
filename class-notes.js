@@ -114,6 +114,12 @@ const ClassNotes = (() => {
     card.className = 'list-item notes-record';
     const legend = document.createElement('legend');
     legend.textContent = '待確認紀錄';
+    card.append(legend);
+    if (row.uncertainty) {
+      const note = document.createElement('p');
+      note.textContent = '請核對：' + row.uncertainty;
+      card.append(note);
+    }
     const include = input('checkbox', 'include');
     include.checked = true;
     include.style.width = 'auto';
@@ -163,7 +169,7 @@ const ClassNotes = (() => {
     const includeLabel = field('儲存此筆', include);
     includeLabel.style.display = 'flex';
     includeLabel.style.alignItems = 'center';
-    card.append(legend, includeLabel, field('內容', content), fields, remove);
+    card.append(includeLabel, field('內容', content), fields, remove);
     get('Rows').append(card);
   }
 
@@ -173,7 +179,7 @@ const ClassNotes = (() => {
       get('ScanStatus').textContent = '請先選擇筆記照片。';
       return;
     }
-    const controls = ['Photo', 'Scan', 'Text', 'Generate'].map(get);
+    const controls = ['Photo', 'Scan', 'AIScan', 'Text', 'Generate'].map(get);
     controls.forEach(control => control.disabled = true);
     get('ScanStatus').textContent = '正在載入英文及繁體中文辨識工具…';
     try {
@@ -185,6 +191,113 @@ const ClassNotes = (() => {
         : '沒有讀到文字。可換一張照片，或貼上文字。';
     } catch {
       get('ScanStatus').textContent = '辨識失敗。請確認網路連線，或貼上文字。';
+    } finally {
+      controls.forEach(control => control.disabled = false);
+    }
+  }
+
+  async function preparePhoto(photo) {
+    const bitmap = await createImageBitmap(photo);
+    try {
+      const scale = Math.min(1, 2400 / Math.max(bitmap.width, bitmap.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+      canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+      canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      return await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.88));
+    } finally {
+      bitmap.close();
+    }
+  }
+
+  function aiRows(rows, year) {
+    const people = targets(db);
+    function parseDate(value, fallback) {
+      const match = typeof value === 'string' && value.match(/^(?:(\d{4})-)?(\d{1,2})[-/](\d{1,2})$/);
+      return match ? dateValue(match[1] || fallback, match[2], match[3]) : '';
+    }
+
+    return rows.filter(row => typeof row?.content === 'string' && row.content.trim()).map(row => {
+      const name = typeof row.name === 'string' ? row.name.trim().toLowerCase() : '';
+      const matches = name ? people.filter(person => person.name.trim().toLowerCase() === name) : [];
+      const date = parseDate(row.date, year);
+      const due = parseDate(row.due, date.slice(0, 4) || year);
+      const uncertainty = [
+        typeof row.uncertainty === 'string' && row.uncertainty,
+        name && matches.length !== 1 && '原文對象 ' + row.name,
+        row.due && !due && '原文到期日 ' + row.due,
+      ].filter(Boolean).join('；');
+      return {
+        kind: Object.hasOwn(labels, row.kind) ? row.kind : '',
+        target: matches.length === 1 ? matches[0].key : '',
+        date, due, dateHint: date ? '' : row.date,
+        done: row.done === true,
+        content: row.content.trim(),
+        uncertainty,
+      };
+    });
+  }
+
+  function showRows(rows) {
+    get('Rows').replaceChildren();
+    rows.forEach(addRow);
+    get('Review').hidden = false;
+    get('SaveStatus').textContent = '';
+    get('Rows').querySelector('textarea').focus();
+  }
+
+  async function scanWithAI() {
+    const photo = get('Photo').files[0];
+    if (!photo) {
+      get('ScanStatus').textContent = '請先選擇筆記照片。';
+      return;
+    }
+    if (!get('Year').reportValidity()) return;
+    if (get('Rows').children.length && !confirm('辨識成功後會取代目前未儲存的預覽。繼續嗎？')) return;
+    const controls = ['Photo', 'Scan', 'AIScan', 'Year', 'Text', 'Generate', 'Add', 'Save'].map(get);
+    controls.forEach(control => control.disabled = true);
+    try {
+      const token = await WorkbenchSync.accessToken();
+      if (!token) {
+        get('ScanStatus').textContent = '請先到「裝置同步」用電子郵件登入，再回來辨識照片。';
+        return;
+      }
+      get('ScanStatus').textContent = '正在準備照片並辨識手寫筆記…';
+      const image = await preparePhoto(photo);
+      if (!image || image.size > 4 * 1024 * 1024) {
+        get('ScanStatus').textContent = '照片太大或無法轉換。請換一張 JPG 或 PNG 照片。';
+        return;
+      }
+      const result = await fetch(WorkbenchSyncConfig.url + '/functions/v1/read-class-notes', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          apikey: WorkbenchSyncConfig.publishableKey,
+          'Content-Type': 'image/jpeg',
+        },
+        body: image,
+        signal: AbortSignal.timeout(75000),
+      });
+      if (!result.ok) {
+        const messages = {
+          401: '登入已失效。請到「裝置同步」重新登入。',
+          403: '這個帳號尚未開放 AI 辨識。',
+          404: 'AI 辨識服務尚未部署。',
+          503: 'AI 辨識服務尚未設定，或暫時無法處理照片。',
+        };
+        get('ScanStatus').textContent = messages[result.status] || 'AI 辨識失敗。請稍後再試，或貼上文字。';
+        return;
+      }
+      const { rows } = await result.json();
+      const drafts = aiRows(rows, get('Year').value);
+      if (!drafts.length) {
+        get('ScanStatus').textContent = 'AI 沒有讀到可用的筆記。可以改拍單日區塊再試。';
+        return;
+      }
+      get('ScanStatus').textContent = `已產生 ${drafts.length} 筆草稿，請核對原圖後再儲存。`;
+      showRows(drafts);
+    } catch {
+      get('ScanStatus').textContent = '無法完成 AI 辨識。請確認照片格式與網路連線，或貼上文字。';
     } finally {
       controls.forEach(control => control.disabled = false);
     }
@@ -245,6 +358,7 @@ const ClassNotes = (() => {
       else get('Image').removeAttribute('src');
     });
     get('Scan').addEventListener('click', scanPhoto);
+    get('AIScan').addEventListener('click', scanWithAI);
     get('Generate').addEventListener('click', () => {
       if (!get('Year').reportValidity()) return;
       const rows = parse(get('Text').value, get('Year').value, targets(db));
@@ -253,11 +367,7 @@ const ClassNotes = (() => {
         return;
       }
       if (get('Rows').children.length && !confirm('重新產生紀錄會取代目前未儲存的預覽。繼續嗎？')) return;
-      get('Rows').replaceChildren();
-      rows.forEach(addRow);
-      get('Review').hidden = false;
-      get('SaveStatus').textContent = '';
-      get('Rows').querySelector('textarea').focus();
+      showRows(rows);
     });
     get('Add').addEventListener('click', () => {
       addRow();
